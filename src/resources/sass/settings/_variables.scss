@@ -1,0 +1,79 @@
+/* COLOR SYSTEM */
+
+$color-black: rgb(0, 0, 0);
+$color-white: rgb(255, 255, 255);
+$color-gray-light: rgba($color-white, 0.15);
+$color-gray-dark: rgba($color-black, 0.15);
+$background-gray: #eaeaea;
+
+/* GUTTERS */
+
+$grid-gutter-width: 24px;
+
+/* PADDING */
+
+$main-content-padding-y: 40px;
+$main-content-padding-x: $grid-gutter-width;
+
+/* GAPS */
+
+$gap-base: 20px;
+$gap-lg: 40px;
+
+/* ICONS */
+
+$icon-lg: 35px;
+
+/* NAVBAR */
+
+$navbar-vertical-width: 250px;
+$navbar-nav-item-hover-color: #ffd900;
+$navbar-background-vertical: linear-gradient(180deg, #0d43e3 0%, #06c8f9 100%);
+$navbar-background: linear-gradient(90deg, #0d43e3 0%, #06c8f9 100%);
+
+/* INPUT BASE */
+
+$input-border-color-grey: #ced4da;
+$input-alternative-box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15),
+  0 1px 0 rgba(0, 0, 0, 0.02);
+$input-focus-alternative-box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11),
+  0 1px 3px rgba(0, 0, 0, 0.08);
+
+/* SEARCHBAR */
+
+$searchbar-border-radius: 16px;
+$searchbar-border-width: 1px;
+$searchbar-width: 270px;
+
+/* BUTTON */
+
+$btn-text-transform: none;
+
+/* FORMS */
+
+$input-border-radius: 6px;
+
+$input-focus-placeholder-color: $gray-500;
+$input-muted-bg: #f7fafe;
+$input-focus-muted-bg: lighten($input-muted-bg, 1%);
+
+$input-alternative-box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15),
+  0 1px 0 rgba(0, 0, 0, 0.02);
+$input-focus-alternative-box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11),
+  0 1px 3px rgba(0, 0, 0, 0.08);
+
+/* INPUT GROUPS */
+
+$input-group-addon-color: $input-placeholder-color;
+$input-group-addon-bg: $input-bg;
+$input-group-addon-border-color: $input-border-color;
+
+$input-group-addon-focus-color: $input-focus-color;
+$input-group-addon-focus-bg: $input-focus-bg;
+$input-group-addon-focus-border-color: $input-focus-border-color;
+
+/* HEADING */
+
+$heading-font-weight: $font-weight-bold;
+$heading-text-transform: uppercase;
+$heading-letter-spacing: 0.4px;

@@ -1,0 +1,13 @@
+.library-list {
+  .dropdown-item {
+    gap: 10px;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+
+  .table-responsive {
+    height: 100vh;
+  }
+}
