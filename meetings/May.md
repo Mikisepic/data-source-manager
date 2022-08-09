@@ -20,7 +20,6 @@
 \
 &nbsp;
 
-
 ## 2022 May 10th, Tuesday 19:00 - 20:00
 
 **Agenda**
@@ -33,5 +32,20 @@
   * Add login and registration pages (Mikas)
   * Fix HTTP requests if some are still failling (Gedmantas)
   * Prepare report for teacher's evaluation (missing sections: ER, HCI...) (Whole team)
+\
+&nbsp;
+
+## 2022 July 22nd, Friday 14:00
+
+**Agenda**
+* ER Model Feedback
+* Shareable contents in Groups and displaying it in ER Model?
+* Why is a current way of refferencing images incorrect? Not all images are referenced.
+* Organizational questions:
+  * Make sure I can work alone? Should be visible in the repository as well: separate branch or whole new repo will be just fine.
+  * Requirement differences when presenting solo? Everything stays the same except I have less time for presentation and demo.
+  * Differences of final result between former teammates? Parts of previous result can stay there.
+  * Demo presentation locally in case of VM malfunction? Localhost demo is possible but should still be compatible with VU MIF infrastructure
+  * Defense date? From September 2nd the earliest if nothing unexpected happens
 \
 &nbsp;

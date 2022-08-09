@@ -8,7 +8,6 @@
 					:link="item"
 				/>
 			</template>
-			
 		</navbar-wrapper>
 
 		<div class="main-content">
