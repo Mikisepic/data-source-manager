@@ -1,0 +1,62 @@
+.card {
+  width: 100%;
+
+  .icon.delete {
+    color: #fc4a4a;
+    font-size: $icon-lg;
+
+    margin-right: 10px;
+    padding: 5px;
+
+    border-radius: 15px;
+
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      background: #fc4a4a;
+      color: $white;
+    }
+  }
+
+  .preview {
+    height: $icon-lg;
+
+    text-decoration: none;
+
+    .icon {
+      font-size: $icon-lg;
+    }
+  }
+
+  .last-update {
+    font-size: 14px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.card-profile-stats {
+  padding: 16px 0;
+
+  > div {
+    text-align: center;
+    margin-right: 20px;
+    padding: 14px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    .heading {
+      font-size: 20px;
+      font-weight: bold;
+      display: block;
+    }
+    .description {
+      font-size: 14px;
+      color: $gray-500;
+    }
+  }
+}

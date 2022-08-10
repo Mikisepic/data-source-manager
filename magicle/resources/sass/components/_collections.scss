@@ -1,0 +1,9 @@
+.collections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gap-base;
+
+  .card {
+    width: 350px;
+  }
+}
