@@ -27,8 +27,8 @@
     margin-left: 0;
 
     .container-fluid {
-      padding-left: $main-content-padding-x + $grid-gutter-width / 2;
-      padding-right: $main-content-padding-x + $grid-gutter-width / 2;
+      padding-left: $main-content-padding-x + calc($grid-gutter-width / 2);
+      padding-right: $main-content-padding-x + calc($grid-gutter-width / 2);
     }
   }
 }
