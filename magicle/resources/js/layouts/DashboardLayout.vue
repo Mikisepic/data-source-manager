@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <navbar-wrapper>
+    <h1>Hey there</h1>
+    <!-- <navbar-wrapper>
       <template v-slot:items>
         <navbar-item
           v-for="(item, index) in items"
@@ -14,7 +15,7 @@
       <div class="container-fluid">
         <router-view />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
