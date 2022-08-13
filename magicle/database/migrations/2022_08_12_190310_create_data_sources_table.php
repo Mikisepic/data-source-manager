@@ -14,7 +14,7 @@ return new class extends Migration
   public function up()
   {
     Schema::create('data_sources', function (Blueprint $table) {
-      $table->id();
+      $table->uuid('id')->primary();
       $table->string('title');
       $table->string('source')->nullable()->default('');
       $table->timestamps();
