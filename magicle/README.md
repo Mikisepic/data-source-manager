@@ -35,4 +35,6 @@
 3. Create an API resource for data transformation `php artisan make:resource ModelNameResource`
 4. Create a FormRequest class for validation `php artisan make:request ModelNameRequest`
 5. Create factory file for generating data `php artisan make:factory ModelNameFactory`
-6. Create a seeder for data generation `php artisan make:seeder ModelNameSeeder` and then generate data with a specific seeder `php artisan db:seed --class=ModelNameSeeder`
+6. Create a seeder for data generation `php artisan make:seeder ModelNameSeeder`, update the seeding sequence in `DatabaseSeeder.php` and then execute `php artisan migrate:refresh && php artisan db:seed`
+7. Add a created API resource to `routes/api.php`
+8. 

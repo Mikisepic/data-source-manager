@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CollectionController;
 use App\Http\Controllers\API\DataSourceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('data_sources', DataSourceController::class);
+Route::apiResource('collections', CollectionController::class);

@@ -13,13 +13,10 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('data_sources', function (Blueprint $table) {
+    Schema::create('collections', function (Blueprint $table) {
       $table->uuid('id')->primary();
       $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
-      $table->string('source')->nullable()->default('');
-      $table->enum('category', ['link', 'article', 'book']);
-      $table->timestamp('expires_at');
       $table->timestamps();
     });
   }
@@ -31,6 +28,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('data_sources');
+    Schema::dropIfExists('collections');
   }
 };

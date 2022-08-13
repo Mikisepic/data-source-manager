@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DataSource extends Model
+class Collection extends Model
 {
   use HasFactory;
 
@@ -14,5 +14,5 @@ class DataSource extends Model
    *
    * @var array<int, string>
    */
-  protected $fillable = ['title', 'source'];
+  protected $fillable = ['title'];
 }

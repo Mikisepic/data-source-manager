@@ -2,13 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DataSource>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Collection>
  */
-class DataSourceFactory extends Factory
+class CollectionFactory extends Factory
 {
   /**
    * Define the model's default state.
@@ -23,9 +24,6 @@ class DataSourceFactory extends Factory
       'id' => fake()->uuid(),
       'user_id' => fake()->randomElement($userIDs),
       'title' => fake()->text(50),
-      'source' => fake()->url(),
-      'category' => fake()->randomElement(['link', 'article', 'book']),
-      'expires_at' => fake()->date(now()->addDays(random_int(2, 10)))
     ];
   }
 }
