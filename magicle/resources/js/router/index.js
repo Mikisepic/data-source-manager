@@ -14,16 +14,15 @@ import Settings from '../views/Settings.vue';
 const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
     component: DashboardLayout,
     children: [
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: Dashboard
+        path: '/library',
+        name: 'library',
+        component: Library
       },
       {
-        path: '/library',
+        path: '/library/:id',
         name: 'library',
         component: Library
       },
@@ -50,13 +49,13 @@ const routes = [
         props: true
       },
       {
-        path: '/profile/:id',
+        path: '/profile/',
         name: 'profile',
         component: Profile,
         props: true
       },
       {
-        path: '/settings/:id',
+        path: '/settings/',
         name: 'settings',
         component: Settings,
         props: true

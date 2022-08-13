@@ -17,6 +17,8 @@ return new class extends Migration
       $table->uuid('id')->primary();
       $table->string('title');
       $table->string('source')->nullable()->default('');
+      $table->enum('category', ['link', 'article', 'book']);
+      $table->timestamp('expires_at');
       $table->timestamps();
     });
   }

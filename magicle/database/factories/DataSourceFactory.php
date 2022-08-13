@@ -20,6 +20,8 @@ class DataSourceFactory extends Factory
       'id' => fake()->uuid(),
       'title' => fake()->text(50),
       'source' => fake()->url(),
+      'category' => fake()->randomElement(['link', 'article', 'book']),
+      'expires_at' => fake()->date(now()->addDays(random_int(2, 10)))
     ];
   }
 }
