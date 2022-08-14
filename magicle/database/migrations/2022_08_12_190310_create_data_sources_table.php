@@ -16,6 +16,7 @@ return new class extends Migration
     Schema::create('data_sources', function (Blueprint $table) {
       $table->uuid('id')->primary();
       $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+      $table->foreignUuid('collection_id')->constrained('collections')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
       $table->string('source')->nullable()->default('');
       $table->enum('category', ['link', 'article', 'book']);

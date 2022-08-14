@@ -16,7 +16,11 @@ class CollectionController extends Controller
    */
   public function index()
   {
-    return CollectionResource::collection(Collection::paginate(20));
+    return CollectionResource::collection(
+      Collection::withCount('dataSources')
+        ->latest()
+        ->paginate(20)
+    );
   }
 
   /**

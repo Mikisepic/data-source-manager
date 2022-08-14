@@ -21,9 +21,6 @@ return new class extends Migration
       $table->string('first_name')->nullable();
       $table->string('last_name')->nullable();
       $table->string('password');
-      $table->integer('total_groups')->default(0);
-      $table->integer('total_collections')->default(0);
-      $table->integer('total_references')->default(0);
       $table->string('location')->nullable();
       $table->string('occupation')->nullable();
       $table->string('education')->default('Student');

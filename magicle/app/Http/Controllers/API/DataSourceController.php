@@ -16,7 +16,9 @@ class DataSourceController extends Controller
    */
   public function index()
   {
-    return DataSourceResource::collection(DataSource::paginate(20));
+    return DataSourceResource::collection(
+      DataSource::latest()->paginate(20)
+    );
   }
 
   /**

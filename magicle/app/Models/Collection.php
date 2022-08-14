@@ -24,4 +24,20 @@ class Collection extends Model
   protected $casts = [
     'id' => 'string'
   ];
+
+  /**
+   * Get the User that added the Collection.
+   */
+  public function user()
+  {
+    return $this->belongsTo('App\Models\User');
+  }
+
+  /**
+   * Get the Data Sources the user has created.
+   */
+  public function dataSources()
+  {
+    return $this->hasMany('App\Models\DataSource');
+  }
 }

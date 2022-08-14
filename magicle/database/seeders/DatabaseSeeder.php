@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Collection;
-use App\Models\DataSource;
-use \App\Models\User;
+use Database\Seeders\API\CollectionSeeder;
+use Database\Seeders\API\UserSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -16,8 +15,9 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
-    User::factory(2)->create();
-    DataSource::factory(100)->create();
-    Collection::factory(100)->create();
+    $this->call([
+      UserSeeder::class,
+      CollectionSeeder::class,
+    ]);
   }
 }

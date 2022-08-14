@@ -24,4 +24,20 @@ class DataSource extends Model
   protected $casts = [
     'id' => 'string'
   ];
+
+  /**
+   * Get the User that added the Data Source.
+   */
+  public function user()
+  {
+    return $this->belongsTo('App\Models\User');
+  }
+
+  /**
+   * Get the Collection that has this Data Source.
+   */
+  public function collection()
+  {
+    return $this->belongsTo('App\Models\Collection');
+  }
 }
