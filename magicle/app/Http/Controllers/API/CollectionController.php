@@ -16,7 +16,7 @@ class CollectionController extends Controller
    */
   public function index()
   {
-    return CollectionResource::collection(Collection::all());
+    return CollectionResource::collection(Collection::paginate(20));
   }
 
   /**

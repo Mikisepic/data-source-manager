@@ -37,4 +37,3 @@
 5. Create factory file for generating data `php artisan make:factory ModelNameFactory`
 6. Create a seeder for data generation `php artisan make:seeder ModelNameSeeder`, update the seeding sequence in `DatabaseSeeder.php` and then execute `php artisan migrate:refresh && php artisan db:seed`
 7. Add a created API resource to `routes/api.php`
-8. 

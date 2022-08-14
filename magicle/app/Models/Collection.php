@@ -15,4 +15,13 @@ class Collection extends Model
    * @var array<int, string>
    */
   protected $fillable = ['title'];
+
+  /**
+   * The attributes that should be cast.
+   *
+   * @var array<string, string>
+   */
+  protected $casts = [
+    'id' => 'string'
+  ];
 }
