@@ -18,10 +18,14 @@ class DataSourceFactory extends Factory
   public function definition()
   {
     $userIDs = DB::table('users')->pluck('id');
+    $collectionIDs = DB::table('collections')->pluck('id');
+    $groupIDs = DB::table('groups')->pluck('id');
 
     return [
       'id' => fake()->uuid(),
       'user_id' => fake()->randomElement($userIDs),
+      'collection_id' => fake()->randomElement($collectionIDs),
+      'group_id' => fake()->randomElement($groupIDs),
       'title' => fake()->text(50),
       'source' => fake()->url(),
       'category' => fake()->randomElement(['link', 'article', 'book']),

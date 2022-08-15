@@ -48,7 +48,7 @@ class User extends Authenticatable
    */
   public function dataSources()
   {
-    return $this->hasMany('App\Models\DataSource');
+    return $this->hasMany(DataSource::class);
   }
 
   /**
@@ -56,6 +56,14 @@ class User extends Authenticatable
    */
   public function collections()
   {
-    return $this->hasMany('App\Models\Collection');
+    return $this->hasMany(Collection::class);
+  }
+
+  /**
+   * Get the Collections the user has created.
+   */
+  public function groups()
+  {
+    return $this->hasMany(Group::class);
   }
 }

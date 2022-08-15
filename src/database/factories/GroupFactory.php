@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Collection>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
  */
-class CollectionFactory extends Factory
+class GroupFactory extends Factory
 {
   /**
    * Define the model's default state.
@@ -17,13 +17,13 @@ class CollectionFactory extends Factory
    */
   public function definition()
   {
-    $userIDs = DB::table('users')->pluck('id');
+    $ownerIDs = DB::table('users')->pluck('id');
 
     return [
       'id' => fake()->uuid(),
-      'user_id' => fake()->randomElement($userIDs),
+      'user_id' => fake()->randomElement($ownerIDs),
       'title' => fake()->text(50),
-      'description' => fake()->text(200),
+      'description' => fake()->text(50)
     ];
   }
 }

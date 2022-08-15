@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Collection extends Model
+class Group extends Model
 {
   use HasFactory;
 
@@ -26,15 +26,23 @@ class Collection extends Model
   ];
 
   /**
-   * Get the User that added the Collection.
+   * Get the User that owns the Group.
    */
-  public function user()
+  public function owner()
   {
     return $this->belongsTo('App\Models\User');
   }
 
   /**
-   * Get the Data Sources the user has created.
+   * Get the Users that are members of this Group.
+   */
+  public function members()
+  {
+    return $this->hasMany('App\Models\User');
+  }
+
+  /**
+   * Get the Data Sources the Group has inside.
    */
   public function dataSources()
   {

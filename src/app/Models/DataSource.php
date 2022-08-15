@@ -40,4 +40,12 @@ class DataSource extends Model
   {
     return $this->belongsTo('App\Models\Collection');
   }
+
+  /**
+   * Get the Group that has this Data Source.
+   */
+  public function group()
+  {
+    return $this->belongsTo('App\Models\Group');
+  }
 }

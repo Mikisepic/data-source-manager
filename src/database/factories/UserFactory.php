@@ -28,6 +28,7 @@ class UserFactory extends Factory
       'password' => Hash::make('password'),
       'location' => fake()->address(),
       'occupation' => fake()->jobTitle(),
+      'academic_status' => fake()->randomElement(['researcher', 'student', 'bachelor', 'master', 'doctoral', 'phd', 'postgraduate']),
       'description' => fake()->text(),
       'remember_token' => Str::random(10),
     ];
