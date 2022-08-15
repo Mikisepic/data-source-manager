@@ -2,12 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-require __DIR__ . '/auth.php';
-Route::middleware(['auth', 'auth'])->group(function () {
-  Route::get('/', '\App\Http\Controllers\Controller@app');
-});
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,12 +12,13 @@ Route::middleware(['auth', 'auth'])->group(function () {
 | contains the "web" middleware group. Now create something great!
 |
 */
-require __DIR__ . '/auth.php';
 
-Route::get('/', '\App\Http\Controllers\Controller@index')->middleware(['auth']);
-
-Route::get('/user', '\App\Http\Controllers\Controller@user');
-
-Route::get('/uss', function () {
-  return auth()->guard('web')->user();
+Route::get('/', function () {
+    return view('welcome');
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';

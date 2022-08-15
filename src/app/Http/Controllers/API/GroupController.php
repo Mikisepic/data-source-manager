@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
@@ -13,36 +12,34 @@ class GroupController extends Controller
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Response
+   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
    */
   public function index()
   {
-    return GroupResource::collection(Group::all());
+    return GroupResource::collection(
+      Group::withCount('dataSources')
+        ->latest()
+        ->paginate(20)
+    );
   }
 
   /**
    * Store a newly created resource in storage.
    *
    * @param  \App\Http\Requests\GroupRequest  $request
-   * @return \Illuminate\Http\Response
+   * @return \App\Http\Resources\GroupResource
    */
   public function store(GroupRequest $request)
   {
-
-    $request->validated();
-    $group = new Group;
-    $group->title = $request->title;
-    $group->owner_id = $request->user()->id;
-    $group->save();
-
-    return $group;
+    $group = Group::create($request->validated());
+    return new GroupResource($group);
   }
 
   /**
    * Display the specified resource.
    *
    * @param  \App\Models\Group  $group
-   * @return \Illuminate\Http\Response
+   * @return \App\Http\Resources\GroupResource
    */
   public function show(Group $group)
   {
@@ -54,7 +51,7 @@ class GroupController extends Controller
    *
    * @param  \App\Http\Requests\GroupRequest  $request
    * @param  \App\Models\Group  $group
-   * @return \Illuminate\Http\Response
+   * @return \App\Http\Resources\GroupResource
    */
   public function update(GroupRequest $request, Group $group)
   {

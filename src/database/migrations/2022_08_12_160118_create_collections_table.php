@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLibraries extends Migration
+return new class extends Migration
 {
   /**
    * Run the migrations.
@@ -13,10 +13,11 @@ class CreateLibraries extends Migration
    */
   public function up()
   {
-    Schema::create('libraries', function (Blueprint $table) {
-      $table->id();
+    Schema::create('collections', function (Blueprint $table) {
+      $table->uuid('id')->primary();
+      $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
-      $table->softDeletes();
+      $table->string('description')->default('');
       $table->timestamps();
     });
   }
@@ -28,6 +29,6 @@ class CreateLibraries extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('libraries');
+    Schema::dropIfExists('collections');
   }
-}
+};

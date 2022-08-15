@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReferenceRequest extends FormRequest
+class DataSourceRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -19,17 +19,13 @@ class ReferenceRequest extends FormRequest
   /**
    * Get the validation rules that apply to the request.
    *
-   * @return array
+   * @return array<string, mixed>
    */
   public function rules()
   {
     return [
-      'title' => ['required', 'max:255'],
-      'source' => ['required'],
-      'hasPrice' => ['required', 'boolean'],
-      'category' => ['required'],
-      'collection_id' => ['required'],
-      'expires_at' => ['required'],
+      'title' => ['required', 'string'],
+      'source' => ['nullable', 'url'],
     ];
   }
 }

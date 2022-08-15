@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Collection extends Model
+class DataSource extends Model
 {
   use HasFactory;
 
@@ -14,7 +14,7 @@ class Collection extends Model
    *
    * @var array<int, string>
    */
-  protected $fillable = ['title', 'description'];
+  protected $fillable = ['title', 'source'];
 
   /**
    * The attributes that should be cast.
@@ -26,7 +26,7 @@ class Collection extends Model
   ];
 
   /**
-   * Get the User that added the Collection.
+   * Get the User that added the Data Source.
    */
   public function user()
   {
@@ -34,10 +34,18 @@ class Collection extends Model
   }
 
   /**
-   * Get the Data Sources the user has created.
+   * Get the Collection that has this Data Source.
    */
-  public function dataSources()
+  public function collection()
   {
-    return $this->hasMany('App\Models\DataSource');
+    return $this->belongsTo('App\Models\Collection');
+  }
+
+  /**
+   * Get the Group that has this Data Source.
+   */
+  public function group()
+  {
+    return $this->belongsTo('App\Models\Group');
   }
 }

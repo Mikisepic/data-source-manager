@@ -1,11 +1,11 @@
-import ButtonBase from '../components/ButtonBase';
-import Card from '../components/Card';
-import DropdownBase from '../components/DropdownBase';
-import InputBase from '../components/InputBase';
-import NavbarItem from '../components/Navbar/NavbarItem';
-import NavbarWrapper from '../components/Navbar/NavbarWrapper';
-import TableBase from '../components/TableBase';
-import ThemeToggle from '../components/ThemeToggle';
+import ButtonBase from '../components/ButtonBase.vue';
+import Card from '../components/Card.vue';
+import DropdownBase from '../components/DropdownBase.vue';
+import InputBase from '../components/InputBase.vue';
+import NavbarItem from '../components/Navbar/NavbarItem.vue';
+import NavbarWrapper from '../components/Navbar/NavbarWrapper.vue';
+import TableBase from '../components/TableBase.vue';
+import ThemeToggle from '../components/ThemeToggle.vue';
 
 export const GlobalComponents = {
   install(app) {

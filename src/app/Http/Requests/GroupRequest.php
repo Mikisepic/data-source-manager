@@ -13,18 +13,18 @@ class GroupRequest extends FormRequest
    */
   public function authorize()
   {
-    return true;
+    return false;
   }
 
   /**
    * Get the validation rules that apply to the request.
    *
-   * @return array
+   * @return array<string, mixed>
    */
   public function rules()
   {
     return [
-      'title' => ['required', 'max:255'],	
+      'title' => ['required', 'string'],
     ];
   }
 }
