@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <h1>Hey there</h1>
+    <router-link to="/logout">Logout</router-link>
     <!-- <navbar-wrapper>
       <template v-slot:items>
         <navbar-item

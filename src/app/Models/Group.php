@@ -30,7 +30,7 @@ class Group extends Model
    */
   public function owner()
   {
-    return $this->belongsTo('App\Models\User');
+    return $this->belongsTo(User::class);
   }
 
   /**
@@ -38,7 +38,7 @@ class Group extends Model
    */
   public function members()
   {
-    return $this->hasMany('App\Models\User');
+    return $this->hasMany(User::class);
   }
 
   /**
@@ -46,6 +46,6 @@ class Group extends Model
    */
   public function dataSources()
   {
-    return $this->hasMany('App\Models\DataSource');
+    return $this->hasMany(DataSource::class);
   }
 }

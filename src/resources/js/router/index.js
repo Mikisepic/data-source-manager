@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 import DashboardLayout from '../layouts/DashboardLayout.vue';
 
@@ -13,7 +13,7 @@ import Settings from '../views/Settings.vue';
 
 const routes = [
   {
-    path: '/',
+    path: '/dashboard',
     component: DashboardLayout,
     children: [
       {
@@ -65,7 +65,7 @@ const routes = [
 ];
 
 export const Router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   linkActiveClass: 'active',
   routes
 });
