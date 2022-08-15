@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\ErrorHandler\Debug;
 
 class DataSourceController extends Controller
 {
@@ -16,9 +18,44 @@ class DataSourceController extends Controller
    */
   public function index()
   {
-    return DataSourceResource::collection(
-      DataSource::latest()->paginate(20)
-    );
+    $sortBy = request('sort_by', 'created_at');
+    if (!in_array($sortBy, ['id', 'title', 'expires_at'])) {
+      $sortBy = 'created_at';
+    }
+
+    $sortDirection = request('sort_direction', 'desc');
+    if (!in_array($sortDirection, ['asc', 'desc'])) {
+      $sortDirection = 'desc';
+    }
+
+    $filled = array_filter(request()->only([
+      'id',
+      'title',
+      'expires_at'
+    ]));
+
+    $dataSources = DataSource::when(
+      count($filled) > 0,
+      function ($query) use ($filled) {
+        foreach ($filled as $column => $value) {
+          $query->where($column, 'LIKE', '%' . $value . '%');
+        }
+      }
+    )
+      ->when(
+        request('category', '') != '',
+        function ($query) {
+          $query->where('category', request('category'));
+        }
+      )
+      ->when(request('search', '') != '', function ($query) {
+        $query->where(function ($q) {
+          $q->where('id', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('title', 'LIKE', '%' . request('search') . '%');
+        });
+      });
+
+    return DataSourceResource::collection($dataSources->orderBy($sortBy, $sortDirection)->paginate(20));
   }
 
   /**
