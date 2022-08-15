@@ -19,13 +19,12 @@ class CollectionRequest extends FormRequest
   /**
    * Get the validation rules that apply to the request.
    *
-   * @return array
+   * @return array<string, mixed>
    */
   public function rules()
   {
     return [
-      'title' => ['required', 'max:255'],
-      'isPublic' => ['required', 'boolean'],
+      'title' => ['required', 'string'],
     ];
   }
 }

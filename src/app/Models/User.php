@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,13 +19,8 @@ class User extends Authenticatable
    */
   protected $fillable = [
     'name',
-    'last_name',
-    'username',
     'email',
     'password',
-    'location',
-    'occupation',
-    'education',
   ];
 
   /**
@@ -44,11 +39,23 @@ class User extends Authenticatable
    * @var array<string, string>
    */
   protected $casts = [
+    'id' => 'string',
     'email_verified_at' => 'datetime',
   ];
 
-  public function getId()
+  /**
+   * Get the Data Sources the user has created.
+   */
+  public function dataSources()
   {
-    return $this->id;
+    return $this->hasMany('App\Models\DataSource');
+  }
+
+  /**
+   * Get the Collections the user has created.
+   */
+  public function collections()
+  {
+    return $this->hasMany('App\Models\Collection');
   }
 }
