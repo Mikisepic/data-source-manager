@@ -7,6 +7,9 @@
 
   <title>MAGicle</title>
 
+  <!-- Icon -->
+  <link rel="icon" href="{{ url('storage/img/icon.png') }}">
+
   <!-- Fonts -->
   <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 

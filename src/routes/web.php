@@ -14,11 +14,31 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+  return view('layouts.app');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::get('/library', function () {
+  return view('layouts.app');
+})->middleware(['auth'])->name('library');
+
+Route::get('/collections', function () {
+  return view('layouts.app');
+})->middleware(['auth'])->name('collections');
+
+Route::get('/groups', function () {
+  return view('layouts.app');
+})->middleware(['auth'])->name('groups');
+
+Route::get('/profile', function () {
+  return view('layouts.app');
+})->middleware(['auth'])->name('profile');
+
+Route::get('/settings', function () {
+  return view('layouts.app');
+})->middleware(['auth'])->name('settings');
+
+require __DIR__ . '/auth.php';

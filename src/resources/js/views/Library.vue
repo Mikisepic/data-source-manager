@@ -1,9 +1,5 @@
 <template>
   <div class="library-list">
-    <div class="page-header">
-      <h2 class="heading-title">Library</h2>
-    </div>
-
     <div class="table-responsive">
       <table-base :data="dataSources">
         <template v-slot:columns>
