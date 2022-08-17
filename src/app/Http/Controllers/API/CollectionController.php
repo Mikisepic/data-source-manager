@@ -6,21 +6,26 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Models\Collection;
+use Inertia\Inertia;
 
 class CollectionController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+   * @return \Inertia\Response
    */
   public function index()
   {
-    return CollectionResource::collection(
+    $collections = CollectionResource::collection(
       Collection::withCount('dataSources')
         ->latest()
         ->paginate(20)
     );
+
+    return Inertia::render('Views/Collections', [
+      'data' => $collections
+    ]);
   }
 
   /**

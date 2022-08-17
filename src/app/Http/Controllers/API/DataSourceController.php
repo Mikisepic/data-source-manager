@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Inertia\Inertia;
 
 class DataSourceController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+   * @return \Inertia\Response
    */
   public function index()
   {
@@ -53,7 +54,11 @@ class DataSourceController extends Controller
         });
       });
 
-    return DataSourceResource::collection($dataSources->orderBy($sortBy, $sortDirection)->paginate(20));
+    $dataSourceCollection = DataSourceResource::collection($dataSources->orderBy($sortBy, $sortDirection)->paginate(20));
+
+    return Inertia::render('Views/Library', [
+      'data' => $dataSourceCollection
+    ]);
   }
 
   /**

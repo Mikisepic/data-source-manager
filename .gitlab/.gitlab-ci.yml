@@ -1,10 +1,9 @@
 stages:
   - build
+  - test
   - deploy
 build:
   stage: build
-  tags:
-    - deployment
   script:
     - cd /var/www
     - git clone -b auth git@git.mif.vu.lt:mipu7431/data-source-manager.git
@@ -17,10 +16,13 @@ build:
     - php artisan key:generate
     - php artisan storage:link
     - php artisan migrate:fresh --seed
-    - echo "Build stage is done"
+    - npm run build
+test:
+  stage: test
+  script:
+    - php artisan serve
+    - npm run test
 deploy:
   stage: deploy
-  tags:
-    - deployment
   script:
-    - echo "deploy"
+    - php artisan serve

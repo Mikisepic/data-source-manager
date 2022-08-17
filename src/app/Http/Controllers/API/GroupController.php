@@ -6,21 +6,26 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+   * @return \Inertia\Response
    */
   public function index()
   {
-    return GroupResource::collection(
+    $groups = GroupResource::collection(
       Group::withCount('dataSources')
         ->latest()
         ->paginate(20)
     );
+
+    return Inertia::render('Views/Groups', [
+      'data' => $groups
+    ]);
   }
 
   /**

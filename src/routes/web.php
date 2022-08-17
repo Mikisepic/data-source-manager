@@ -1,6 +1,12 @@
 <?php
 
+use App\Http\Controllers\API\CollectionController;
+use App\Http\Controllers\API\DataSourceController;
+use App\Http\Controllers\API\GroupController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,31 +20,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-  return view('welcome');
+  return Inertia::render('Welcome', [
+    'canLogin' => Route::has('login'),
+    'canRegister' => Route::has('register'),
+  ]);
 });
 
 Route::get('/dashboard', function () {
-  return view('layouts.app');
-})->middleware(['auth'])->name('dashboard');
+  return Inertia::render('Views/Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/library', function () {
-  return view('layouts.app');
-})->middleware(['auth'])->name('library');
-
-Route::get('/collections', function () {
-  return view('layouts.app');
-})->middleware(['auth'])->name('collections');
-
-Route::get('/groups', function () {
-  return view('layouts.app');
-})->middleware(['auth'])->name('groups');
+Route::get('/library', [DataSourceController::class, 'index'])->middleware(['auth', 'verified'])->name('library');
+Route::get('/collections', [CollectionController::class, 'index'])->middleware(['auth', 'verified'])->name('collections');
+Route::get('/groups', [GroupController::class, 'index'])->middleware(['auth', 'verified'])->name('groups');
 
 Route::get('/profile', function () {
-  return view('layouts.app');
-})->middleware(['auth'])->name('profile');
+  return Inertia::render('Views/Profile', [
+    'data' => Auth::user()
+  ]);
+})->middleware(['auth', 'verified'])->name('profile');
 
 Route::get('/settings', function () {
-  return view('layouts.app');
-})->middleware(['auth'])->name('settings');
+  return Inertia::render('Views/Settings');
+})->middleware(['auth', 'verified'])->name('settings');
 
 require __DIR__ . '/auth.php';
