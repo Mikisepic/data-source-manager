@@ -19,7 +19,8 @@ return new class extends Migration
       $table->foreignUuid('collection_id')->nullable()->constrained('collections')->onUpdate('cascade')->onDelete('cascade');
       $table->foreignUuid('group_id')->nullable()->constrained('groups')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
-      $table->string('source')->nullable()->default('');
+      $table->string('author');
+      $table->string('source')->default('');
       $table->enum('category', ['link', 'article', 'book']);
       $table->timestamp('expires_at');
       $table->timestamps();

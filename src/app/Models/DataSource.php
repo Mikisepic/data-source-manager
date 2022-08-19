@@ -18,6 +18,7 @@ class DataSource extends Model
     'id',
     'user_id',
     'title',
+    'author',
     'source',
     'category',
     'expires_at'

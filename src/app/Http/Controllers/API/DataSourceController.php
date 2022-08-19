@@ -66,7 +66,7 @@ class DataSourceController extends Controller
    * Store a newly created resource in storage.
    *
    * @param  \App\Http\Requests\DataSourceRequest  $request
-   * @return \App\Http\Resources\DataSourceResource
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function store(DataSourceRequest $request)
   {
@@ -74,18 +74,22 @@ class DataSourceController extends Controller
       'id' => Str::uuid()->toString(),
       ...$request->validated()
     ]);
-    return redirect()->route('libraryList');
+    return redirect()->route('libraryIndex');
   }
 
   /**
    * Display the specified resource.
    *
    * @param  \App\Models\DataSource  $dataSource
-   * @return \App\Http\Resources\DataSourceResource
+   * @return \Inertia\Response
    */
   public function show(DataSource $dataSource)
   {
-    return new DataSourceResource($dataSource);
+    $dataSource = new DataSourceResource($dataSource);
+
+    return Inertia::render('Views/Library', [
+      'data' => $dataSource
+    ]);
   }
 
   /**

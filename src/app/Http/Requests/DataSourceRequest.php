@@ -27,7 +27,8 @@ class DataSourceRequest extends FormRequest
     return [
       'user_id' => ['required', 'uuid'],
       'title' => ['required', 'string'],
-      'source' => ['required', 'url'],
+      'author' => ['string'],
+      'source' => ['url'],
       'category' => ['required', Rule::in(['link', 'article', 'book'])],
       'expires_at' => ['required', 'date'],
     ];

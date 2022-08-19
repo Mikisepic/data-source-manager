@@ -7,7 +7,7 @@ const items = [
   {
     title: 'Library',
     icon: 'folder',
-    pathName: 'libraryList'
+    pathName: 'libraryIndex'
   },
   {
     title: 'Collections',

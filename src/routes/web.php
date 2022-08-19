@@ -29,8 +29,11 @@ Route::get('/dashboard', function () {
   return Inertia::render('Views/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/library', [DataSourceController::class, 'index'])->middleware(['auth', 'verified'])->name('libraryList');
-Route::post('/library', [DataSourceController::class, 'store'])->middleware(['auth', 'verified'])->name('libraryPost');
+Route::get('/library', [DataSourceController::class, 'index'])->middleware(['auth', 'verified'])->name('libraryIndex');
+Route::post('/library/new', [DataSourceController::class, 'store'])->middleware(['auth', 'verified'])->name('libraryStore');
+Route::get('/library/{id}', [DataSourceController::class, 'show'])->middleware(['auth', 'verified'])->name('libraryShow');
+Route::patch('/library/{id}', [DataSourceController::class, 'update'])->middleware(['auth', 'verified'])->name('libraryUpdate');
+Route::delete('/library/{id}', [DataSourceController::class, 'destroy'])->middleware(['auth', 'verified'])->name('libraryDestroy');
 
 Route::get('/collections', [CollectionController::class, 'index'])->middleware(['auth', 'verified'])->name('collections');
 Route::get('/groups', [GroupController::class, 'index'])->middleware(['auth', 'verified'])->name('groups');
