@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class GroupController extends Controller
@@ -36,7 +37,10 @@ class GroupController extends Controller
    */
   public function store(GroupRequest $request)
   {
-    $group = Group::create($request->validated());
+    $group = Group::create([
+      'id' => Str::uuid()->toString(),
+      ...$request->validated()
+    ]);
     return new GroupResource($group);
   }
 

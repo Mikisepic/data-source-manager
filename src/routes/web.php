@@ -3,7 +3,6 @@
 use App\Http\Controllers\API\CollectionController;
 use App\Http\Controllers\API\DataSourceController;
 use App\Http\Controllers\API\GroupController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,7 +29,9 @@ Route::get('/dashboard', function () {
   return Inertia::render('Views/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/library', [DataSourceController::class, 'index'])->middleware(['auth', 'verified'])->name('library');
+Route::get('/library', [DataSourceController::class, 'index'])->middleware(['auth', 'verified'])->name('libraryList');
+Route::post('/library', [DataSourceController::class, 'store'])->middleware(['auth', 'verified'])->name('libraryPost');
+
 Route::get('/collections', [CollectionController::class, 'index'])->middleware(['auth', 'verified'])->name('collections');
 Route::get('/groups', [GroupController::class, 'index'])->middleware(['auth', 'verified'])->name('groups');
 

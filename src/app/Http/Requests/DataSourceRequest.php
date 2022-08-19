@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DataSourceRequest extends FormRequest
 {
@@ -24,8 +25,11 @@ class DataSourceRequest extends FormRequest
   public function rules()
   {
     return [
+      'user_id' => ['required', 'uuid'],
       'title' => ['required', 'string'],
-      'source' => ['nullable', 'url'],
+      'source' => ['required', 'url'],
+      'category' => ['required', Rule::in(['link', 'article', 'book'])],
+      'expires_at' => ['required', 'date'],
     ];
   }
 }

@@ -14,7 +14,14 @@ class DataSource extends Model
    *
    * @var array<int, string>
    */
-  protected $fillable = ['title', 'source'];
+  protected $fillable = [
+    'id',
+    'user_id',
+    'title',
+    'source',
+    'category',
+    'expires_at'
+  ];
 
   /**
    * The attributes that should be cast.

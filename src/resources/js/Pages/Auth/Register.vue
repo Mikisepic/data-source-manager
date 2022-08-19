@@ -2,7 +2,9 @@
 import { useForm } from '@inertiajs/inertia-vue3';
 
 const form = useForm({
-  name: '',
+  username: '',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
   password_confirmation: '',
@@ -22,17 +24,36 @@ const submit = () => {
 
     <form @submit.prevent="submit">
       <div>
-        <Label for="name" value="Name" />
+        <Label for="username" value="Username" />
         <Input
-          id="name"
+          id="username"
           type="text"
           class="mt-1 block w-full"
-          v-model="form.name"
-          required
-          autofocus
-          autocomplete="name"
+          v-model="form.username"
         />
-        <InputError class="mt-2" :message="form.errors.name" />
+        <InputError class="mt-2" :message="form.errors.username" />
+      </div>
+
+      <div class="mt-4">
+        <Label for="first_name" value="First Name" />
+        <Input
+          id="first_name"
+          type="text"
+          class="mt-1 block w-full"
+          v-model="form.first_name"
+        />
+        <InputError class="mt-2" :message="form.errors.first_name" />
+      </div>
+
+      <div class="mt-4">
+        <Label for="last_name" value="Last Name" />
+        <Input
+          id="last_name"
+          type="text"
+          class="mt-1 block w-full"
+          v-model="form.last_name"
+        />
+        <InputError class="mt-2" :message="form.errors.last_name" />
       </div>
 
       <div class="mt-4">
@@ -42,8 +63,6 @@ const submit = () => {
           type="email"
           class="mt-1 block w-full"
           v-model="form.email"
-          required
-          autocomplete="username"
         />
         <InputError class="mt-2" :message="form.errors.email" />
       </div>
@@ -55,8 +74,6 @@ const submit = () => {
           type="password"
           class="mt-1 block w-full"
           v-model="form.password"
-          required
-          autocomplete="new-password"
         />
         <InputError class="mt-2" :message="form.errors.password" />
       </div>
@@ -68,8 +85,6 @@ const submit = () => {
           type="password"
           class="mt-1 block w-full"
           v-model="form.password_confirmation"
-          required
-          autocomplete="new-password"
         />
         <InputError class="mt-2" :message="form.errors.password_confirmation" />
       </div>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class DataSourceController extends Controller
@@ -69,8 +70,11 @@ class DataSourceController extends Controller
    */
   public function store(DataSourceRequest $request)
   {
-    $dataSource = DataSource::create($request->validated());
-    return new DataSourceResource($dataSource);
+    DataSource::create([
+      'id' => Str::uuid()->toString(),
+      ...$request->validated()
+    ]);
+    return redirect()->route('libraryList');
   }
 
   /**

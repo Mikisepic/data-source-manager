@@ -20,7 +20,7 @@ class UserFactory extends Factory
   {
     return [
       'id' => fake()->uuid(),
-      'name' => fake()->userName(),
+      'username' => fake()->userName(),
       'email' => fake()->safeEmail(),
       'email_verified_at' => now(),
       'first_name' => fake()->firstName(),
