@@ -17,12 +17,12 @@ const items = [
   {
     title: 'Groups',
     icon: 'groups',
-    pathName: 'groups'
+    pathName: 'groupsIndex'
   },
   {
     title: 'Profile',
     icon: 'account_circle',
-    pathName: 'profile'
+    pathName: 'profileShow'
   },
   {
     title: 'Settings',

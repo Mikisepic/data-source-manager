@@ -56,7 +56,11 @@ const submit = () => {
                       {{ dataSource.title }}
                     </Link>
                   </td>
-                  <td class="text-center">{{ dataSource.author }}</td>
+                  <td class="text-center">
+                    <Link :href="route('libraryShow', dataSource.id)">
+                      {{ dataSource.author }}
+                    </Link>
+                  </td>
                   <td class="text-center">
                     {{ $titlecase(dataSource.category) }}
                   </td>
@@ -162,21 +166,17 @@ const submit = () => {
                   type="text"
                   class="mt-1 block w-full"
                   v-model="form.title"
-                  required
-                  autofocus
                 />
                 <InputError class="mt-2" :message="form.errors.title" />
               </div>
 
-              <div>
+              <div class="mt-4">
                 <Label for="author" value="Author" />
                 <Input
                   id="author"
                   type="text"
                   class="mt-1 block w-full"
                   v-model="form.author"
-                  required
-                  autofocus
                 />
                 <InputError class="mt-2" :message="form.errors.author" />
               </div>
@@ -188,7 +188,6 @@ const submit = () => {
                   type="url"
                   class="mt-1 block w-full"
                   v-model="form.source"
-                  required
                 />
                 <InputError class="mt-2" :message="form.errors.source" />
               </div>
@@ -200,7 +199,6 @@ const submit = () => {
                   type="text"
                   class="mt-1 block w-full"
                   v-model="form.category"
-                  required
                 />
                 <InputError class="mt-2" :message="form.errors.category" />
               </div>
@@ -212,7 +210,6 @@ const submit = () => {
                   type="date"
                   class="mt-1 block w-full"
                   v-model="form.expires_at"
-                  required
                 />
                 <InputError class="mt-2" :message="form.errors.expires_at" />
               </div>

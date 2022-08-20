@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -43,21 +44,28 @@ class DataSourceController extends Controller
       }
     )
       ->when(
-        request('category', '') != '',
+        request('category', '') !== '',
         function ($query) {
           $query->where('category', request('category'));
         }
       )
-      ->when(request('search', '') != '', function ($query) {
+      ->when(request('search', '') !== '', function ($query) {
         $query->where(function ($q) {
           $q->where('id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('title', 'LIKE', '%' . request('search') . '%');
         });
+      })
+      ->when(Auth::user()->id !== '', function ($query) {
+        $query->where('user_id', 'LIKE', '%' . Auth::user()->id . '%');
       });
 
-    $dataSourceCollection = DataSourceResource::collection($dataSources->orderBy($sortBy, $sortDirection)->paginate(20));
+    $dataSourceCollection = DataSourceResource::collection(
+      $dataSources
+        ->orderBy($sortBy, $sortDirection)
+        ->paginate(20)
+    );
 
-    return Inertia::render('Views/Library', [
+    return Inertia::render('Views/Library/LibraryIndex', [
       'data' => $dataSourceCollection
     ]);
   }
@@ -83,11 +91,11 @@ class DataSourceController extends Controller
    * @param  \App\Models\DataSource  $dataSource
    * @return \Inertia\Response
    */
-  public function show(DataSource $dataSource)
+  public function show(String $id)
   {
-    $dataSource = new DataSourceResource($dataSource);
+    $dataSource = DataSource::findOrFail($id);
 
-    return Inertia::render('Views/Library', [
+    return Inertia::render('Views/Library/LibraryShow', [
       'data' => $dataSource
     ]);
   }

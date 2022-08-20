@@ -58,4 +58,43 @@ class RegisteredUserController extends Controller
 
     return redirect(RouteServiceProvider::HOME);
   }
+
+  /**
+   * Display information about registered user.
+   *
+   * @return \Inertia\Response
+   */
+  public function show()
+  {
+    $user = User::withCount('dataSources', 'collections', 'groups')->findOrFail(Auth::id());
+
+    return Inertia::render('Views/Profile', [
+      'data' => $user
+    ]);
+  }
+
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \App\Http\Requests\DataSourceRequest  $request
+   * @param  \App\Models\DataSource  $dataSource
+   * @return \App\Http\Resources\DataSourceResource
+   */
+  // public function update(DataSourceRequest $request, User $dataSource)
+  // {
+  //   $dataSource->update($request->validated());
+  //   return new User($dataSource);
+  // }
+
+  /**
+   * Remove the specified resource from storage.
+   *
+   * @param  \App\Models\DataSource  $dataSource
+   * @return \Illuminate\Http\Response
+   */
+  public function destroy(User $user)
+  {
+    $user->delete();
+    return response()->noContent();
+  }
 }
