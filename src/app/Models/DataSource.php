@@ -14,7 +14,15 @@ class DataSource extends Model
    *
    * @var array<int, string>
    */
-  protected $fillable = ['title', 'source'];
+  protected $fillable = [
+    'id',
+    'user_id',
+    'title',
+    'author',
+    'source',
+    'category',
+    'expires_at'
+  ];
 
   /**
    * The attributes that should be cast.
@@ -30,7 +38,7 @@ class DataSource extends Model
    */
   public function user()
   {
-    return $this->belongsTo('App\Models\User');
+    return $this->belongsTo(User::class);
   }
 
   /**
@@ -38,7 +46,7 @@ class DataSource extends Model
    */
   public function collection()
   {
-    return $this->belongsTo('App\Models\Collection');
+    return $this->belongsTo(Collection::class);
   }
 
   /**
@@ -46,6 +54,6 @@ class DataSource extends Model
    */
   public function group()
   {
-    return $this->belongsTo('App\Models\Group');
+    return $this->belongsTo(Group::class);
   }
 }

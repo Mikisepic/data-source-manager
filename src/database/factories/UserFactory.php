@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -18,18 +19,20 @@ class UserFactory extends Factory
    */
   public function definition()
   {
+    $faker = FakerFactory::create();
+
     return [
-      'id' => fake()->uuid(),
-      'username' => fake()->userName(),
-      'email' => fake()->safeEmail(),
+      'id' => $faker->uuid(),
+      'username' => $faker->userName(),
+      'email' => $faker->safeEmail(),
       'email_verified_at' => now(),
-      'first_name' => fake()->firstName(),
-      'last_name' => fake()->lastName(),
+      'first_name' => $faker->firstName(),
+      'last_name' => $faker->lastName(),
       'password' => Hash::make('password'),
-      'location' => fake()->address(),
-      'occupation' => fake()->jobTitle(),
-      'academic_status' => fake()->randomElement(['researcher', 'student', 'bachelor', 'master', 'doctoral', 'phd', 'postgraduate']),
-      'description' => fake()->text(),
+      'location' => $faker->address(),
+      'occupation' => $faker->jobTitle(),
+      'academic_status' => $faker->randomElement(['researcher', 'student', 'bachelor', 'master', 'doctoral', 'phd', 'postgraduate']),
+      'description' => $faker->text(),
       'remember_token' => Str::random(10),
     ];
   }

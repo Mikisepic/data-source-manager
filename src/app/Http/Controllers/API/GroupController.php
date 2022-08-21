@@ -6,21 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class GroupController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+   * @return \Inertia\Response
    */
   public function index()
   {
-    return GroupResource::collection(
+    $groups = GroupResource::collection(
       Group::withCount('dataSources')
+        ->when(Auth::user()->id !== '', function ($query) {
+          $query->where('user_id', 'LIKE', '%' . Auth::user()->id . '%');
+        })
         ->latest()
         ->paginate(20)
     );
+
+    return Inertia::render('Views/Groups/GroupsIndex', [
+      'data' => $groups
+    ]);
   }
 
   /**
@@ -31,7 +41,10 @@ class GroupController extends Controller
    */
   public function store(GroupRequest $request)
   {
-    $group = Group::create($request->validated());
+    $group = Group::create([
+      'id' => Str::uuid()->toString(),
+      ...$request->validated()
+    ]);
     return new GroupResource($group);
   }
 
@@ -41,9 +54,13 @@ class GroupController extends Controller
    * @param  \App\Models\Group  $group
    * @return \App\Http\Resources\GroupResource
    */
-  public function show(Group $group)
+  public function show(String $id)
   {
-    return new GroupResource($group);
+    $group = Group::withCount('dataSources')->findOrFail($id);
+
+    return Inertia::render('Views/Groups/GroupsShow', [
+      'data' => $group
+    ]);
   }
 
   /**

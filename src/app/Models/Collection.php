@@ -14,7 +14,12 @@ class Collection extends Model
    *
    * @var array<int, string>
    */
-  protected $fillable = ['title', 'description'];
+  protected $fillable = [
+    'id',
+    'user_id',
+    'title',
+    'description'
+  ];
 
   /**
    * The attributes that should be cast.
@@ -30,7 +35,7 @@ class Collection extends Model
    */
   public function user()
   {
-    return $this->belongsTo('App\Models\User');
+    return $this->belongsTo(User::class);
   }
 
   /**
@@ -38,6 +43,6 @@ class Collection extends Model
    */
   public function dataSources()
   {
-    return $this->hasMany('App\Models\DataSource');
+    return $this->hasMany(DataSource::class);
   }
 }

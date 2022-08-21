@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class DataSourceController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+   * @return \Inertia\Response
    */
   public function index()
   {
@@ -41,42 +44,65 @@ class DataSourceController extends Controller
       }
     )
       ->when(
-        request('category', '') != '',
+        request('category', '') !== '',
         function ($query) {
           $query->where('category', request('category'));
         }
       )
-      ->when(request('search', '') != '', function ($query) {
+      ->when(request('search', '') !== '', function ($query) {
         $query->where(function ($q) {
           $q->where('id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('title', 'LIKE', '%' . request('search') . '%');
         });
+      })
+      ->when(Auth::user()->id !== '', function ($query) {
+        $query->where('user_id', 'LIKE', '%' . Auth::user()->id . '%');
       });
 
-    return DataSourceResource::collection($dataSources->orderBy($sortBy, $sortDirection)->paginate(20));
+    $dataSourceCollection = DataSourceResource::collection(
+      $dataSources
+        ->orderBy($sortBy, $sortDirection)
+        ->paginate(20)
+    );
+
+    return Inertia::render('Views/Library/LibraryIndex', [
+      'data' => $dataSourceCollection
+    ]);
+  }
+
+  public function create()
+  {
+    return Inertia::render('Views/Library/LibraryCreate');
   }
 
   /**
    * Store a newly created resource in storage.
    *
    * @param  \App\Http\Requests\DataSourceRequest  $request
-   * @return \App\Http\Resources\DataSourceResource
+   * @return \Illuminate\Http\RedirectResponse
    */
   public function store(DataSourceRequest $request)
   {
-    $dataSource = DataSource::create($request->validated());
-    return new DataSourceResource($dataSource);
+    DataSource::create([
+      'id' => Str::uuid()->toString(),
+      ...$request->validated()
+    ]);
+    return redirect()->route('libraryIndex');
   }
 
   /**
    * Display the specified resource.
    *
    * @param  \App\Models\DataSource  $dataSource
-   * @return \App\Http\Resources\DataSourceResource
+   * @return \Inertia\Response
    */
-  public function show(DataSource $dataSource)
+  public function show(String $id)
   {
-    return new DataSourceResource($dataSource);
+    $dataSource = DataSource::findOrFail($id);
+
+    return Inertia::render('Views/Library/LibraryShow', [
+      'data' => $dataSource
+    ]);
   }
 
   /**

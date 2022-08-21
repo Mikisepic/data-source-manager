@@ -6,21 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Models\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class CollectionController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+   * @return \Inertia\Response
    */
   public function index()
   {
-    return CollectionResource::collection(
+    $collections = CollectionResource::collection(
       Collection::withCount('dataSources')
+        ->when(Auth::user()->id !== '', function ($query) {
+          $query->where('user_id', 'LIKE', '%' . Auth::user()->id . '%');
+        })
         ->latest()
         ->paginate(20)
     );
+
+    return Inertia::render('Views/Collections/CollectionsIndex', [
+      'data' => $collections
+    ]);
   }
 
   /**
@@ -31,7 +41,10 @@ class CollectionController extends Controller
    */
   public function store(CollectionRequest $request)
   {
-    $collection = Collection::create($request->validated());
+    $collection = Collection::create([
+      'id' => Str::uuid()->toString(),
+      ...$request->validated()
+    ]);
     return new CollectionResource($collection);
   }
 
@@ -41,9 +54,13 @@ class CollectionController extends Controller
    * @param  \App\Models\Collection  $collection
    * @return \App\Http\Resources\CollectionResource
    */
-  public function show(Collection $collection)
+  public function show(String $id)
   {
-    return new CollectionResource($collection);
+    $collection = Collection::withCount('dataSources')->findOrFail($id);
+
+    return Inertia::render('Views/Collections/CollectionsShow', [
+      'data' => $collection
+    ]);
   }
 
   /**

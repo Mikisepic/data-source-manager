@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Faker\Factory as FakerFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
@@ -17,13 +18,14 @@ class CollectionFactory extends Factory
    */
   public function definition()
   {
+    $faker = FakerFactory::create();
     $userIDs = DB::table('users')->pluck('id');
 
     return [
-      'id' => fake()->uuid(),
-      'user_id' => fake()->randomElement($userIDs),
-      'title' => fake()->text(50),
-      'description' => fake()->text(200),
+      'id' => $faker->uuid(),
+      'user_id' => $faker->randomElement($userIDs),
+      'title' => $faker->text(50),
+      'description' => $faker->text(200),
     ];
   }
 }
