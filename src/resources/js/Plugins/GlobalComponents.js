@@ -14,6 +14,11 @@ import Label from '@/Components/Label.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
+// Icons
+import ChevronDown from '@/Icons/ChevronDown.vue';
+import MenuAlt from '@/Icons/MenuAlt.vue';
+import Close from '@/Icons/Close.vue';
+
 import { Head, Link } from '@inertiajs/inertia-vue3';
 
 export const GlobalComponents = {
@@ -31,6 +36,10 @@ export const GlobalComponents = {
     app.component('Label', Label);
     app.component('NavLink', NavLink);
     app.component('ResponsiveNavLink', ResponsiveNavLink);
+
+    app.component('ChevronDown', ChevronDown);
+    app.component('MenuAlt', MenuAlt);
+    app.component('Close', Close);
 
     app.component('Link', Link);
     app.component('Head', Head);
