@@ -75,7 +75,7 @@ const submit = () => {
               </div>
 
               <div class="mt-4">
-                <Label for="occupation" value="Location" />
+                <Label for="occupation" value="Occupation" />
                 <Input
                   type="text"
                   class="mt-1 block w-full"
@@ -85,7 +85,7 @@ const submit = () => {
               </div>
 
               <div class="mt-4">
-                <Label for="academic_status" value="Location" />
+                <Label for="academic_status" value="Academic Status" />
                 <Input
                   type="text"
                   class="mt-1 block w-full"

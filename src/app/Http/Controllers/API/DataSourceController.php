@@ -70,6 +70,11 @@ class DataSourceController extends Controller
     ]);
   }
 
+  public function create()
+  {
+    return Inertia::render('Views/Library/LibraryCreate');
+  }
+
   /**
    * Store a newly created resource in storage.
    *

@@ -5,24 +5,12 @@ stages:
 build:
   stage: build
   script:
-    - cd /var/www
-    - git clone -b auth git@git.mif.vu.lt:mipu7431/data-source-manager.git
-    - mv data-source-manager/src /var/www
-    - rm -rf data-source-manager
-    - find . -depth -type d -name src -execdir mv {} data-source-manager \;
-    - cd data-source-manager
-    - npm install
-    - composer install
-    - php artisan key:generate
-    - php artisan storage:link
-    - php artisan migrate:fresh --seed
-    - npm run build
+    - echo build
 test:
   stage: test
   script:
-    - php artisan serve
-    - npm run test
+    - echo test
 deploy:
   stage: deploy
   script:
-    - php artisan serve
+    - echo deploy

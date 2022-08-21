@@ -12,17 +12,16 @@
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
           <div class="p-6 bg-white border-b border-gray-200">
-            <!-- This example requires Tailwind CSS v2.0+ -->
             <div class="py-12 bg-white">
               <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="lg:text-center">
                   <h2 class="text-lg text-indigo-600 font-semibold">
-                    Transactions
+                    Welcome to MAGicle!
                   </h2>
                   <p
                     class="mt-2 text-3xl leading-8 font-bold tracking-tight text-gray-900 sm:text-4xl sm:tracking-tight"
                   >
-                    A better way to send money
+                    All your data sources in a single place
                   </p>
                   <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
                     Lorem ipsum dolor sit amet consect adipisicing elit.

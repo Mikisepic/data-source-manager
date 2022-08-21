@@ -33,6 +33,9 @@ Route::get('/dashboard', function () {
 Route::get('/library', [DataSourceController::class, 'index'])
   ->middleware(['auth', 'verified'])
   ->name('libraryIndex');
+Route::get('/library/new', [DataSourceController::class, 'create'])
+  ->middleware(['auth', 'verified'])
+  ->name('libraryCreate');
 Route::post('/library/new', [DataSourceController::class, 'store'])
   ->middleware(['auth', 'verified'])
   ->name('libraryStore');
