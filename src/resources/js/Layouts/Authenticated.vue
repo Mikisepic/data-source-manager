@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { ChevronDownIcon } from '@heroicons/vue/24/solid';
 
 const showingNavigationDropdown = ref(false);
 
@@ -68,7 +69,7 @@ const items = [
                         {{ $page.props.auth.user.first_name }}
                         {{ $page.props.auth.user.last_name }}
 
-                        <ChevronDown class="h-5 w-5" />
+                        <ChevronDownIcon class="h-5 w-5" />
                       </button>
                     </span>
                   </template>

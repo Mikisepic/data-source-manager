@@ -1,6 +1,6 @@
 <script setup>
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
-import { computed } from '@vue/runtime-core';
+import { computed, ref } from '@vue/runtime-core';
 
 const user = computed(() => usePage().props.value.auth.user);
 
@@ -17,6 +17,27 @@ const form = useForm({
 
 const submit = () => {
   form.post(route('profileUpdate'));
+};
+
+const academicStatuses = [
+  { name: 'Researcher', value: 'researcher' },
+  { name: 'Student', value: 'student' },
+  { name: 'Bachelor', value: 'bachelor' },
+  { name: 'Master', value: 'master' },
+  { name: 'Doctor', value: 'doctor' },
+  { name: 'PHD', value: 'phd' },
+  { name: 'Post Graduate', value: 'postgraduate' }
+];
+
+const selectedAcademicStatus = ref(
+  academicStatuses.filter(
+    (status) => status.value === user.value.academic_status
+  )[0].name
+);
+
+const onSelectionChange = (param) => {
+  selectedAcademicStatus.value = param.name;
+  form.academic_status = param.value;
 };
 </script>
 <template>
@@ -86,11 +107,12 @@ const submit = () => {
 
               <div class="mt-4">
                 <Label for="academic_status" value="Academic Status" />
-                <Input
-                  type="text"
-                  class="mt-1 block w-full"
-                  v-model="form.academic_status"
-                />
+                <Select
+                  :modelValue="form.academic_status"
+                  :placeholder="selectedAcademicStatus"
+                  :options="academicStatuses"
+                  @selectionChange="(e) => onSelectionChange(e)"
+                ></Select>
                 <InputError
                   class="mt-2"
                   :message="form.errors.academic_status"
