@@ -20,7 +20,7 @@ const categories = [
 ];
 
 const isOpen = ref(false);
-const selectedCategory = ref(categories[0].name);
+const selectedCategory = ref(categories[0]);
 
 const form = useForm({
   user_id: user.value.id,
@@ -44,7 +44,7 @@ const closeModal = () => {
 const openModal = () => (isOpen.value = true);
 
 const onSelectionChange = (param) => {
-  selectedCategory.value = param.name;
+  selectedCategory.value = param;
   form.category = param.value;
 };
 </script>
@@ -144,8 +144,7 @@ const onSelectionChange = (param) => {
                           </div>
 
                           <Select
-                            :modelValue="form.category"
-                            :placeholder="selectedCategory"
+                            :selectedOption="selectedCategory"
                             :options="categories"
                             @selectionChange="(e) => onSelectionChange(e)"
                           ></Select>

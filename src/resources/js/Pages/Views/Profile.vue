@@ -32,11 +32,11 @@ const academicStatuses = [
 const selectedAcademicStatus = ref(
   academicStatuses.filter(
     (status) => status.value === user.value.academic_status
-  )[0].name
+  )[0]
 );
 
 const onSelectionChange = (param) => {
-  selectedAcademicStatus.value = param.name;
+  selectedAcademicStatus.value = param;
   form.academic_status = param.value;
 };
 </script>
@@ -108,8 +108,7 @@ const onSelectionChange = (param) => {
               <div class="mt-4">
                 <Label for="academic_status" value="Academic Status" />
                 <Select
-                  :modelValue="form.academic_status"
-                  :placeholder="selectedAcademicStatus"
+                  :selectedOption="selectedAcademicStatus"
                   :options="academicStatuses"
                   @selectionChange="(e) => onSelectionChange(e)"
                 ></Select>
