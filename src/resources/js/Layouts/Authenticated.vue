@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue';
-import { ChevronDownIcon } from '@heroicons/vue/24/solid';
+import {
+  ChevronDownIcon,
+  Bars3BottomRightIcon,
+  XMarkIcon
+} from '@heroicons/vue/24/solid';
 
 const showingNavigationDropdown = ref(false);
 
@@ -92,8 +96,11 @@ const items = [
                 @click="showingNavigationDropdown = !showingNavigationDropdown"
                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
               >
-                <MenuAlt v-if="!showingNavigationDropdown" class="h-6 w-6" />
-                <Close v-else class="h-6 w-6" />
+                <Bars3BottomRightIcon
+                  v-if="!showingNavigationDropdown"
+                  class="h-6 w-6"
+                />
+                <XMarkIcon v-else class="h-6 w-6" />
               </button>
             </div>
           </div>
@@ -143,7 +150,6 @@ const items = [
       <header class="bg-white shadow" v-if="$slots.header">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <slot name="header" />
-          <ThemeToggle />
         </div>
       </header>
 

@@ -20,32 +20,27 @@ import Select from '@/Components/Select.vue';
 import SharedDialog from '@/Components/SharedDialog.vue';
 import ThemeToggle from '@/Components/ThemeToggle.vue';
 
-import Close from '@/Icons/Close.vue';
-import MenuAlt from '@/Icons/MenuAlt.vue';
-
 export const GlobalComponents = {
   install(app) {
-    app.component('Link', Link);
-    app.component('Head', Head);
+    app.component('Link', Link).component('Head', Head);
 
-    app.component('AuthenticatedLayout', AuthenticatedLayout);
-    app.component('GuestLayout', GuestLayout);
+    app
+      .component('AuthenticatedLayout', AuthenticatedLayout)
+      .component('GuestLayout', GuestLayout);
 
-    app.component('ApplicationLogo', ApplicationLogo);
-    app.component('Button', Button);
-    app.component('Checkbox', Checkbox);
-    app.component('Dropdown', Dropdown);
-    app.component('DropdownLink', DropdownLink);
-    app.component('Input', Input);
-    app.component('InputError', InputError);
-    app.component('Label', Label);
-    app.component('NavLink', NavLink);
-    app.component('ResponsiveNavLink', ResponsiveNavLink);
-    app.component('Select', Select);
-    app.component('SharedDialog', SharedDialog);
-    app.component('ThemeToggle', ThemeToggle);
-
-    app.component('MenuAlt', MenuAlt);
-    app.component('Close', Close);
+    app
+      .component('ApplicationLogo', ApplicationLogo)
+      .component('Button', Button)
+      .component('Checkbox', Checkbox)
+      .component('Dropdown', Dropdown)
+      .component('DropdownLink', DropdownLink)
+      .component('Input', Input)
+      .component('InputError', InputError)
+      .component('Label', Label)
+      .component('NavLink', NavLink)
+      .component('ResponsiveNavLink', ResponsiveNavLink)
+      .component('Select', Select)
+      .component('SharedDialog', SharedDialog)
+      .component('ThemeToggle', ThemeToggle);
   }
 };
