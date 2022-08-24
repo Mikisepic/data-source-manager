@@ -51,9 +51,9 @@ defineProps({
                 as="h3"
                 class="text-lg font-medium leading-6 text-gray-900"
               >
-                <slot name="title"></slot>
+                <slot name="title" />
               </DialogTitle>
-              <slot></slot>
+              <slot />
             </DialogPanel>
           </TransitionChild>
         </div>
