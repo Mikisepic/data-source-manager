@@ -88,7 +88,7 @@ class DataSourceController extends Controller
   /**
    * Display the specified resource.
    *
-   * @param  \App\Models\DataSource  $dataSource
+   * @param  String  $id
    * @return \Inertia\Response
    */
   public function show(String $id)
@@ -104,23 +104,26 @@ class DataSourceController extends Controller
    * Update the specified resource in storage.
    *
    * @param  \App\Http\Requests\DataSourceRequest  $request
-   * @param  \App\Models\DataSource  $dataSource
+   * @param  String  $id
    * @return \App\Http\Resources\DataSourceResource
    */
-  public function update(DataSourceRequest $request, DataSource $dataSource)
+  public function update(DataSourceRequest $request, String $id)
   {
+    $dataSource = DataSource::findOrFail($id);
     $dataSource->update($request->validated());
+
     return new DataSourceResource($dataSource);
   }
 
   /**
    * Remove the specified resource from storage.
    *
-   * @param  \App\Models\DataSource  $dataSource
+   * @param  String  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy(DataSource $dataSource)
+  public function destroy(String $id)
   {
+    $dataSource = DataSource::findOrFail($id);
     $dataSource->delete();
     return response()->noContent();
   }

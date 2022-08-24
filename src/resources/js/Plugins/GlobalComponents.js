@@ -6,6 +6,7 @@ import GuestLayout from '@/Layouts/Guest.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Button from '@/Components/Button.vue';
 import Checkbox from '@/Components/Checkbox.vue';
+import SharedDialog from '@/Components/SharedDialog.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Input from '@/Components/Input.vue';
@@ -29,6 +30,7 @@ export const GlobalComponents = {
     app.component('ApplicationLogo', ApplicationLogo);
     app.component('Button', Button);
     app.component('Checkbox', Checkbox);
+    app.component('SharedDialog', SharedDialog);
     app.component('Dropdown', Dropdown);
     app.component('DropdownLink', DropdownLink);
     app.component('Input', Input);

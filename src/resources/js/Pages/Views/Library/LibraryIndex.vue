@@ -1,12 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle
-} from '@headlessui/vue';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import { computed } from '@vue/runtime-core';
 import { ChevronDownIcon } from '@heroicons/vue/24/solid';
@@ -36,12 +29,11 @@ const submit = () => {
   closeModal();
 };
 
+const openModal = () => (isOpen.value = true);
 const closeModal = () => {
   isOpen.value = false;
   form.reset();
 };
-
-const openModal = () => (isOpen.value = true);
 
 const onSelectionChange = (param) => {
   selectedCategory.value = param;
@@ -63,122 +55,76 @@ const onSelectionChange = (param) => {
             <div class="flex items-center justify-end mb-4">
               <Button type="button" @click="openModal">Create New</Button>
             </div>
+            <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
+              <template #title>Create new instance</template>
 
-            <TransitionRoot appear :show="isOpen" as="template">
-              <Dialog as="div" @close="closeModal" class="relative z-10">
-                <TransitionChild
-                  as="template"
-                  enter="duration-300 ease-out"
-                  enter-from="opacity-0"
-                  enter-to="opacity-100"
-                  leave="duration-200 ease-in"
-                  leave-from="opacity-100"
-                  leave-to="opacity-0"
-                >
-                  <div class="fixed inset-0 bg-black bg-opacity-25" />
-                </TransitionChild>
-
-                <div class="fixed inset-0 overflow-y-auto">
-                  <div
-                    class="flex min-h-full items-center justify-center p-4 text-center"
-                  >
-                    <TransitionChild
-                      as="template"
-                      enter="duration-300 ease-out"
-                      enter-from="opacity-0 scale-95"
-                      enter-to="opacity-100 scale-100"
-                      leave="duration-200 ease-in"
-                      leave-from="opacity-100 scale-100"
-                      leave-to="opacity-0 scale-95"
-                    >
-                      <DialogPanel
-                        class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
-                      >
-                        <DialogTitle
-                          as="h3"
-                          class="text-lg font-medium leading-6 text-gray-900"
-                        >
-                          Create new instance
-                        </DialogTitle>
-                        <form class="mt-2" @submit.prevent="submit">
-                          <div>
-                            <Label for="title" value="Title" />
-                            <Input
-                              id="title"
-                              type="text"
-                              class="mt-1 block w-full"
-                              v-model="form.title"
-                            />
-                            <InputError
-                              class="mt-2"
-                              :message="form.errors.title"
-                            />
-                          </div>
-
-                          <div class="mt-4">
-                            <Label for="author" value="Author" />
-                            <Input
-                              id="author"
-                              type="text"
-                              class="mt-1 block w-full"
-                              v-model="form.author"
-                            />
-                            <InputError
-                              class="mt-2"
-                              :message="form.errors.author"
-                            />
-                          </div>
-
-                          <div class="mt-4">
-                            <Label for="source" value="Source" />
-                            <Input
-                              id="source"
-                              type="url"
-                              class="mt-1 block w-full"
-                              v-model="form.source"
-                            />
-                            <InputError
-                              class="mt-2"
-                              :message="form.errors.source"
-                            />
-                          </div>
-
-                          <Select
-                            :selectedOption="selectedCategory"
-                            :options="categories"
-                            @selectionChange="(e) => onSelectionChange(e)"
-                          ></Select>
-
-                          <div class="mt-4">
-                            <Label for="expires_at" value="Expires At" />
-                            <Input
-                              id="expires_at"
-                              type="date"
-                              class="mt-1 block w-full"
-                              v-model="form.expires_at"
-                            />
-                            <InputError
-                              class="mt-2"
-                              :message="form.errors.expires_at"
-                            />
-                          </div>
-
-                          <div class="flex items-center justify-end mt-4">
-                            <Button
-                              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                              :class="{ 'opacity-25': form.processing }"
-                              :disabled="form.processing"
-                            >
-                              Register
-                            </Button>
-                          </div>
-                        </form>
-                      </DialogPanel>
-                    </TransitionChild>
+              <template #default>
+                <form class="mt-2" @submit.prevent="submit">
+                  <div>
+                    <Label for="title" value="Title" />
+                    <Input
+                      id="title"
+                      type="text"
+                      class="mt-1 block w-full"
+                      v-model="form.title"
+                    />
+                    <InputError class="mt-2" :message="form.errors.title" />
                   </div>
-                </div>
-              </Dialog>
-            </TransitionRoot>
+
+                  <div class="mt-4">
+                    <Label for="author" value="Author" />
+                    <Input
+                      id="author"
+                      type="text"
+                      class="mt-1 block w-full"
+                      v-model="form.author"
+                    />
+                    <InputError class="mt-2" :message="form.errors.author" />
+                  </div>
+
+                  <div class="mt-4">
+                    <Label for="source" value="Source" />
+                    <Input
+                      id="source"
+                      type="url"
+                      class="mt-1 block w-full"
+                      v-model="form.source"
+                    />
+                    <InputError class="mt-2" :message="form.errors.source" />
+                  </div>
+
+                  <Select
+                    :selectedOption="selectedCategory"
+                    :options="categories"
+                    @selectionChange="(e) => onSelectionChange(e)"
+                  ></Select>
+
+                  <div class="mt-4">
+                    <Label for="expires_at" value="Expires At" />
+                    <Input
+                      id="expires_at"
+                      type="date"
+                      class="mt-1 block w-full"
+                      v-model="form.expires_at"
+                    />
+                    <InputError
+                      class="mt-2"
+                      :message="form.errors.expires_at"
+                    />
+                  </div>
+
+                  <div class="flex items-center justify-end mt-4">
+                    <Button
+                      class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      :class="{ 'opacity-25': form.processing }"
+                      :disabled="form.processing"
+                    >
+                      Register
+                    </Button>
+                  </div>
+                </form>
+              </template>
+            </SharedDialog>
 
             <table
               class="w-full table-auto border border-separate border-spacing-2"
