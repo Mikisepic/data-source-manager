@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
-import { computed } from '@vue/runtime-core';
+import { computed, onMounted } from '@vue/runtime-core';
 import {
   ChevronDownIcon,
   ChevronDoubleDownIcon,
@@ -9,7 +9,34 @@ import {
 } from '@heroicons/vue/24/solid';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 
+import { useDataSources } from '@/Composables/DataSources';
+
+const {
+  dataSources,
+  dataSourceMeta,
+  dataSourceLinks,
+  errors,
+  getDataSources,
+  storeDataSource
+} = useDataSources();
+
+onMounted(getDataSources);
+
 const user = computed(() => usePage().props.value.auth.user);
+
+const saveDataSource = async () => {
+  await storeDataSource({ ...form });
+  getDataSources();
+
+  if (!!!errors.value) {
+    closeModal();
+  }
+};
+
+const deleteDataSource = async (id) => {
+  await destroyDataSource(id);
+  await getDataSources();
+};
 
 const categories = [
   { name: 'Article', value: 'article' },
@@ -28,11 +55,6 @@ const form = useForm({
   category: selectedCategory.value.value,
   expires_at: new Date(Date.now())
 });
-
-const submit = () => {
-  form.post(route('libraryStore'));
-  closeModal();
-};
 
 const openModal = () => (isOpen.value = true);
 const closeModal = () => {
@@ -225,32 +247,20 @@ const onSelectionChange = (param) => {
                             scope="col"
                             class="font-medium text-gray-900 px-6 py-4 border-r"
                           >
-                            <div class="flex align-center justify-between">
-                              <span>Created At</span>
-                              <ChevronDoubleDownIcon
-                                class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                                aria-hidden="true"
-                              />
-                            </div>
+                            Created At
                           </th>
                           <th
                             scope="col"
                             class="font-medium text-gray-900 px-6 py-4"
                           >
-                            <div class="flex align-center justify-between">
-                              <span>Expires At</span>
-                              <ChevronDoubleDownIcon
-                                class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                                aria-hidden="true"
-                              />
-                            </div>
+                            Expires At
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr
                           class="border-b"
-                          v-for="dataSource in $page.props.data.data"
+                          v-for="dataSource in dataSources"
                           v-bind:key="dataSource.id"
                         >
                           <td
@@ -263,9 +273,7 @@ const onSelectionChange = (param) => {
                           <td
                             class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r"
                           >
-                            <Link :href="route('libraryShow', dataSource.id)">
-                              {{ dataSource.author }}
-                            </Link>
+                            {{ dataSource.author }}
                           </td>
                           <td
                             class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r"
@@ -292,9 +300,9 @@ const onSelectionChange = (param) => {
                   <div class="mx-auto mb-3">
                     <p class="text-sm text-gray-700">
                       <span class="font-medium">
-                        Showing {{ $page.props.data.meta.from }} to
-                        {{ $page.props.data.meta.to }} of
-                        {{ $page.props.data.meta.total }}
+                        Showing {{ dataSourceMeta.from }} to
+                        {{ dataSourceMeta.to }} of
+                        {{ dataSourceMeta.total }}
                         results
                       </span>
                     </p>
@@ -306,17 +314,26 @@ const onSelectionChange = (param) => {
                       aria-label="Pagination"
                     >
                       <Link
-                        :href="$page.props.data.links.prev"
+                        :class="
+                          dataSourceMeta.current_page === dataSourceMeta.from
+                            ? 'pointer-events-none'
+                            : ''
+                        "
+                        :href="
+                          route('libraryIndex', {
+                            page: dataSourceMeta.current_page - 1
+                          })
+                        "
                         class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                       >
                         <span class="sr-only">Previous</span>
                         <ChevronDownIcon class="w-5 h-5 rotate-90" />
                       </Link>
                       <Link
-                        :href="$page.props.data.links.first"
+                        :href="route('libraryIndex', { page: 1 })"
                         aria-current="page"
                         :class="
-                          $page.props.data.meta.current_page === 1
+                          dataSourceMeta.current_page === dataSourceMeta.from
                             ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
                             : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
                         "
@@ -329,20 +346,34 @@ const onSelectionChange = (param) => {
                         ...
                       </span>
                       <Link
-                        :href="$page.props.data.links.last"
+                        :href="
+                          route('libraryIndex', {
+                            page: dataSourceMeta.last_page
+                          })
+                        "
                         aria-current="page"
                         :class="
-                          $page.props.data.meta.current_page ===
-                          $page.props.data.meta.last_page
+                          dataSourceMeta.current_page ===
+                          dataSourceMeta.last_page
                             ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
                             : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium'
                         "
                       >
-                        {{ $page.props.data.meta.last_page }}
+                        {{ dataSourceMeta.last_page }}
                       </Link>
 
                       <Link
-                        :href="$page.props.data.links.next"
+                        :class="
+                          dataSourceMeta.current_page ===
+                          dataSourceMeta.last_page
+                            ? 'pointer-events-none'
+                            : ''
+                        "
+                        :href="
+                          route('libraryIndex', {
+                            page: dataSourceMeta.current_page + 1
+                          })
+                        "
                         class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                       >
                         <span class="sr-only">Next</span>
@@ -361,7 +392,7 @@ const onSelectionChange = (param) => {
     <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
       <template #title>Create new instance</template>
 
-      <form class="mt-2" @submit.prevent="submit">
+      <form class="mt-2" @submit.prevent="saveDataSource">
         <div>
           <Label for="title" value="Title" />
           <Input
@@ -370,7 +401,7 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.title"
           />
-          <InputError class="mt-2" :message="form.errors.title" />
+          <InputError class="mt-2" :message="errors?.title" />
         </div>
 
         <div class="mt-4">
@@ -381,7 +412,7 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.author"
           />
-          <InputError class="mt-2" :message="form.errors.author" />
+          <InputError class="mt-2" :message="errors?.author" />
         </div>
 
         <div class="mt-4">
@@ -392,7 +423,7 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.source"
           />
-          <InputError class="mt-2" :message="form.errors.source" />
+          <InputError class="mt-2" :message="errors?.source" />
         </div>
 
         <Select
@@ -409,7 +440,7 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.expires_at"
           />
-          <InputError class="mt-2" :message="form.errors.expires_at" />
+          <InputError class="mt-2" :message="errors?.expires_at" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
