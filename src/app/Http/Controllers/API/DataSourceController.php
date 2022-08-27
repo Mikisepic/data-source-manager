@@ -7,14 +7,13 @@ use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class DataSourceController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Inertia\Response
+   * @return \App\Http\Resources\DataSourceResource
    */
   public function index()
   {

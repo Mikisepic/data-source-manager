@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 
 export const useDataSources = () => {
   const dataSources = ref([]);
-  const dataSource = ref([]);
+  const dataSource = ref({});
   const dataSourceMeta = ref({});
   const dataSourceLinks = ref({});
   const errors = ref('');
@@ -12,7 +12,9 @@ export const useDataSources = () => {
   const getDataSources = async () => {
     const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
-      `/api/data_sources${window.location.search}&user_id=${user.value.id}`
+      `/api/data_sources${window.location.search || '?page=1'}&user_id=${
+        user.value.id
+      }`
     );
 
     dataSources.value = response.data.data;
