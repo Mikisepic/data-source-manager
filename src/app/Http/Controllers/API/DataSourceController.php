@@ -6,16 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class DataSourceController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
-   * @return \Inertia\Response
+   * @return \App\Http\Resources\DataSourceResource
    */
   public function index()
   {
@@ -32,6 +30,7 @@ class DataSourceController extends Controller
     $filled = array_filter(request()->only([
       'id',
       'title',
+      'user_id',
       'expires_at'
     ]));
 
@@ -52,11 +51,9 @@ class DataSourceController extends Controller
       ->when(request('search', '') !== '', function ($query) {
         $query->where(function ($q) {
           $q->where('id', 'LIKE', '%' . request('search') . '%')
-            ->orWhere('title', 'LIKE', '%' . request('search') . '%');
+            ->orWhere('title', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('user_id', 'LIKE', '%' . request('search') . '%');
         });
-      })
-      ->when(Auth::user()->id !== '', function ($query) {
-        $query->where('user_id', 'LIKE', '%' . Auth::user()->id . '%');
       });
 
     $dataSourceCollection = DataSourceResource::collection(
@@ -65,14 +62,7 @@ class DataSourceController extends Controller
         ->paginate(20)
     );
 
-    return Inertia::render('Views/Library/LibraryIndex', [
-      'data' => $dataSourceCollection
-    ]);
-  }
-
-  public function create()
-  {
-    return Inertia::render('Views/Library/LibraryCreate');
+    return $dataSourceCollection;
   }
 
   /**
@@ -83,26 +73,23 @@ class DataSourceController extends Controller
    */
   public function store(DataSourceRequest $request)
   {
-    DataSource::create([
+    $dataSource = DataSource::create([
       'id' => Str::uuid()->toString(),
       ...$request->validated()
     ]);
-    return redirect()->route('libraryIndex');
+
+    return new DataSourceResource($dataSource);
   }
 
   /**
    * Display the specified resource.
    *
    * @param  \App\Models\DataSource  $dataSource
-   * @return \Inertia\Response
+   * @return \App\Http\Resources\DataSourceResource
    */
-  public function show(String $id)
+  public function show(DataSource $dataSource)
   {
-    $dataSource = DataSource::findOrFail($id);
-
-    return Inertia::render('Views/Library/LibraryShow', [
-      'data' => $dataSource
-    ]);
+    return new DataSourceResource($dataSource);
   }
 
   /**

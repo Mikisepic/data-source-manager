@@ -30,12 +30,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Library
-Route::get('/library', [DataSourceController::class, 'index'])
+Route::get('/library', function () {
+  return Inertia::render('Views/Library/LibraryIndex');
+})
   ->middleware(['auth', 'verified'])
   ->name('libraryIndex');
-Route::get('/library/new', [DataSourceController::class, 'create'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryCreate');
 Route::post('/library/new', [DataSourceController::class, 'store'])
   ->middleware(['auth', 'verified'])
   ->name('libraryStore');

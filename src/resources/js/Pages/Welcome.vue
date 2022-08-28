@@ -16,7 +16,7 @@ defineProps({
         <Link
           v-if="$page.props.auth.user"
           :href="route('dashboard')"
-          class="text-sm text-gray-700 dark:text-gray-500 underline"
+          class="text-sm text-gray-700 dark:text-white underline"
         >
           Dashboard
         </Link>
@@ -24,7 +24,7 @@ defineProps({
         <template v-else>
           <Link
             :href="route('login')"
-            class="text-sm text-gray-700 dark:text-gray-500 underline"
+            class="text-lg text-gray-700 dark:text-white underline"
           >
             Log in
           </Link>
@@ -32,43 +32,26 @@ defineProps({
           <Link
             v-if="canRegister"
             :href="route('register')"
-            class="ml-4 text-sm text-gray-700 dark:text-gray-500 underline"
+            class="ml-4 text-lg text-gray-700 dark:text-white underline"
           >
             Register
           </Link>
         </template>
       </div>
 
-      <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
-        <div class="flex justify-center pt-8 sm:justify-start sm:pt-0">
-          <img
-            class="h-20 w-auto text-gray-700 sm:h-40"
-            src="/storage/img/logo.png"
-          />
-        </div>
-
+      <div class="container">
         <div
           class="mt-8 bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"
         >
           <div class="grid grid-cols-1 md:grid-cols-2">
-            <div class="p-6">
-              <div class="ml-12"></div>
+            <div>
+              <img src="/storage/img/illustration.jpg" />
             </div>
 
             <div
-              class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l"
+              class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-t-0 md:border-l flex justify-center items-center"
             >
-              <div class="ml-12"></div>
-            </div>
-
-            <div class="p-6 border-t border-gray-200 dark:border-gray-700">
-              <div class="ml-12"></div>
-            </div>
-
-            <div
-              class="p-6 border-t border-gray-200 dark:border-gray-700 md:border-l"
-            >
-              <div class="ml-12"></div>
+              <img class="w-auto text-gray-700" src="/storage/img/logo.png" />
             </div>
           </div>
         </div>
