@@ -38,8 +38,8 @@ const items = [
 </script>
 <template>
   <div>
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-      <nav class="bg-white border-b border-gray-100">
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-800">
+      <nav class="bg-white dark:bg-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
@@ -68,7 +68,7 @@ const items = [
                     <span class="inline-flex rounded-md">
                       <button
                         type="button"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-700 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                       >
                         {{ $page.props.auth.user.first_name }}
                         {{ $page.props.auth.user.last_name }}
@@ -147,14 +147,24 @@ const items = [
         </div>
       </nav>
 
-      <header class="bg-white shadow" v-if="$slots.header">
+      <header class="bg-white shadow dark:bg-gray-800" v-if="$slots.header">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <slot name="header" />
         </div>
       </header>
 
       <main>
-        <slot />
+        <div class="py-12">
+          <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden sm:rounded-lg">
+              <div
+                class="p-6 bg-white rounded-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+              >
+                <slot />
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   </div>
