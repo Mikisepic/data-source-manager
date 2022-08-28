@@ -1,13 +1,11 @@
 <script setup>
 import { ref } from '@vue/runtime-core';
 
-const enabledDarkMode = ref(false);
+const enabledDarkMode = ref(
+  document.documentElement.classList.contains('dark')
+);
 
-const toggleDarkMode = function () {
-  enabledDarkMode.value
-    ? document.documentElement.classList.add('dark')
-    : document.documentElement.classList.remove('dark');
-};
+const toggleDarkMode = () => document.documentElement.classList.toggle('dark');
 </script>
 <template>
   <label
