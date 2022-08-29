@@ -92,7 +92,7 @@ const submit = () => {
       <div class="flex items-center justify-end mt-4">
         <Link
           :href="route('login')"
-          class="underline text-sm text-gray-600 hover:text-gray-900"
+          class="underline text-sm text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-400"
         >
           Already registered?
         </Link>

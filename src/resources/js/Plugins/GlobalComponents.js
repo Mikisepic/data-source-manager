@@ -15,6 +15,7 @@ import Input from '@/Components/Input.vue';
 import InputError from '@/Components/InputError.vue';
 import Label from '@/Components/Label.vue';
 import NavLink from '@/Components/NavLink.vue';
+import Pagination from '@/Components/Pagination.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Select from '@/Components/Select.vue';
 import SharedDialog from '@/Components/SharedDialog.vue';
@@ -38,6 +39,7 @@ export const GlobalComponents = {
       .component('InputError', InputError)
       .component('Label', Label)
       .component('NavLink', NavLink)
+      .component('Pagination', Pagination)
       .component('ResponsiveNavLink', ResponsiveNavLink)
       .component('Select', Select)
       .component('SharedDialog', SharedDialog)

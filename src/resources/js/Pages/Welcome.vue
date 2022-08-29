@@ -24,7 +24,7 @@ defineProps({
         <template v-else>
           <Link
             :href="route('login')"
-            class="text-lg text-gray-700 dark:text-white underline"
+            class="text-sm text-gray-700 dark:text-white underline"
           >
             Log in
           </Link>
@@ -32,7 +32,7 @@ defineProps({
           <Link
             v-if="canRegister"
             :href="route('register')"
-            class="ml-4 text-lg text-gray-700 dark:text-white underline"
+            class="ml-4 text-sm text-gray-700 dark:text-white underline"
           >
             Register
           </Link>
