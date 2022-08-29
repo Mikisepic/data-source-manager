@@ -5,9 +5,14 @@ import { computed, onMounted } from '@vue/runtime-core';
 import {
   ChevronDownIcon,
   ChevronDoubleDownIcon,
-  ChevronUpIcon
+  ChevronUpIcon,
+  EllipsisVerticalIcon,
+  TrashIcon,
+  PencilSquareIcon,
+  PlusIcon
 } from '@heroicons/vue/24/solid';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 
 import { useDataSources } from '@/Composables/DataSources';
 
@@ -242,6 +247,7 @@ const onSelectionChange = (param) => {
                     Created At
                   </th>
                   <th scope="col" class="font-medium px-6 py-4">Expires At</th>
+                  <th scope="col" class="font-medium px-6 py-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -256,7 +262,7 @@ const onSelectionChange = (param) => {
                   v-bind:key="dataSource.id"
                 >
                   <td
-                    class="font-medium text-gray-900 whitespace-nowrap dark:text-white border-r"
+                    class="font-medium text-left text-gray-900 px-6 py-4 text-ellipsis overflow-hidden whitespace-nowrap dark:text-white border-r"
                   >
                     <Link :href="dataSource.source">
                       {{ dataSource.title }}
@@ -280,102 +286,63 @@ const onSelectionChange = (param) => {
                   <td class="text-sm font-light px-6 py-4 whitespace-nowrap">
                     {{ new Date(dataSource.expires_at).toDateString() }}
                   </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <Dropdown align="right" width="48">
+                      <template #trigger>
+                        <span class="inline-flex rounded-md">
+                          <button
+                            type="button"
+                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-transparent dark:bg-gray-700 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
+                          >
+                            <EllipsisVerticalIcon class="h-7 w-7" />
+                          </button>
+                        </span>
+                      </template>
+
+                      <template #content>
+                        <DropdownLink
+                          :href="route('libraryShow', dataSource.id)"
+                          as="button"
+                          class="flex items-center gap-2 text-md"
+                        >
+                          <PencilSquareIcon class="h-5 w-5" />
+                          <span>Edit</span>
+                        </DropdownLink>
+                        <DropdownLink
+                          :href="route('libraryShow', dataSource.id)"
+                          as="button"
+                          class="flex items-center gap-2 text-md"
+                        >
+                          <PlusIcon class="h-5 w-5" />
+                          <span>Assign to</span>
+                        </DropdownLink>
+                        <DropdownLink
+                          :href="route('libraryShow', dataSource.id)"
+                          as="button"
+                          class="flex items-center gap-2 text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+                        >
+                          <TrashIcon class="h-5 w-5" />
+                          <span>Delete</span>
+                        </DropdownLink>
+                      </template>
+                    </Dropdown>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <div class="flex flex-col mt-5">
-          <div class="flex flex-col items-center mb-3">
-            <span class="text-md text-gray-700 dark:text-gray-400">
-              Showing
-              <span class="font-semibold text-gray-900 dark:text-white">
-                {{ dataSourceMeta.from }}
-              </span>
-              to
-              <span class="font-semibold text-gray-900 dark:text-white">
-                {{ dataSourceMeta.to }}
-              </span>
-              of
-              <span class="font-semibold text-gray-900 dark:text-white">
-                {{ dataSourceMeta.total }}
-              </span>
-              Entries
-            </span>
-          </div>
-
-          <div class="mx-auto">
-            <nav
-              class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-            >
-              <Link
-                :class="
-                  dataSourceMeta.current_page === dataSourceMeta.from
-                    ? 'pointer-events-none'
-                    : ''
-                "
-                :href="
-                  route('libraryIndex', {
-                    page: dataSourceMeta.current_page - 1
-                  })
-                "
-                class="relative inline-flex items-center px-2 py-2 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                <span class="sr-only">Previous</span>
-                <ChevronDownIcon class="w-5 h-5 rotate-90" />
-              </Link>
-              <Link
-                :href="route('libraryIndex', { page: 1 })"
-                aria-current="page"
-                :class="
-                  dataSourceMeta.current_page === dataSourceMeta.from
-                    ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                    : 'py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
-                "
-              >
-                1
-              </Link>
-              <span
-                class="relative inline-flex items-center py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                ...
-              </span>
-              <Link
-                :href="
-                  route('libraryIndex', {
-                    page: dataSourceMeta.last_page
-                  })
-                "
-                aria-current="page"
-                :class="
-                  dataSourceMeta.current_page === dataSourceMeta.last_page
-                    ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                    : 'py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
-                "
-              >
-                {{ dataSourceMeta.last_page }}
-              </Link>
-
-              <Link
-                :class="
-                  dataSourceMeta.current_page === dataSourceMeta.last_page
-                    ? 'pointer-events-none'
-                    : ''
-                "
-                :href="
-                  route('libraryIndex', {
-                    page: dataSourceMeta.current_page + 1
-                  })
-                "
-                class="relative inline-flex py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >
-                <span class="sr-only">Next</span>
-                <ChevronDownIcon class="w-5 h-5 -rotate-90" />
-              </Link>
-            </nav>
-          </div>
-        </div>
+        <Pagination
+          :meta="{
+            from: dataSourceMeta.from,
+            to: dataSourceMeta.to,
+            total: dataSourceMeta.total,
+            current_page: dataSourceMeta.current_page,
+            last_page: dataSourceMeta.last_page
+          }"
+          routeName="libraryIndex"
+        />
       </div>
     </div>
 
