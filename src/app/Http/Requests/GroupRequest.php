@@ -13,7 +13,7 @@ class GroupRequest extends FormRequest
    */
   public function authorize()
   {
-    return false;
+    return true;
   }
 
   /**
@@ -26,6 +26,7 @@ class GroupRequest extends FormRequest
     return [
       'user_id' => ['required', 'uuid'],
       'title' => ['required', 'string'],
+      'description' => ['string'],
     ];
   }
 }
