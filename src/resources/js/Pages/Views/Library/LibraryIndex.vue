@@ -27,16 +27,6 @@ const {
   destroyDataSource
 } = useDataSources();
 
-const user = computed(() => usePage().props.value.auth.user);
-
-const openPreviewDialog = computed(
-  () => usePage().props.value.openPreviewDialog
-);
-
-const closePreviewDialog = () => {
-  console.log(route());
-};
-
 const saveDataSource = async () => {
   await storeDataSource({ ...form });
   getDataSources();
@@ -49,6 +39,16 @@ const saveDataSource = async () => {
 const deleteDataSource = async (id) => {
   await destroyDataSource(id);
   await getDataSources();
+};
+
+const user = computed(() => usePage().props.value.auth.user);
+
+const openPreviewDialog = computed(
+  () => usePage().props.value.openPreviewDialog
+);
+
+const closePreviewDialog = () => {
+  console.log(route());
 };
 
 const resetFormValues = () => {

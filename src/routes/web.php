@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\CollectionController;
-use App\Http\Controllers\API\DataSourceController;
 use App\Http\Controllers\API\GroupController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
@@ -37,9 +35,7 @@ Route::get('/library', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('libraryIndex');
-Route::post('/library/new', [DataSourceController::class, 'store'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryStore');
+
 Route::get('/library/{id}', function () {
   return Inertia::render('Views/Library/LibraryIndex', [
     'openPreviewDialog' => true
@@ -47,18 +43,20 @@ Route::get('/library/{id}', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('libraryShow');
-Route::patch('/library/{id}', [DataSourceController::class, 'update'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryUpdate');
-Route::delete('/library/{id}', [DataSourceController::class, 'destroy'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryDestroy');
 
 // Collections
-Route::get('/collections', [CollectionController::class, 'index'])
+Route::get('/collections', function () {
+  return Inertia::render('Views/Collections/CollectionsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
   ->name('collections');
-Route::get('/collections/{id}', [CollectionController::class, 'show'])
+Route::get('/collections/{id}', function () {
+  return Inertia::render('Views/Collections/CollectionsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
   ->name('collectionsShow');
 
