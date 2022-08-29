@@ -1,16 +1,41 @@
 stages:
-  - build
   - test
   - deploy
-build:
-  stage: build
-  script:
-    - echo build
+
+before_script:
+  # Move to src directory where all the code is written
+  - cd src/
+  # Install app dependencies
+  - composer install
+  # Set up .env
+  - cp .env.example .env
+  # Generate an environment key
+  - php artisan key:generate
+  # Create storage link
+  - php artisan storage:link
+  # Run migrations and seed the database
+  - php artisan migrate:fresh --seed
+
 test:
   stage: test
   script:
-    - echo test
+    # Run all tests
+    - php artisan test
+
 deploy:
   stage: deploy
   script:
-    - echo deploy
+    # Add the private SSH key to the build environment
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+    # Run Envoy
+    - ~/.composer/vendor/bin/envoy run deploy
+
+  environment:
+    name: development
+    url: http://193.219.91.103:6540
+  when: manual
