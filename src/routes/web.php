@@ -50,14 +50,14 @@ Route::get('/collections', function () {
   ]);
 })
   ->middleware(['auth', 'verified'])
-  ->name('collections');
+  ->name('collectionIndex');
 Route::get('/collections/{id}', function () {
   return Inertia::render('Views/Collections/CollectionsIndex', [
     'openPreviewDialog' => false
   ]);
 })
   ->middleware(['auth', 'verified'])
-  ->name('collectionsShow');
+  ->name('collectionShow');
 
 // Groups
 Route::get('/groups', function () {
@@ -66,14 +66,14 @@ Route::get('/groups', function () {
   ]);
 })
   ->middleware(['auth', 'verified'])
-  ->name('groupsIndex');
+  ->name('groupIndex');
 Route::get('/groups/{id}', function () {
   return Inertia::render('Views/Groups/GroupsIndex', [
     'openPreviewDialog' => false
   ]);
 })
   ->middleware(['auth', 'verified'])
-  ->name('groupsShow');
+  ->name('groupShow');
 
 // Profile
 Route::get('/profile', [RegisteredUserController::class, 'show'])

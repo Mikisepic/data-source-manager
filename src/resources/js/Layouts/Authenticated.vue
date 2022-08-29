@@ -11,27 +11,22 @@ const showingNavigationDropdown = ref(false);
 const items = [
   {
     title: 'Library',
-    icon: 'folder',
     pathName: 'libraryIndex'
   },
   {
     title: 'Collections',
-    icon: 'collections_bookmark',
-    pathName: 'collections'
+    pathName: 'collectionIndex'
   },
   {
     title: 'Groups',
-    icon: 'groups',
-    pathName: 'groupsIndex'
+    pathName: 'groupIndex'
   },
   {
     title: 'Profile',
-    icon: 'account_circle',
     pathName: 'profileShow'
   },
   {
     title: 'Settings',
-    icon: 'settings',
     pathName: 'settings'
   }
 ];
