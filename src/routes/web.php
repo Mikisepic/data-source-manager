@@ -31,14 +31,20 @@ Route::get('/dashboard', function () {
 
 // Library
 Route::get('/library', function () {
-  return Inertia::render('Views/Library/LibraryIndex');
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openPreviewDialog' => false
+  ]);
 })
   ->middleware(['auth', 'verified'])
   ->name('libraryIndex');
 Route::post('/library/new', [DataSourceController::class, 'store'])
   ->middleware(['auth', 'verified'])
   ->name('libraryStore');
-Route::get('/library/{id}', [DataSourceController::class, 'show'])
+Route::get('/library/{id}', function () {
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openPreviewDialog' => true
+  ]);
+})
   ->middleware(['auth', 'verified'])
   ->name('libraryShow');
 Route::patch('/library/{id}', [DataSourceController::class, 'update'])

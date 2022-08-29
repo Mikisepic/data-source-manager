@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
-import { computed, onMounted } from '@vue/runtime-core';
+import { computed, onMounted, reactive } from '@vue/runtime-core';
 import {
   ChevronDownIcon,
   ChevronDoubleDownIcon,
@@ -12,22 +12,30 @@ import {
   PlusIcon
 } from '@heroicons/vue/24/solid';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 
 import { useDataSources } from '@/Composables/DataSources';
 
 const {
+  dataSource,
   dataSources,
   dataSourceMeta,
   dataSourceLinks,
   errors,
   getDataSources,
-  storeDataSource
+  getDataSource,
+  storeDataSource,
+  destroyDataSource
 } = useDataSources();
 
-onMounted(getDataSources);
-
 const user = computed(() => usePage().props.value.auth.user);
+
+const openPreviewDialog = computed(
+  () => usePage().props.value.openPreviewDialog
+);
+
+const closePreviewDialog = () => {
+  console.log(route());
+};
 
 const saveDataSource = async () => {
   await storeDataSource({ ...form });
@@ -43,6 +51,15 @@ const deleteDataSource = async (id) => {
   await getDataSources();
 };
 
+const resetFormValues = () => {
+  form.user_id = user.value.id;
+  form.title = '';
+  form.author = '';
+  form.source = '';
+  form.category = selectedCategory.value.value;
+  form.expires_at = new Date(Date.now());
+};
+
 const categories = [
   { name: 'Article', value: 'article' },
   { name: 'URL Link', value: 'link' },
@@ -52,7 +69,7 @@ const categories = [
 const isOpen = ref(false);
 const selectedCategory = ref(categories[0]);
 
-const form = useForm({
+const form = reactive({
   user_id: user.value.id,
   title: '',
   author: '',
@@ -64,13 +81,21 @@ const form = useForm({
 const openModal = () => (isOpen.value = true);
 const closeModal = () => {
   isOpen.value = false;
-  form.reset();
+  resetFormValues();
 };
 
 const onSelectionChange = (param) => {
   selectedCategory.value = param;
   form.category = param.value;
 };
+
+onMounted(() => {
+  getDataSources();
+  if (openPreviewDialog.value) {
+    const url = new URL(window.location);
+    getDataSource(url.pathname.split('/')[2]);
+  }
+});
 </script>
 <template>
   <AuthenticatedLayout>
@@ -99,7 +124,7 @@ const onSelectionChange = (param) => {
                 class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
               >
                 <tr>
-                  <th scope="col" class="px-6 py-4 border-r">
+                  <th scope="col" class="px-6 py-4 border-r w-15">
                     <Popover v-slot="{ open }" class="relative">
                       <PopoverButton
                         :class="open ? '' : 'text-opacity-90'"
@@ -195,7 +220,7 @@ const onSelectionChange = (param) => {
                       </transition>
                     </Popover>
                   </th>
-                  <th scope="col" class="font-medium px-6 py-4 border-r">
+                  <th scope="col" class="font-medium px-6 py-4 border-r w-10">
                     <Popover v-slot="{ open }" class="relative">
                       <PopoverButton
                         :class="open ? '' : 'text-opacity-90'"
@@ -246,8 +271,12 @@ const onSelectionChange = (param) => {
                   <th scope="col" class="font-medium px-6 py-4 border-r">
                     Created At
                   </th>
-                  <th scope="col" class="font-medium px-6 py-4">Expires At</th>
-                  <th scope="col" class="font-medium px-6 py-4">Actions</th>
+                  <th scope="col" class="font-medium px-6 py-4 border-r">
+                    Expires At
+                  </th>
+                  <th scope="col" class="font-medium px-6 py-4 w-10">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -268,9 +297,7 @@ const onSelectionChange = (param) => {
                       {{ dataSource.title }}
                     </Link>
                   </td>
-                  <td
-                    class="text-sm font-light px-6 py-4 whitespace-nowrap border-r"
-                  >
+                  <td class="text-sm font-light px-6 py-4 break-all border-r">
                     {{ dataSource.author }}
                   </td>
                   <td
@@ -283,7 +310,9 @@ const onSelectionChange = (param) => {
                   >
                     {{ new Date(dataSource.created_at).toDateString() }}
                   </td>
-                  <td class="text-sm font-light px-6 py-4 whitespace-nowrap">
+                  <td
+                    class="text-sm font-light px-6 py-4 whitespace-nowrap border-r"
+                  >
                     {{ new Date(dataSource.expires_at).toDateString() }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
@@ -317,7 +346,7 @@ const onSelectionChange = (param) => {
                           <span>Assign to</span>
                         </DropdownLink>
                         <DropdownLink
-                          :href="route('libraryShow', dataSource.id)"
+                          @click="deleteDataSource(dataSource.id)"
                           as="button"
                           class="flex items-center gap-2 text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
                         >
@@ -412,6 +441,23 @@ const onSelectionChange = (param) => {
           </Button>
         </div>
       </form>
+    </SharedDialog>
+
+    <SharedDialog :isOpen="openPreviewDialog" @closeDialog="closePreviewDialog">
+      <template #title>Preview Instance</template>
+
+      <Button
+        class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      >
+        Register
+      </Button>
+      <Link :href="route('libraryIndex')" @click="closePreviewDialog">
+        <Button
+          class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
+          Cancel
+        </Button>
+      </Link>
     </SharedDialog>
   </AuthenticatedLayout>
 </template>
