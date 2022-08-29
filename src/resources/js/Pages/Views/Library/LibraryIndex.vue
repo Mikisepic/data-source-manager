@@ -41,6 +41,14 @@ const deleteDataSource = async (id) => {
   await getDataSources();
 };
 
+onMounted(() => {
+  getDataSources();
+  if (openPreviewDialog.value) {
+    const url = new URL(window.location);
+    getDataSource(url.pathname.split('/')[2]);
+  }
+});
+
 const user = computed(() => usePage().props.value.auth.user);
 
 const openPreviewDialog = computed(
@@ -88,14 +96,6 @@ const onSelectionChange = (param) => {
   selectedCategory.value = param;
   form.category = param.value;
 };
-
-onMounted(() => {
-  getDataSources();
-  if (openPreviewDialog.value) {
-    const url = new URL(window.location);
-    getDataSource(url.pathname.split('/')[2]);
-  }
-});
 </script>
 <template>
   <AuthenticatedLayout>
@@ -110,7 +110,7 @@ onMounted(() => {
     </template>
 
     <div class="flex items-center justify-end mb-4">
-      <Button type="button" @click="openModal">Create New</Button>
+      <Button type="button" @click="openModal">Add</Button>
     </div>
 
     <div class="flex flex-col">
@@ -437,7 +437,7 @@ onMounted(() => {
             :class="{ 'opacity-25': form.processing }"
             :disabled="form.processing"
           >
-            Register
+            Create
           </Button>
         </div>
       </form>

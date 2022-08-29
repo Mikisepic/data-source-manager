@@ -44,7 +44,7 @@ onMounted(() => {
       </h2>
     </template>
 
-    <div class="flex flex-wrap w-full gap-10">
+    <div class="flex flex-wrap w-full justify-center gap-10">
       <Link
         class="block p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
         v-for="group in groups"

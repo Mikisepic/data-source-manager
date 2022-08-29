@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Models\Collection;
+use Illuminate\Support\Str;
 
 class CollectionController extends Controller
 {
@@ -55,7 +56,11 @@ class CollectionController extends Controller
    */
   public function store(CollectionRequest $request)
   {
-    $collection = Collection::create($request->validated());
+    $collection = Collection::create([
+      'id' => Str::uuid()->toString(),
+      ...$request->validated()
+    ]);
+
     return new CollectionResource($collection);
   }
 
