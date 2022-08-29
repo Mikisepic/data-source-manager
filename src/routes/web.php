@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\GroupController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -61,10 +60,18 @@ Route::get('/collections/{id}', function () {
   ->name('collectionsShow');
 
 // Groups
-Route::get('/groups', [GroupController::class, 'index'])
+Route::get('/groups', function () {
+  return Inertia::render('Views/Groups/GroupsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
   ->name('groupsIndex');
-Route::get('/groups/{id}', [GroupController::class, 'show'])
+Route::get('/groups/{id}', function () {
+  return Inertia::render('Views/Groups/GroupsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
   ->name('groupsShow');
 
