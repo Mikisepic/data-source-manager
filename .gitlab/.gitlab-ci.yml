@@ -11,6 +11,8 @@ before_script:
   - cp .env.example .env
   # Generate an environment key
   - php artisan key:generate
+  # Create storage link
+  - php artisan storage:link
   # Run migrations and seed the database
   - php artisan migrate:fresh --seed
 
