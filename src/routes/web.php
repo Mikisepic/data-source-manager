@@ -76,7 +76,9 @@ Route::get('/groups/{id}', function () {
   ->name('groupShow');
 
 // Profile
-Route::get('/profile', [RegisteredUserController::class, 'show'])
+Route::get('/profile', function () {
+  return Inertia::render('Views/Profile');
+})
   ->middleware(['auth', 'verified'])
   ->name('profileShow');
 Route::patch('/profile', [RegisteredUserController::class, 'update'])

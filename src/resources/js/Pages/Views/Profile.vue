@@ -24,7 +24,7 @@ const academicStatuses = [
   { name: 'Student', value: 'student' },
   { name: 'Bachelor', value: 'bachelor' },
   { name: 'Master', value: 'master' },
-  { name: 'Doctor', value: 'doctor' },
+  { name: 'Doctor', value: 'doctoral' },
   { name: 'PHD', value: 'phd' },
   { name: 'Post Graduate', value: 'postgraduate' }
 ];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -80,11 +81,11 @@ class RegisteredUserController extends Controller
    * @param  \App\Models\DataSource  $dataSource
    * @return \App\Http\Resources\DataSourceResource
    */
-  // public function update(DataSourceRequest $request, User $dataSource)
-  // {
-  //   $dataSource->update($request->validated());
-  //   return new User($dataSource);
-  // }
+  public function update(Request $request, User $user)
+  {
+    $user->update($request->validated());
+    return new UserResource($user);
+  }
 
   /**
    * Remove the specified resource from storage.

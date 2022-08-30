@@ -1,7 +1,9 @@
 <script setup>
-import { useGroups } from '@/Composables/Groups';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
+import { PlusIcon } from '@heroicons/vue/24/solid';
+
+import { useGroups } from '@/Composables/Groups';
 
 const {
   group,
@@ -60,7 +62,9 @@ const closeModal = () => {
     </template>
 
     <div class="flex items-center justify-end mb-4">
-      <Button type="button" @click="openModal">Add</Button>
+      <Button type="button" :rounded="true" @click="openModal">
+        <PlusIcon class="w-5 h-5" />
+      </Button>
     </div>
 
     <div class="flex flex-wrap w-full justify-center gap-10">

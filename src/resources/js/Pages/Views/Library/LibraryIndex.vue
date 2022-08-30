@@ -24,16 +24,21 @@ const {
   getDataSources,
   getDataSource,
   storeDataSource,
+  updateDataSource,
   destroyDataSource
 } = useDataSources();
 
-const saveDataSource = async () => {
+const createDataSource = async () => {
   await storeDataSource({ ...form });
   getDataSources();
 
   if (!!!errors.value) {
     closeModal();
   }
+};
+
+const saveDataSource = async () => {
+  await updateDataSource(dataSource.value.id);
 };
 
 const deleteDataSource = async (id) => {
@@ -110,7 +115,9 @@ const onSelectionChange = (param) => {
     </template>
 
     <div class="flex items-center justify-end mb-4">
-      <Button type="button" @click="openModal">Add</Button>
+      <Button type="button" :rounded="true" @click="openModal">
+        <PlusIcon class="w-5 h-5" />
+      </Button>
     </div>
 
     <div class="flex flex-col">
@@ -323,7 +330,7 @@ const onSelectionChange = (param) => {
                             type="button"
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-transparent dark:bg-gray-700 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                           >
-                            <EllipsisVerticalIcon class="h-7 w-7" />
+                            <EllipsisVerticalIcon class="h-5 w-5" />
                           </button>
                         </span>
                       </template>
@@ -378,7 +385,7 @@ const onSelectionChange = (param) => {
     <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
       <template #title>Create new instance</template>
 
-      <form class="mt-2" @submit.prevent="saveDataSource">
+      <form class="mt-2" @submit.prevent="createDataSource">
         <div>
           <Label for="title" value="Title" />
           <Input
@@ -444,20 +451,76 @@ const onSelectionChange = (param) => {
     </SharedDialog>
 
     <SharedDialog :isOpen="openPreviewDialog" @closeDialog="closePreviewDialog">
-      <template #title>Preview Instance</template>
+      <template #title>Update Instance</template>
 
-      <Button
-        class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-      >
-        Register
-      </Button>
-      <Link :href="route('libraryIndex')" @click="closePreviewDialog">
-        <Button
-          class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          Cancel
-        </Button>
-      </Link>
+      <form class="mt-2" @submit.prevent="saveDataSource">
+        <div>
+          <Label for="title" value="Title" />
+          <Input
+            id="title"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="dataSource.title"
+          />
+          <InputError class="mt-2" :message="errors?.title" />
+        </div>
+
+        <div class="mt-4">
+          <Label for="author" value="Author" />
+          <Input
+            id="author"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="dataSource.author"
+          />
+          <InputError class="mt-2" :message="errors?.author" />
+        </div>
+
+        <div class="mt-4">
+          <Label for="source" value="Source" />
+          <Input
+            id="source"
+            type="url"
+            class="mt-1 block w-full"
+            v-model="dataSource.source"
+          />
+          <InputError class="mt-2" :message="errors?.source" />
+        </div>
+
+        <div class="mt-4">
+          <Select
+            :selectedOption="selectedCategory"
+            :options="categories"
+            @selectionChange="(e) => onSelectionChange(e)"
+          ></Select>
+        </div>
+
+        <div class="mt-4">
+          <Label for="expires_at" value="Expires At" />
+          <Input
+            id="expires_at"
+            type="date"
+            class="mt-1 block w-full"
+            v-model="dataSource.expires_at"
+          />
+          <InputError class="mt-2" :message="errors?.expires_at" />
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Register
+          </Button>
+          <Link :href="route('libraryIndex')" @click="closePreviewDialog">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Cancel
+            </Button>
+          </Link>
+        </div>
+      </form>
     </SharedDialog>
   </AuthenticatedLayout>
 </template>
