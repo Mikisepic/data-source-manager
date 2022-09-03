@@ -72,65 +72,90 @@ const closeModal = () => {
       </Button>
     </div>
 
-    <div class="flex flex-wrap w-full gap-10">
-      <Link
-        class="group block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
-        v-for="group in groups"
-        v-bind:key="group.id"
-        :href="route('groupShow', group.id)"
-      >
-        <h5
-          class="mb-2 text-2xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
+    <div v-if="groupMeta.total > 0">
+      <div class="flex flex-wrap w-full gap-10">
+        <Link
+          class="group block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
+          v-for="group in groups"
+          v-bind:key="group.id"
+          :href="route('groupShow', group.id)"
         >
-          {{ group.title }}
-        </h5>
-
-        <div class="flex justify-between">
           <h5
-            class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            Last instance:
-          </h5>
-          <span
-            class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+            class="mb-2 text-2xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
           >
             {{ group.title }}
-          </span>
-        </div>
-
-        <div class="flex justify-between">
-          <h5
-            class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            Last updated:
           </h5>
-          <span
-            class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
-          >
-            {{ group.updated_at }}
-          </span>
-        </div>
 
-        <div class="text-gray-700 dark:text-white flex justify-evenly pt-3">
-          <PencilSquareIcon class="h-7 w-7" />
-          <EyeIcon class="h-7 w-7" />
-          <ArrowRightOnRectangleIcon
-            class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
-          />
-        </div>
-      </Link>
+          <div class="flex justify-between">
+            <h5
+              class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+            >
+              Last instance:
+            </h5>
+            <span
+              class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+            >
+              {{ group.title }}
+            </span>
+          </div>
+
+          <div class="flex justify-between">
+            <h5
+              class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+            >
+              Last updated:
+            </h5>
+            <span
+              class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
+            >
+              {{ group.updated_at }}
+            </span>
+          </div>
+
+          <div class="text-gray-700 dark:text-white flex justify-evenly pt-3">
+            <PencilSquareIcon class="h-7 w-7" />
+            <EyeIcon class="h-7 w-7" />
+            <ArrowRightOnRectangleIcon
+              class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+            />
+          </div>
+        </Link>
+      </div>
+
+      <Pagination
+        :meta="{
+          from: groupMeta.from,
+          to: groupMeta.to,
+          total: groupMeta.total,
+          current_page: groupMeta.current_page,
+          last_page: groupMeta.last_page
+        }"
+        routeName="groupIndex"
+      />
     </div>
 
-    <Pagination
-      :meta="{
-        from: groupMeta.from,
-        to: groupMeta.to,
-        total: groupMeta.total,
-        current_page: groupMeta.current_page,
-        last_page: groupMeta.last_page
-      }"
-      routeName="groupIndex"
-    />
+    <div v-else class="sm:px-16 xl:px-38">
+      <h1
+        class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 md:text-4xl lg:text-5xl dark:text-white"
+      >
+        Looks like there are no records here...
+      </h1>
+      <p
+        class="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
+      >
+        Here at Flowbite we focus on markets where technology, innovation, and
+        capital can unlock long-term value and drive economic growth.
+      </p>
+      <div class="w-full inline-flex justify-end items-center">
+        <Button
+          type="button"
+          class="py-3 px-5 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800"
+          @click="openModal"
+        >
+          Create an instance
+        </Button>
+      </div>
+    </div>
 
     <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
       <template #title>Create a New Instance</template>

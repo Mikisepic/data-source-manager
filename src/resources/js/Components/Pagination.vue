@@ -35,7 +35,7 @@ defineProps({
     </div>
 
     <nav
-      v-if="meta.total > 3"
+      v-if="meta.last_page > 3"
       class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
     >
       <Link
