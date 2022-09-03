@@ -155,7 +155,7 @@ const onSelectionChange = (param) => {
                     leave-to-class="translate-y-1 opacity-0"
                   >
                     <PopoverPanel
-                      class="absolute z-10 w-full max-w-sm transform px-4 sm:px-0"
+                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
                     >
                       <div
                         class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
@@ -203,7 +203,7 @@ const onSelectionChange = (param) => {
                     leave-to-class="translate-y-1 opacity-0"
                   >
                     <PopoverPanel
-                      class="absolute z-10 w-full max-w-sm transform px-4 sm:px-0"
+                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
                     >
                       <div
                         class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
@@ -251,7 +251,7 @@ const onSelectionChange = (param) => {
                     leave-to-class="translate-y-1 opacity-0"
                   >
                     <PopoverPanel
-                      class="absolute z-10 w-full max-w-sm transform px-4 sm:px-0"
+                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
                     >
                       <div
                         class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"

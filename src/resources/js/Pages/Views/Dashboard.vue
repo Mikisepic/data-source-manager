@@ -19,7 +19,7 @@ import {
       </h2>
     </template>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto pt-6 pb-4 sm:px-6 lg:px-8">
       <div class="lg:text-center">
         <h2 class="text-xl text-indigo-600 dark:text-indigo-400 font-semibold">
           Welcome to MAGicle!
@@ -30,7 +30,7 @@ import {
           All your data sources in a single place
         </p>
         <p
-          class="mt-4 max-w-2xl text-xl text-gray-700 dark:text-gray-400 lg:mx-auto"
+          class="mt-4 max-w-2xl text-xl text-gray-700 dark:text-gray-300 lg:mx-auto"
         >
           Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam
           voluptatum cupiditate veritatis in accusamus quisquam.
@@ -48,11 +48,13 @@ import {
               >
                 <ListBulletIcon class="w-7 h-7" />
               </div>
-              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">
+              <p
+                class="ml-16 text-lg leading-6 font-medium text-gray-900 dark:text-white"
+              >
                 Add Data Sources
               </p>
             </dt>
-            <dd class="mt-2 ml-16 text-base text-gray-500">
+            <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
               impedit perferendis suscipit eaque, iste dolor cupiditate
               blanditiis ratione.
@@ -66,11 +68,13 @@ import {
               >
                 <FolderOpenIcon class="w-7 h-7" />
               </div>
-              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">
+              <p
+                class="ml-16 text-lg leading-6 font-medium text-gray-900 dark:text-white"
+              >
                 Classify items in Collections
               </p>
             </dt>
-            <dd class="mt-2 ml-16 text-base text-gray-500">
+            <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
               impedit perferendis suscipit eaque, iste dolor cupiditate
               blanditiis ratione.
@@ -84,11 +88,13 @@ import {
               >
                 <UserGroupIcon class="w-7 h-7" />
               </div>
-              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">
+              <p
+                class="ml-16 text-lg leading-6 font-medium text-gray-900 dark:text-white"
+              >
                 Share Data Sources with your colleagues
               </p>
             </dt>
-            <dd class="mt-2 ml-16 text-base text-gray-500">
+            <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
               impedit perferendis suscipit eaque, iste dolor cupiditate
               blanditiis ratione.
@@ -102,11 +108,13 @@ import {
               >
                 <Cog8ToothIcon class="w-7 h-7" />
               </div>
-              <p class="ml-16 text-lg leading-6 font-medium text-gray-900">
+              <p
+                class="ml-16 text-lg leading-6 font-medium text-gray-900 dark:text-white"
+              >
                 Profile customization at its finest
               </p>
             </dt>
-            <dd class="mt-2 ml-16 text-base text-gray-500">
+            <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
               Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
               impedit perferendis suscipit eaque, iste dolor cupiditate
               blanditiis ratione.

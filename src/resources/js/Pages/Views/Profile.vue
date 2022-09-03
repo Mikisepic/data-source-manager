@@ -5,7 +5,7 @@ import { computed, ref } from '@vue/runtime-core';
 const user = computed(() => usePage().props.value.auth.user);
 
 const form = useForm({
-  user_id: user.value.id,
+  id: user.value.id,
   username: user.value.username,
   first_name: user.value.first_name,
   last_name: user.value.last_name,
@@ -16,7 +16,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.post(route('profileUpdate'));
+  form.patch(route('profileUpdate'));
 };
 
 const academicStatuses = [
@@ -52,97 +52,115 @@ const onSelectionChange = (param) => {
       </h2>
     </template>
 
-    <div class="mx-auto">
+    <div class="mx-auto mb-4">
       <div class="flex align-center justify-center gap-10">
         <h3
           class="flex flex-col text-xl text-center font-semibold text-gray-900 dark:text-white"
         >
-          <span> Data Sources </span>
           {{ user.data_sources_count }}
+          <span>Data Sources</span>
         </h3>
         <h3
           class="flex flex-col text-xl text-center font-semibold text-gray-900 dark:text-white"
         >
-          <span> Collections </span>
           {{ user.collections_count }}
+          <span>Collections</span>
         </h3>
         <h3
           class="flex flex-col text-xl text-center font-semibold text-gray-900 dark:text-white"
         >
-          <span> Groups </span>
           {{ user.groups_count }}
+          <span>Groups</span>
         </h3>
       </div>
     </div>
 
-    <form class="divide-y" @submit.prevent="submit">
-      <div>
-        <div>
-          <Label for="username" value="Username" />
-          <Input
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.username"
-          />
-          <InputError class="mt-2" :message="form.errors.username" />
+    <form @submit.prevent="submit">
+      <div class="flex flex-col gap-5">
+        <h2
+          class="mt-4 font-bold uppercase text-gray-900 text-3xl md:text-3xl dark:text-white"
+        >
+          User Information
+        </h2>
+
+        <div class="flex flex-row gap-5">
+          <div class="w-full">
+            <Label for="username" value="Username" />
+            <Input
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.username"
+            />
+            <InputError class="mt-2" :message="form.errors.username" />
+          </div>
+
+          <div class="w-full">
+            <Label for="email" value="Email" />
+            <Input type="text" class="mt-1 block w-full" v-model="form.email" />
+            <InputError class="mt-2" :message="form.errors.email" />
+          </div>
         </div>
 
-        <div>
-          <Label for="email" value="Email" />
-          <Input type="text" class="mt-1 block w-full" v-model="form.email" />
-          <InputError class="mt-2" :message="form.errors.email" />
-        </div>
+        <div class="flex flex-row gap-5">
+          <div class="w-full">
+            <Label for="first_name" value="First Name" />
+            <Input
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.first_name"
+            />
+            <InputError class="mt-2" :message="form.errors.first_name" />
+          </div>
 
-        <div class="mt-4">
-          <Label for="first_name" value="First Name" />
-          <Input
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.first_name"
-          />
-          <InputError class="mt-2" :message="form.errors.first_name" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="last_name" value="Last Name" />
-          <Input
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.last_name"
-          />
-          <InputError class="mt-2" :message="form.errors.last_name" />
+          <div class="w-full">
+            <Label for="last_name" value="Last Name" />
+            <Input
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.last_name"
+            />
+            <InputError class="mt-2" :message="form.errors.last_name" />
+          </div>
         </div>
       </div>
 
-      <div>
-        <div class="mt-4">
-          <Label for="location" value="Location" />
-          <Input
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.location"
-          />
-          <InputError class="mt-2" :message="form.errors.location" />
-        </div>
+      <div class="flex flex-col gap-5 mt-8">
+        <h2
+          class="font-bold uppercase text-gray-900 text-3xl md:text-3xl dark:text-white"
+        >
+          Residential Information
+        </h2>
 
-        <div class="mt-4">
-          <Label for="occupation" value="Occupation" />
-          <Input
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.occupation"
-          />
-          <InputError class="mt-2" :message="form.errors.occupation" />
-        </div>
+        <div class="flex gap-5">
+          <div class="w-full">
+            <Label for="location" value="Location" />
+            <Input
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.location"
+            />
+            <InputError class="mt-2" :message="form.errors.location" />
+          </div>
 
-        <div class="mt-4">
-          <Label for="academic_status" value="Academic Status" />
-          <Select
-            :selectedOption="selectedAcademicStatus"
-            :options="academicStatuses"
-            @selectionChange="(e) => onSelectionChange(e)"
-          ></Select>
-          <InputError class="mt-2" :message="form.errors.academic_status" />
+          <div class="w-full">
+            <Label for="occupation" value="Occupation" />
+            <Input
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.occupation"
+            />
+            <InputError class="mt-2" :message="form.errors.occupation" />
+          </div>
+
+          <div class="w-full">
+            <Label for="academic_status" value="Academic Status" />
+            <Select
+              :selectedOption="selectedAcademicStatus"
+              :options="academicStatuses"
+              @selectionChange="(e) => onSelectionChange(e)"
+            ></Select>
+            <InputError class="mt-2" :message="form.errors.academic_status" />
+          </div>
         </div>
       </div>
 
@@ -155,10 +173,8 @@ const onSelectionChange = (param) => {
         />
         <InputError class="mt-2" :message="form.errors.description" />
 
-        <div class="flex items-center justify-end mt-4">
-          <Button class="ml-4" :class="{ 'opacity-25': true }" :disabled="true">
-            Save Changes
-          </Button>
+        <div class="w-full inline-flex justify-end items-center">
+          <Button class="mt-4">Save Changes</Button>
         </div>
       </div>
     </form>

@@ -86,7 +86,7 @@ const closeModal = () => {
               {{ collection.title }}
             </h5>
 
-            <div class="flex justify-between">
+            <div class="flex justify-between gap-3">
               <h5
                 class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >
@@ -99,7 +99,7 @@ const closeModal = () => {
               </span>
             </div>
 
-            <div class="flex justify-between">
+            <div class="flex justify-between gap-3">
               <h5
                 class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >

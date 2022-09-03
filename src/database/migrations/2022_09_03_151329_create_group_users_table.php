@@ -17,7 +17,6 @@ return new class extends Migration
       $table->id();
       $table->uuid('user_id');
       $table->uuid('group_id');
-      $table->timestamps();
     });
   }
 
