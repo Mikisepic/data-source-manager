@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useForm, usePage } from '@inertiajs/inertia-vue3';
+import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, reactive } from '@vue/runtime-core';
 import {
   ChevronDownIcon,
@@ -388,8 +388,8 @@ const onSelectionChange = (param) => {
       <p
         class="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
       >
-        Here at Flowbite we focus on markets where technology, innovation, and
-        capital can unlock long-term value and drive economic growth.
+        You currently have no instances of this type. Feel free to create one,
+        or two...
       </p>
       <div class="w-full inline-flex justify-end items-center">
         <Button

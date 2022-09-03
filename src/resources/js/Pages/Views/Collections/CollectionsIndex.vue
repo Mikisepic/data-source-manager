@@ -74,52 +74,53 @@ const closeModal = () => {
 
     <div v-if="collectionMeta.total > 0">
       <div class="flex flex-wrap w-full gap-10">
-        <Link
-          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
+        <div
           v-for="collection in collections"
           v-bind:key="collection.id"
-          :href="route('collectionShow', collection.id)"
+          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
         >
-          <h5
-            class="mb-2 text-2xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
-          >
-            {{ collection.title }}
-          </h5>
-
-          <div class="flex justify-between">
+          <Link :href="route('collectionShow', collection.id)">
             <h5
-              class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              Last instance:
-            </h5>
-            <span
-              class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+              class="mb-2 text-xl h-10 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
             >
               {{ collection.title }}
-            </span>
-          </div>
-
-          <div class="flex justify-between">
-            <h5
-              class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
-            >
-              Last updated:
             </h5>
-            <span
-              class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
-            >
-              {{ collection.updated_at }}
-            </span>
-          </div>
 
+            <div class="flex justify-between">
+              <h5
+                class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+              >
+                Last instance:
+              </h5>
+              <span
+                class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+              >
+                {{ collection.title }}
+              </span>
+            </div>
+
+            <div class="flex justify-between">
+              <h5
+                class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+              >
+                Last updated:
+              </h5>
+              <span
+                class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
+              >
+                {{ collection.updated_at }}
+              </span>
+            </div>
+          </Link>
           <div class="text-gray-700 dark:text-white flex justify-evenly pt-3">
             <PencilSquareIcon class="h-7 w-7" />
             <EyeIcon class="h-7 w-7" />
             <TrashIcon
+              @click="deleteCollection(collection.id)"
               class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
             />
           </div>
-        </Link>
+        </div>
       </div>
 
       <Pagination
@@ -143,8 +144,8 @@ const closeModal = () => {
       <p
         class="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
       >
-        Here at Flowbite we focus on markets where technology, innovation, and
-        capital can unlock long-term value and drive economic growth.
+        You currently have no instances of this type. Feel free to create one,
+        or two...
       </p>
       <div class="w-full inline-flex justify-end items-center">
         <Button
