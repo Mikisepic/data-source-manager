@@ -80,7 +80,7 @@ const closeModal = () => {
         :href="route('collectionShow', collection.id)"
       >
         <h5
-          class="mb-2 text-2xl h-20 font-bold tracking-tight text-gray-900 dark:text-white"
+          class="mb-2 text-2xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
         >
           {{ collection.title }}
         </h5>
@@ -173,6 +173,6 @@ const closeModal = () => {
 </template>
 <style scoped>
 .collection {
-  max-width: 270px;
+  max-width: 250px;
 }
 </style>

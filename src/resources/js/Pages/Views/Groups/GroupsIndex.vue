@@ -1,7 +1,12 @@
 <script setup>
 import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
-import { PlusIcon } from '@heroicons/vue/24/solid';
+import {
+  PlusIcon,
+  PencilSquareIcon,
+  ArrowRightOnRectangleIcon,
+  EyeIcon
+} from '@heroicons/vue/24/outline';
 
 import { useGroups } from '@/Composables/Groups';
 
@@ -67,21 +72,52 @@ const closeModal = () => {
       </Button>
     </div>
 
-    <div class="flex flex-wrap w-full justify-center gap-10">
+    <div class="flex flex-wrap w-full gap-10">
       <Link
-        class="block p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+        class="group block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
         v-for="group in groups"
         v-bind:key="group.id"
         :href="route('groupShow', group.id)"
       >
         <h5
-          class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+          class="mb-2 text-2xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
         >
           {{ group.title }}
         </h5>
-        <p class="font-normal text-gray-700 dark:text-gray-400">
-          {{ group.description }}
-        </p>
+
+        <div class="flex justify-between">
+          <h5
+            class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+          >
+            Last instance:
+          </h5>
+          <span
+            class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+          >
+            {{ group.title }}
+          </span>
+        </div>
+
+        <div class="flex justify-between">
+          <h5
+            class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+          >
+            Last updated:
+          </h5>
+          <span
+            class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
+          >
+            {{ group.updated_at }}
+          </span>
+        </div>
+
+        <div class="text-gray-700 dark:text-white flex justify-evenly pt-3">
+          <PencilSquareIcon class="h-7 w-7" />
+          <EyeIcon class="h-7 w-7" />
+          <ArrowRightOnRectangleIcon
+            class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+          />
+        </div>
       </Link>
     </div>
 
@@ -135,3 +171,8 @@ const closeModal = () => {
     </SharedDialog>
   </AuthenticatedLayout>
 </template>
+<style scoped>
+.group {
+  max-width: 250px;
+}
+</style>

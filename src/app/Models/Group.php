@@ -43,8 +43,9 @@ class Group extends Model
    */
   public function members()
   {
-    return $this->hasMany(User::class);
+    return $this->belongsToMany(User::class);
   }
+
 
   /**
    * Get the Data Sources the Group has inside.

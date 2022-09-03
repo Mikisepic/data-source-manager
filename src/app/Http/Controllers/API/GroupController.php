@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Support\Str;
 
 class GroupController extends Controller
@@ -40,7 +41,7 @@ class GroupController extends Controller
       });
 
     $groupCollection = GroupResource::collection(
-      $groups->withCount('dataSources')
+      $groups->withCount('dataSources', 'members')
         ->latest('updated_at')
         ->paginate(21)
     );
@@ -60,6 +61,9 @@ class GroupController extends Controller
       'id' => Str::uuid()->toString(),
       ...$request->validated()
     ]);
+
+    $user = User::find($request->user_id);
+    $user->groupMembers()->attach($group);
 
     return new GroupResource($group);
   }

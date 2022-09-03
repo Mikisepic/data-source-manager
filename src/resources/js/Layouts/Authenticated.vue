@@ -34,7 +34,7 @@ const items = [
 <template>
   <div>
     <div class="min-h-screen bg-gray-100 dark:bg-gray-800">
-      <nav class="bg-white dark:bg-gray-800">
+      <nav class="bg-white sticky top-0 dark:bg-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between h-16">
             <div class="flex">
@@ -145,7 +145,7 @@ const items = [
       </nav>
 
       <header class="bg-white shadow dark:bg-gray-800" v-if="$slots.header">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-6 px-12 sm:px-6 lg:px-12">
           <slot name="header" />
         </div>
       </header>
@@ -153,7 +153,7 @@ const items = [
       <main>
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div class="bg-white overflow-hidden sm:rounded-lg">
-            <div class="bg-white rounded-lg dark:bg-gray-800">
+            <div class="bg-white rounded-lg py-4 px-4 dark:bg-gray-800">
               <slot />
             </div>
           </div>
