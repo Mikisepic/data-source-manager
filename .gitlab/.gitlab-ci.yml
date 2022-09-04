@@ -25,17 +25,4 @@ test:
 deploy:
   stage: deploy
   script:
-    # Add the private SSH key to the build environment
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-    - mkdir -p ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
-    # Run Envoy
-    - ~/.composer/vendor/bin/envoy run deploy
-
-  environment:
-    name: development
-    url: http://193.219.91.103:6540
-  when: manual
+    - echo deploy
