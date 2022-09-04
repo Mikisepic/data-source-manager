@@ -28,7 +28,7 @@ test:
     # Run node tests
     - npm run test
     # Generate test coverage
-    - npm run coverage
+    # - npm run coverage
 
 deploy:
   stage: deploy
