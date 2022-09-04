@@ -7,35 +7,28 @@ before_script:
   - cd src/
   # Install app dependencies
   - composer install
+  # Clear npm cache before installing dependencies
+  - npm cache clear -f
+  # Install node dependencies
+  - npm install
   # Set up .env
-  - cp .env.example .env
+  - cp /home/mipu7431/.env .env
   # Generate an environment key
   - php artisan key:generate
   # Create storage link
   - php artisan storage:link
-  # Run migrations and seed the database
-  - php artisan migrate:fresh --seed
+  # Run migrations
+  - php artisan migrate:fresh
+  # Build application for production
+  - npm run build
 
 test:
   stage: test
   script:
-    # Run all tests
+    # Run php tests
     - php artisan test
 
 deploy:
   stage: deploy
   script:
-    # Add the private SSH key to the build environment
-    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s)
-    - ssh-add <(echo "$SSH_PRIVATE_KEY")
-    - mkdir -p ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
-    # Run Envoy
-    - ~/.composer/vendor/bin/envoy run deploy
-
-  environment:
-    name: development
-    url: http://193.219.91.103:6540
-  when: manual
+    - echo deploy
