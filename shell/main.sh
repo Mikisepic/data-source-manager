@@ -3,10 +3,10 @@ CUSER=CUSER
 CPASS=CPASS
 CENDPOINT=https://grid5.mif.vu.lt/cloud3/RPC2
 
-VM_TEMPLATE_STRING=VM_TEMPLATE_STRING
-VM_NAME=VM_NAME
+VM_TEMPLATE_ID=1737 # ID for Ubuntu 20.04
+VM_NAME="MAG_VM"
 
-CVMREZ=$(onetemplate instantiate $VM_TEMPLATE_STRING --name $VM_NAME  --user $CUSER --password $CPASS --endpoint $CENDPOINT)
+CVMREZ=$(onetemplate instantiate $VM_TEMPLATE_ID --name $VM_NAME  --user $CUSER --password $CPASS --endpoint $CENDPOINT)
 CVMID=$(echo $CVMREZ |cut -d ' ' -f 3) 
 echo $CVMID
 echo "Waiting for VM to RUN 30 sec."
