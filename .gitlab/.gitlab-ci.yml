@@ -13,13 +13,13 @@ before_script:
   - php artisan key:generate
   # Create storage link
   - php artisan storage:link
-  # Run migrations and seed the database
-  - php artisan migrate:fresh --seed
+  # Run migrations
+  - php artisan migrate:fresh
 
 test:
   stage: test
   script:
-    # Run all tests
+    # Run php tests
     - php artisan test
 
 deploy:
