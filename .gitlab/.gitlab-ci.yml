@@ -7,6 +7,8 @@ before_script:
   - cd src/
   # Install app dependencies
   - composer install
+  # Clear npm cache before installing dependencies
+  - npm cache clear -f
   # Install node dependencies
   - npm install
   # Set up .env
