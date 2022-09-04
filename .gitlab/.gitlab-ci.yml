@@ -3,13 +3,12 @@ stages:
   - deploy
 
 before_script:
-  - pwd
   # Move to src directory where all the code is written
   - cd src/
   # Install app dependencies
   - composer install
   # Set up .env
-  - cp .env.example .env
+  - cp /home/mipu7431/.env .env
   # Generate an environment key
   - php artisan key:generate
   # Create storage link
