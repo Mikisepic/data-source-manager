@@ -9,6 +9,7 @@ const form = useForm({
   username: user.value.username,
   first_name: user.value.first_name,
   last_name: user.value.last_name,
+  email: user.value.email,
   location: user.value.location,
   occupation: user.value.occupation,
   academic_status: user.value.academic_status,
@@ -58,19 +59,25 @@ const onSelectionChange = (param) => {
           class="flex flex-col text-xl text-center font-semibold text-gray-900 dark:text-white"
         >
           {{ user.data_sources_count }}
-          <span>Data Sources</span>
+          <span class="text-m font-medium text-gray-500 dark:text-gray-100">
+            Data Sources
+          </span>
         </h3>
         <h3
           class="flex flex-col text-xl text-center font-semibold text-gray-900 dark:text-white"
         >
           {{ user.collections_count }}
-          <span>Collections</span>
+          <span class="text-m font-medium text-gray-500 dark:text-gray-100">
+            Collections
+          </span>
         </h3>
         <h3
           class="flex flex-col text-xl text-center font-semibold text-gray-900 dark:text-white"
         >
           {{ user.groups_count }}
-          <span>Groups</span>
+          <span class="text-m font-medium text-gray-500 dark:text-gray-100">
+            Groups
+          </span>
         </h3>
       </div>
     </div>
@@ -85,23 +92,15 @@ const onSelectionChange = (param) => {
 
         <div class="flex flex-row gap-5">
           <div class="w-full">
-            <Label for="username" value="Username" />
-            <Input
-              type="text"
-              class="mt-1 block w-full"
-              v-model="form.username"
-            />
-            <InputError class="mt-2" :message="form.errors.username" />
-          </div>
-
-          <div class="w-full">
             <Label for="email" value="Email" />
-            <Input type="text" class="mt-1 block w-full" v-model="form.email" />
+            <Input
+              type="email"
+              class="mt-1 block w-full"
+              v-model="form.email"
+            />
             <InputError class="mt-2" :message="form.errors.email" />
           </div>
-        </div>
 
-        <div class="flex flex-row gap-5">
           <div class="w-full">
             <Label for="first_name" value="First Name" />
             <Input
@@ -110,6 +109,18 @@ const onSelectionChange = (param) => {
               v-model="form.first_name"
             />
             <InputError class="mt-2" :message="form.errors.first_name" />
+          </div>
+        </div>
+
+        <div class="flex flex-row gap-5">
+          <div class="w-full">
+            <Label for="username" value="Username" />
+            <Input
+              type="text"
+              class="mt-1 block w-full"
+              v-model="form.username"
+            />
+            <InputError class="mt-2" :message="form.errors.username" />
           </div>
 
           <div class="w-full">

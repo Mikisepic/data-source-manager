@@ -143,17 +143,17 @@ const items = [
       </div>
     </nav>
 
-    <header class="bg-white dark:bg-gray-800" v-if="$slots.header">
-      <div class="max-w-7xl mx-auto pt-6 pb-2 px-12 sm:px-6 lg:px-12">
+    <header class="bg-white dark:bg-gray-800 mb-4" v-if="$slots.header">
+      <div class="max-w-7xl mx-auto py-4 px-12 sm:px-6 lg:px-12">
         <slot name="header" />
       </div>
     </header>
 
-    <main>
-      <div class="max-w-7xl min-h-[74vh] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="overflow-hidden bg-white rounded-lg px-4 dark:bg-gray-800">
-          <slot />
-        </div>
+    <main class="max-w-7xl min-h-[72vh] mb-4 mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        class="overflow-hidden bg-white dark:bg-gray-700 rounded-lg py-4 px-4 dark:bg-gray-800"
+      >
+        <slot />
       </div>
     </main>
 

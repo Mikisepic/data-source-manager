@@ -88,10 +88,10 @@ class RegisteredUserController extends Controller
 
     $validator = Validator::make($request->all(), [
       'email' => 'required|email|max:225|' . Rule::unique('users')->ignore($user->id),
-      'first_name' => 'required|max:255',
-      'last_name' => 'required|max:255',
-      'username' => 'required|max:255',
-      'location' => 'required|max:255',
+      'first_name' => 'required|string|max:255',
+      'last_name' => 'required|string|max:255',
+      'username' => 'required|string|max:255',
+      'location' => 'required|string|max:255',
     ]);
 
     if ($validator->fails()) {
