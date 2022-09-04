@@ -25,6 +25,10 @@ test:
   script:
     # Run php tests
     - php artisan test
+    # Run node tests
+    - npm run test
+    # Generate test coverage
+    - npm run coverage
 
 deploy:
   stage: deploy
