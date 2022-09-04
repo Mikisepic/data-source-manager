@@ -3,6 +3,7 @@ stages:
   - deploy
 
 before_script:
+  - pwd
   # Move to src directory where all the code is written
   - cd src/
   # Install app dependencies
