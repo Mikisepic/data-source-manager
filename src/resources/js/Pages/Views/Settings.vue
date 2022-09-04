@@ -53,7 +53,9 @@ const categories = ref([
               selected ? 'bg-white shadow shadow-indigo-400' : 'text-gray-800'
             ]"
           >
-            <h1 class="text-xl text-gray-900 dark:text-white">
+            <h1
+              class="sm:text-sm md:text-md lg:text-lg text-gray-900 dark:text-white"
+            >
               {{ category.title }}
             </h1>
           </button>
