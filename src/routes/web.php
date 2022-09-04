@@ -1,8 +1,5 @@
 <?php
 
-use App\Http\Controllers\API\CollectionController;
-use App\Http\Controllers\API\DataSourceController;
-use App\Http\Controllers\API\GroupController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,41 +28,57 @@ Route::get('/dashboard', function () {
 
 // Library
 Route::get('/library', function () {
-  return Inertia::render('Views/Library/LibraryIndex');
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openPreviewDialog' => false
+  ]);
 })
   ->middleware(['auth', 'verified'])
   ->name('libraryIndex');
-Route::post('/library/new', [DataSourceController::class, 'store'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryStore');
-Route::get('/library/{id}', [DataSourceController::class, 'show'])
+
+Route::get('/library/{id}', function () {
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openPreviewDialog' => true
+  ]);
+})
   ->middleware(['auth', 'verified'])
   ->name('libraryShow');
-Route::patch('/library/{id}', [DataSourceController::class, 'update'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryUpdate');
-Route::delete('/library/{id}', [DataSourceController::class, 'destroy'])
-  ->middleware(['auth', 'verified'])
-  ->name('libraryDestroy');
 
 // Collections
-Route::get('/collections', [CollectionController::class, 'index'])
+Route::get('/collections', function () {
+  return Inertia::render('Views/Collections/CollectionsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
-  ->name('collections');
-Route::get('/collections/{id}', [CollectionController::class, 'show'])
+  ->name('collectionIndex');
+Route::get('/collections/{id}', function () {
+  return Inertia::render('Views/Collections/CollectionsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
-  ->name('collectionsShow');
+  ->name('collectionShow');
 
 // Groups
-Route::get('/groups', [GroupController::class, 'index'])
+Route::get('/groups', function () {
+  return Inertia::render('Views/Groups/GroupsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
-  ->name('groupsIndex');
-Route::get('/groups/{id}', [GroupController::class, 'show'])
+  ->name('groupIndex');
+Route::get('/groups/{id}', function () {
+  return Inertia::render('Views/Groups/GroupsIndex', [
+    'openPreviewDialog' => false
+  ]);
+})
   ->middleware(['auth', 'verified'])
-  ->name('groupsShow');
+  ->name('groupShow');
 
 // Profile
-Route::get('/profile', [RegisteredUserController::class, 'show'])
+Route::get('/profile', function () {
+  return Inertia::render('Views/Profile');
+})
   ->middleware(['auth', 'verified'])
   ->name('profileShow');
 Route::patch('/profile', [RegisteredUserController::class, 'update'])

@@ -26,6 +26,7 @@ class CollectionRequest extends FormRequest
     return [
       'user_id' => ['required', 'uuid'],
       'title' => ['required', 'string'],
+      'description' => ['string'],
     ];
   }
 }

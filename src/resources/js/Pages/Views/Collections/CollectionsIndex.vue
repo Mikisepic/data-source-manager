@@ -1,5 +1,58 @@
 <script setup>
-import { ChevronDownIcon } from '@heroicons/vue/24/solid';
+import { usePage } from '@inertiajs/inertia-vue3';
+import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
+import {
+  PlusIcon,
+  TrashIcon,
+  PencilSquareIcon,
+  EyeIcon
+} from '@heroicons/vue/24/outline';
+
+import { useCollections } from '@/Composables/Collections';
+
+const {
+  collection,
+  collections,
+  collectionMeta,
+  collectionLinks,
+  errors,
+  getCollections,
+  getCollection,
+  storeCollection,
+  destroyCollection
+} = useCollections();
+
+const saveCollection = async () => {
+  await storeCollection({ ...form });
+  getCollections();
+
+  if (!!!errors.value) {
+    closeModal();
+  }
+};
+
+const deleteCollection = async (id) => {
+  await destroyCollection(id);
+  await getCollections();
+};
+
+onMounted(() => {
+  getCollections();
+});
+
+const user = computed(() => usePage().props.value.auth.user);
+
+const form = reactive({
+  user_id: user.value.id,
+  title: '',
+  description: ''
+});
+
+const isOpen = ref(false);
+const openModal = () => (isOpen.value = true);
+const closeModal = () => {
+  isOpen.value = false;
+};
 </script>
 <template>
   <AuthenticatedLayout>
@@ -14,141 +67,138 @@ import { ChevronDownIcon } from '@heroicons/vue/24/solid';
     </template>
 
     <div class="flex items-center justify-end mb-4">
-      <Button type="button">Create New</Button>
+      <Button type="button" :rounded="true" @click="openModal">
+        <PlusIcon class="w-5 h-5" />
+      </Button>
     </div>
 
-    <div
-      class="p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
-    >
-      <svg
-        class="mb-2 w-10 h-10 text-gray-500 dark:text-gray-400"
-        aria-hidden="true"
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z"
-          clip-rule="evenodd"
-        ></path>
-        <path
-          d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"
-        ></path>
-      </svg>
-      <a href="#">
-        <h5
-          class="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white"
-        >
-          Need a help in Claim?
-        </h5>
-      </a>
-      <p class="mb-3 font-normal text-gray-500 dark:text-gray-400">
-        Go to this step by step guideline process on how to certify for your
-        weekly benefits:
-      </p>
-      <a
-        href="#"
-        class="inline-flex items-center text-blue-600 hover:underline"
-      >
-        See our guideline
-        <svg
-          class="ml-2 w-5 h-5"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"
-          ></path>
-          <path
-            d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"
-          ></path>
-        </svg>
-      </a>
-    </div>
-
-    <table class="w-full table-auto border border-separate border-spacing-2">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Data Sources</th>
-          <th>Created At</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="collection in $page.props.data.data"
+    <div v-if="collectionMeta.total > 0">
+      <div class="flex flex-wrap w-full gap-10">
+        <div
+          v-for="collection in collections"
           v-bind:key="collection.id"
+          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
         >
-          <td class="text-center">
-            <Link :href="route('collectionsShow', collection.id)">
+          <Link :href="route('collectionShow', collection.id)">
+            <h5
+              class="mb-2 text-xl h-10 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
+            >
               {{ collection.title }}
-            </Link>
-          </td>
-          <td class="text-center">
-            {{ collection.data_sources_count }}
-          </td>
-          <td class="text-center">
-            {{ new Date(collection.created_at).toDateString() }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </h5>
 
-    <div class="flex flex-col mt-5">
-      <div class="mx-auto mb-3">
-        <p class="text-sm text-gray-700">
-          <span class="font-medium">
-            Showing {{ $page.props.data.meta.from }} to
-            {{ $page.props.data.meta.to }} of
-            {{ $page.props.data.meta.total }}
-            results
-          </span>
-        </p>
+            <div class="flex justify-between gap-3">
+              <h5
+                class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+              >
+                Last instance:
+              </h5>
+              <span
+                class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+              >
+                {{ collection.title }}
+              </span>
+            </div>
+
+            <div class="flex justify-between gap-3">
+              <h5
+                class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+              >
+                Last updated:
+              </h5>
+              <span
+                class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
+              >
+                {{ collection.updated_at }}
+              </span>
+            </div>
+          </Link>
+          <div class="text-gray-700 dark:text-white flex justify-evenly pt-3">
+            <PencilSquareIcon class="h-7 w-7" />
+            <EyeIcon class="h-7 w-7" />
+            <TrashIcon
+              @click="deleteCollection(collection.id)"
+              class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+            />
+          </div>
+        </div>
       </div>
 
-      <div class="mx-auto">
-        <nav
-          class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-          aria-label="Pagination"
-        >
-          <a
-            href="#"
-            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-          >
-            <span class="sr-only">Previous</span>
-            <ChevronDownIcon class="w-5 h-5 rotate-90" />
-          </a>
-          <a
-            href="#"
-            aria-current="page"
-            class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-          >
-            1
-          </a>
-          <span
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-          >
-            ...
-          </span>
-          <a
-            href="#"
-            aria-current="page"
-            class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-          >
-            {{ $page.props.data.meta.last_page }}
-          </a>
+      <Pagination
+        :meta="{
+          from: collectionMeta.from,
+          to: collectionMeta.to,
+          total: collectionMeta.total,
+          current_page: collectionMeta.current_page,
+          last_page: collectionMeta.last_page
+        }"
+        routeName="collectionIndex"
+      />
+    </div>
 
-          <a
-            href="#"
-            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-          >
-            <span class="sr-only">Next</span>
-            <ChevronDownIcon class="w-5 h-5 -rotate-90" />
-          </a>
-        </nav>
+    <div v-else class="sm:px-16 xl:px-38">
+      <h1
+        class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 md:text-4xl lg:text-5xl dark:text-white"
+      >
+        Looks like there are no records here...
+      </h1>
+      <p
+        class="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
+      >
+        You currently have no instances of this type. Feel free to create one,
+        or two...
+      </p>
+      <div class="w-full inline-flex justify-end items-center">
+        <Button
+          type="button"
+          class="py-3 px-5 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800"
+          @click="openModal"
+        >
+          Create an instance
+        </Button>
       </div>
     </div>
+
+    <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
+      <template #title>Create a New Instance</template>
+
+      <form class="mt-2" @submit.prevent="saveCollection">
+        <div>
+          <Label for="title" value="Title" />
+          <Input
+            id="title"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="form.title"
+          />
+          <InputError class="mt-2" :message="errors?.title" />
+        </div>
+
+        <div class="mt-4">
+          <Label for="description" value="Description" />
+          <Input
+            id="description"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="form.description"
+          />
+          <InputError class="mt-2" :message="errors?.description" />
+        </div>
+
+        <div class="flex items-center justify-end mt-4">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            :class="{ 'opacity-25': form.processing }"
+            :disabled="form.processing"
+          >
+            Create
+          </Button>
+        </div>
+      </form>
+    </SharedDialog>
   </AuthenticatedLayout>
 </template>
+<style scoped>
+.collection {
+  max-width: 250px;
+}
+</style>

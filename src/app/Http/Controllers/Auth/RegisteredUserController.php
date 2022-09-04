@@ -9,7 +9,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 
@@ -76,15 +78,43 @@ class RegisteredUserController extends Controller
   /**
    * Update the specified resource in storage.
    *
-   * @param  \App\Http\Requests\DataSourceRequest  $request
-   * @param  \App\Models\DataSource  $dataSource
-   * @return \App\Http\Resources\DataSourceResource
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \App\Models\User  $user
+   * @return \Illuminate\Http\Response
    */
-  // public function update(DataSourceRequest $request, User $dataSource)
-  // {
-  //   $dataSource->update($request->validated());
-  //   return new User($dataSource);
-  // }
+  public function update(Request $request)
+  {
+    $user = User::findOrFail($request->id);
+
+    $validator = Validator::make($request->all(), [
+      'email' => 'required|email|max:225|' . Rule::unique('users')->ignore($user->id),
+      'first_name' => 'required|string|max:255',
+      'last_name' => 'required|string|max:255',
+      'username' => 'required|string|max:255',
+      'location' => 'required|string|max:255',
+    ]);
+
+    if ($validator->fails()) {
+      return redirect()->back()
+        ->withErrors($validator)
+        ->withInput();
+    }
+
+    $user->fill([
+      'first_name' => $request->first_name,
+      'last_name' => $request->last_name,
+      'username' => $request->username,
+      'email' => $request->email,
+      'location' => $request->location,
+      'occupation' => $request->occupation,
+      'academic_status' => $request->academic_status,
+      'description' => $request->description
+    ]);
+
+    $user->save();
+
+    return redirect()->route('profileShow');
+  }
 
   /**
    * Remove the specified resource from storage.

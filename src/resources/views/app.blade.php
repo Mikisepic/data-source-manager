@@ -22,10 +22,11 @@
 
 <script>
   // On page load or when changing themes, best to add inline in `head` to avoid FOUC
-  if (localStorage.getItem('isDark') || (!('isDark' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark');
+  if ('isDark' in localStorage) {
+    console.log(localStorage.getItem('isDark'));
+    localStorage.getItem('isDark') === 'true' ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
   } else {
-    document.documentElement.classList.remove('dark')
+    localStorage.setItem('isDark', false);
   }
 </script>
 

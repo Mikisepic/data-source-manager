@@ -17,9 +17,9 @@ class DataSourceController extends Controller
    */
   public function index()
   {
-    $sortBy = request('sort_by', 'created_at');
+    $sortBy = request('sort_by', 'updated_at');
     if (!in_array($sortBy, ['id', 'title', 'expires_at'])) {
-      $sortBy = 'created_at';
+      $sortBy = 'updated_at';
     }
 
     $sortDirection = request('sort_direction', 'desc');

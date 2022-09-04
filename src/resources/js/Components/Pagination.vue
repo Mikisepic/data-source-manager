@@ -34,7 +34,10 @@ defineProps({
       </div>
     </div>
 
-    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+    <nav
+      v-if="meta.last_page > 3"
+      class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+    >
       <Link
         :class="meta.current_page === meta.from ? 'pointer-events-none' : ''"
         :href="
@@ -52,7 +55,7 @@ defineProps({
         aria-current="page"
         :class="
           meta.current_page === meta.from
-            ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+            ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-600 dark:text-white'
             : 'py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
         "
       >
@@ -72,11 +75,58 @@ defineProps({
         aria-current="page"
         :class="
           meta.current_page === meta.last_page
-            ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+            ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-600 dark:text-white'
             : 'py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
         "
       >
         {{ meta.last_page }}
+      </Link>
+
+      <Link
+        :class="
+          meta.current_page === meta.last_page ? 'pointer-events-none' : ''
+        "
+        :href="
+          route(routeName, {
+            page: meta.current_page + 1
+          })
+        "
+        class="relative inline-flex py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <span class="sr-only">Next</span>
+        <ChevronDownIcon class="w-5 h-5 -rotate-90" />
+      </Link>
+    </nav>
+
+    <nav
+      v-else
+      class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+    >
+      <Link
+        :class="meta.current_page === meta.from ? 'pointer-events-none' : ''"
+        :href="
+          route(routeName, {
+            page: meta.current_page - 1
+          })
+        "
+        class="relative inline-flex items-center px-2 py-2 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+      >
+        <span class="sr-only">Previous</span>
+        <ChevronDownIcon class="w-5 h-5 rotate-90" />
+      </Link>
+
+      <Link
+        v-for="(page, index) in meta.last_page"
+        v-bind:key="index"
+        :href="route(routeName, { page })"
+        aria-current="page"
+        :class="
+          meta.current_page === page
+            ? 'z-10 py-2 px-3 leading-tight text-blue-600 bg-blue-50 border border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-600 dark:text-white'
+            : 'py-2 px-3 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+        "
+      >
+        {{ page }}
       </Link>
 
       <Link
