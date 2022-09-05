@@ -43,7 +43,7 @@ class GroupController extends Controller
     $groupCollection = GroupResource::collection(
       $groups->withCount('dataSources', 'members')
         ->latest('updated_at')
-        ->paginate(21)
+        ->paginate(20)
     );
 
     return $groupCollection;

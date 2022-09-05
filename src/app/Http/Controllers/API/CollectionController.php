@@ -42,7 +42,7 @@ class CollectionController extends Controller
     $collectionCollection = CollectionResource::collection(
       $collections->withCount('dataSources')
         ->latest('updated_at')
-        ->paginate(21)
+        ->paginate(20)
     );
 
     return $collectionCollection;

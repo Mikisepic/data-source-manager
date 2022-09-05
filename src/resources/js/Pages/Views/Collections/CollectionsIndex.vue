@@ -58,13 +58,7 @@ const closeModal = () => {
   <AuthenticatedLayout>
     <Head title="Collections" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Collections
-      </h2>
-    </template>
+    <template #header>Collections</template>
 
     <div class="flex items-center justify-end mb-4">
       <Button type="button" :rounded="true" @click="openModal">
@@ -81,7 +75,7 @@ const closeModal = () => {
         >
           <Link :href="route('collectionShow', collection.id)">
             <h5
-              class="mb-2 text-xl h-10 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
+              class="mb-2 text-xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
             >
               {{ collection.title }}
             </h5>
@@ -108,7 +102,7 @@ const closeModal = () => {
               <span
                 class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
               >
-                {{ collection.updated_at }}
+                {{ $dateDifference(collection.updated_at) }}
               </span>
             </div>
           </Link>

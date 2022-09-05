@@ -28,7 +28,7 @@ defineProps({
       </ListboxButton>
 
       <transition
-        leave-active-class="transition duration-100 ease-in"
+        leave-active-class="z-10 transition duration-100 ease-in"
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >

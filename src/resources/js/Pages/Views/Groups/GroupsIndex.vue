@@ -5,7 +5,8 @@ import {
   PlusIcon,
   PencilSquareIcon,
   ArrowRightOnRectangleIcon,
-  EyeIcon
+  EyeIcon,
+  UserIcon
 } from '@heroicons/vue/24/outline';
 
 import { useGroups } from '@/Composables/Groups';
@@ -58,13 +59,7 @@ const closeModal = () => {
   <AuthenticatedLayout>
     <Head title="Groups" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Groups
-      </h2>
-    </template>
+    <template #header>Groups</template>
 
     <div class="flex items-center justify-end mb-4">
       <Button type="button" :rounded="true" @click="openModal">
@@ -81,22 +76,28 @@ const closeModal = () => {
         >
           <Link :href="route('groupShow', group.id)">
             <h5
-              class="mb-2 text-xl h-10 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
+              class="mb-2 text-xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
             >
               {{ group.title }}
             </h5>
 
-            <div class="flex justify-between gap-3">
-              <h5
-                class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+            <div class="flex mb-5 -space-x-4">
+              <div
+                v-for="(user, index) of group.members_count > 5
+                  ? 5
+                  : group.members_count"
+                v-bind:key="index"
+                class="flex justify-center items-center w-10 h-10 text-xs rounded-full border-2 border-white font-medium text-white transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-120 bg-gray-700 hover:bg-gray-600 dark:border-gray-800"
               >
-                Last instance:
-              </h5>
-              <span
-                class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
+                <UserIcon class="w-5 w-5" />
+              </div>
+              <a
+                class="flex justify-center items-center w-10 h-10 text-xs font-medium text-white bg-gray-700 rounded-full border-2 border-white hover:bg-gray-600 dark:border-gray-800"
+                href="#"
+                v-if="group.members_count > 5"
               >
-                {{ group.title }}
-              </span>
+                +{{ group.members_count - 5 }}
+              </a>
             </div>
 
             <div class="flex justify-between gap-3">
@@ -108,7 +109,7 @@ const closeModal = () => {
               <span
                 class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
               >
-                {{ group.updated_at }}
+                {{ $dateDifference(group.updated_at) }}
               </span>
             </div>
           </Link>

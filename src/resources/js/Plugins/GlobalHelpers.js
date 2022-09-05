@@ -6,5 +6,13 @@ export const GlobalHelpers = {
         .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
+
+    app.config.globalProperties.$dateDifference = (time) => {
+      const timeMinutesAgo = new Date(
+        new Date().getTime() - new Date(time).getTime()
+      ).getMinutes();
+
+      return `${timeMinutesAgo} Minutes Ago`;
+    };
   }
 };

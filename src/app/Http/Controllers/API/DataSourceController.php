@@ -31,6 +31,7 @@ class DataSourceController extends Controller
       'id',
       'title',
       'user_id',
+      'collection_id',
       'expires_at'
     ]));
 
@@ -52,7 +53,8 @@ class DataSourceController extends Controller
         $query->where(function ($q) {
           $q->where('id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('title', 'LIKE', '%' . request('search') . '%')
-            ->orWhere('user_id', 'LIKE', '%' . request('search') . '%');
+            ->orWhere('user_id', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('collection_id', 'LIKE', '%' . request('search') . '%');
         });
       });
 

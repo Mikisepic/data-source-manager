@@ -9,12 +9,12 @@ export const useDataSources = () => {
   const dataSourceLinks = ref({});
   const errors = ref('');
 
-  const getDataSources = async () => {
+  const getDataSources = async ({ collectionId }) => {
     const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
       `/api/data_sources${window.location.search || '?page=1'}&user_id=${
         user.value.id
-      }`
+      }&collection_id=${collectionId || ''}`
     );
 
     dataSources.value = response.data.data;

@@ -30,7 +30,7 @@ const {
 
 const createDataSource = async () => {
   await storeDataSource({ ...form });
-  getDataSources();
+  getDataSources({});
 
   if (!!!errors.value) {
     closeModal();
@@ -43,11 +43,11 @@ const saveDataSource = async () => {
 
 const deleteDataSource = async (id) => {
   await destroyDataSource(id);
-  await getDataSources();
+  await getDataSources({});
 };
 
 onMounted(() => {
-  getDataSources();
+  getDataSources({});
   if (openPreviewDialog.value) {
     const url = new URL(window.location);
     getDataSource(url.pathname.split('/')[2]);
@@ -106,13 +106,7 @@ const onSelectionChange = (param) => {
   <AuthenticatedLayout>
     <Head title="Library" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Library
-      </h2>
-    </template>
+    <template #header>Library</template>
 
     <div class="flex items-center justify-end mb-4">
       <Button type="button" :rounded="true" @click="openModal">

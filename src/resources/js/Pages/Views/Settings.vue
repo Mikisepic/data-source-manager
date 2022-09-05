@@ -5,23 +5,15 @@ import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 const categories = ref([
   {
     id: 1,
-    title: 'Account Settings'
-  },
-  {
-    id: 2,
     title: 'Login & Security'
   },
   {
-    id: 3,
+    id: 2,
     title: 'Notification Settings'
   },
   {
-    id: 4,
+    id: 3,
     title: 'Interface'
-  },
-  {
-    id: 5,
-    title: 'Other Settings'
   }
 ]);
 </script>
@@ -72,7 +64,7 @@ const categories = ref([
           ]"
         >
           <h1
-            class="mb-4 text-xl font-bold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+            class="mb-4 text-3xl font-bold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
           >
             {{ category.title }}
           </h1>

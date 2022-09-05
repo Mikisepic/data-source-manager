@@ -52,9 +52,7 @@ Route::get('/collections', function () {
   ->middleware(['auth', 'verified'])
   ->name('collectionIndex');
 Route::get('/collections/{id}', function () {
-  return Inertia::render('Views/Collections/CollectionsIndex', [
-    'openPreviewDialog' => false
-  ]);
+  return Inertia::render('Views/Collections/CollectionsShow');
 })
   ->middleware(['auth', 'verified'])
   ->name('collectionShow');

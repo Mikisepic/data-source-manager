@@ -145,7 +145,11 @@ const items = [
 
     <header class="bg-white dark:bg-gray-800 mb-4" v-if="$slots.header">
       <div class="max-w-7xl mx-auto py-4 px-12 sm:px-6 lg:px-12">
-        <slot name="header" />
+        <h2
+          class="font-semibold text-2xl md:text-3xl lg:text-4xl text-gray-800 dark:text-white leading-tight uppercase"
+        >
+          <slot name="header" />
+        </h2>
       </div>
     </header>
 
