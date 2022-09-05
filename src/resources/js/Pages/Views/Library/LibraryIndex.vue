@@ -61,7 +61,7 @@ const openPreviewDialog = computed(
 );
 
 const closePreviewDialog = () => {
-  console.log(route());
+  isOpen.value = false;
 };
 
 const resetFormValues = () => {
@@ -70,7 +70,7 @@ const resetFormValues = () => {
   form.author = '';
   form.source = '';
   form.category = selectedCategory.value.value;
-  form.expires_at = new Date(Date.now());
+  form.expires_in = 3;
 };
 
 const categories = [
@@ -88,7 +88,7 @@ const form = reactive({
   author: '',
   source: '',
   category: selectedCategory.value.value,
-  expires_at: new Date(Date.now())
+  expires_in: 3
 });
 
 const openModal = () => (isOpen.value = true);
@@ -442,14 +442,16 @@ const onSelectionChange = (param) => {
         </div>
 
         <div class="mt-4">
-          <Label for="expires_at" value="Expires At" />
+          <Label for="expires_in" value="Expires In Days" />
           <Input
-            id="expires_at"
-            type="date"
+            id="expires_in"
+            type="number"
+            min="1"
+            max="100"
             class="mt-1 block w-full"
-            v-model="form.expires_at"
+            v-model="form.expires_in"
           />
-          <InputError class="mt-2" :message="errors?.expires_at" />
+          <InputError class="mt-2" :message="errors?.expires_in" />
         </div>
 
         <div class="flex items-center justify-end mt-4">
@@ -510,14 +512,16 @@ const onSelectionChange = (param) => {
         </div>
 
         <div class="mt-4">
-          <Label for="expires_at" value="Expires At" />
+          <Label for="expires_in" value="Expires In Days" />
           <Input
-            id="expires_at"
-            type="date"
+            id="expires_in"
+            type="number"
+            min="1"
+            max="100"
             class="mt-1 block w-full"
-            v-model="dataSource.expires_at"
+            v-model="dataSource.expires_in"
           />
-          <InputError class="mt-2" :message="errors?.expires_at" />
+          <InputError class="mt-2" :message="errors?.expires_in" />
         </div>
 
         <div class="flex items-center justify-end mt-4">

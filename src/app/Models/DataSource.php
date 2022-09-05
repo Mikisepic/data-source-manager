@@ -21,6 +21,7 @@ class DataSource extends Model
     'author',
     'source',
     'category',
+    'expires_in',
     'expires_at'
   ];
 

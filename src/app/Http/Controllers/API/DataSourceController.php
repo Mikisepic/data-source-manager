@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DataSourceController extends Controller
@@ -77,6 +78,7 @@ class DataSourceController extends Controller
   {
     $dataSource = DataSource::create([
       'id' => Str::uuid()->toString(),
+      'expires_at' => now()->addDays($request->expires_in),
       ...$request->validated()
     ]);
 

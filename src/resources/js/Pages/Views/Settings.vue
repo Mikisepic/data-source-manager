@@ -2,17 +2,26 @@
 import { ref } from 'vue';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 
+const Category = Object.freeze({
+  LOGIN: 'login',
+  NOTIFICATIONS: 'notifications',
+  INTERFACE: 'interface'
+});
+
 const categories = ref([
   {
     id: 1,
+    shortName: Category.LOGIN,
     title: 'Login & Security'
   },
   {
     id: 2,
+    shortName: Category.NOTIFICATIONS,
     title: 'Notification Settings'
   },
   {
     id: 3,
+    shortName: Category.INTERFACE,
     title: 'Interface'
   }
 ]);
@@ -22,13 +31,7 @@ const categories = ref([
   <AuthenticatedLayout>
     <Head title="Settings" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Settings
-      </h2>
-    </template>
+    <template #header> Settings </template>
 
     <TabGroup>
       <TabList class="flex space-x-1 rounded-xl p-1">
@@ -42,7 +45,9 @@ const categories = ref([
             :class="[
               'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700',
               'focus:outline-none',
-              selected ? 'bg-white shadow shadow-indigo-400' : 'text-gray-800'
+              selected
+                ? 'bg-white dark:bg-gray-800 shadow shadow-indigo-400'
+                : 'text-gray-800'
             ]"
           >
             <h1
@@ -58,16 +63,17 @@ const categories = ref([
         <TabPanel
           v-for="(category, index) in categories"
           :key="index"
-          :class="[
-            'rounded-xl bg-white p-3',
-            'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-          ]"
+          class="rounded-xl bg-gray-100 dark:bg-gray-800 p-3"
         >
           <h1
-            class="mb-4 text-3xl font-bold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+            class="mb-4 text-2xl font-bold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
           >
             {{ category.title }}
           </h1>
+
+          <div v-if="category.shortName === Category.INTERFACE">
+            <ThemeToggle />
+          </div>
         </TabPanel>
       </TabPanels>
     </TabGroup>

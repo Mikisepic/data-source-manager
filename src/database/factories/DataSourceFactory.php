@@ -23,6 +23,8 @@ class DataSourceFactory extends Factory
     $collectionIDs = DB::table('collections')->pluck('id');
     $groupIDs = DB::table('groups')->pluck('id');
 
+    $randomDay = $faker->numberBetween(2, 10);
+
     return [
       'id' => $faker->uuid(),
       'user_id' => $faker->randomElement($userIDs),
@@ -32,7 +34,8 @@ class DataSourceFactory extends Factory
       'author' => $faker->name(),
       'source' => $faker->url(),
       'category' => $faker->randomElement(['link', 'article', 'book']),
-      'expires_at' => $faker->date(now()->addDays(random_int(2, 10)))
+      'expires_in' => $randomDay,
+      'expires_at' => $faker->date(now()->addDays($randomDay))
     ];
   }
 }

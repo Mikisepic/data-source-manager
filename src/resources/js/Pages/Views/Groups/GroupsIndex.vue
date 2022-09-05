@@ -104,7 +104,7 @@ const closeModal = () => {
               <h5
                 class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >
-                Last updated:
+                Last updated
               </h5>
               <span
                 class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"

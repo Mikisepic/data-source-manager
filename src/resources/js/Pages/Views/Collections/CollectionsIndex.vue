@@ -71,7 +71,7 @@ const closeModal = () => {
         <div
           v-for="collection in collections"
           v-bind:key="collection.id"
-          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
+          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 dark:divide-gray-600"
         >
           <Link :href="route('collectionShow', collection.id)">
             <h5
@@ -84,7 +84,7 @@ const closeModal = () => {
               <h5
                 class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >
-                Last instance:
+                Last instance
               </h5>
               <span
                 class="font-normal w-20 h-20 overflow-hidden break-all text-ellipsis text-gray-700 dark:text-gray-400"
@@ -97,7 +97,7 @@ const closeModal = () => {
               <h5
                 class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >
-                Last updated:
+                Last Updated
               </h5>
               <span
                 class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"

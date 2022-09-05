@@ -30,7 +30,8 @@ class DataSourceRequest extends FormRequest
       'author' => ['string'],
       'source' => ['url'],
       'category' => ['required', Rule::in(['link', 'article', 'book'])],
-      'expires_at' => ['required', 'date'],
+      'expires_at' => ['date'],
+      'expires_in' => ['required', 'integer'],
     ];
   }
 }

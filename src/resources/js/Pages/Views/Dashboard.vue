@@ -11,13 +11,7 @@ import {
   <AuthenticatedLayout>
     <Head title="Dashboard" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Dashboard
-      </h2>
-    </template>
+    <template #header> Dashboard </template>
 
     <div class="max-w-7xl mx-auto pt-6 pb-4 sm:px-6 lg:px-8">
       <div class="lg:text-center">
