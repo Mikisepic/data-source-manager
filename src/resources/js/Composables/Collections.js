@@ -49,6 +49,24 @@ export const useCollections = () => {
     }
   };
 
+  const addDataSourceToCollection = async (
+    selectedCollection,
+    dataSourceId
+  ) => {
+    errors.value = '';
+    try {
+      console.log(selectedCollection.value, { dataSourceId });
+      await axios.put(`/api/collections/${selectedCollection.value.id}`, {
+        ...selectedCollection.value,
+        dataSourceId
+      });
+    } catch (e) {
+      if (e.response.status === 422) {
+        errors.value = e.response.data.errors;
+      }
+    }
+  };
+
   const destroyCollection = async (id) => {
     await axios.delete(`/api/collections/${id}`);
   };
@@ -63,6 +81,7 @@ export const useCollections = () => {
     getCollection,
     storeCollection,
     updateCollection,
+    addDataSourceToCollection,
     destroyCollection
   };
 };

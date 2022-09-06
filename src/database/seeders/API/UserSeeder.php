@@ -21,19 +21,15 @@ class UserSeeder extends Seeder
       $collections = Collection::factory(50)->create();
       $user->collections()->saveMany($collections);
 
-      $groups = Group::factory(30)->create();
+      $groups = Group::factory(30)->create()->each(function ($group) use ($user) {
+        $group->members()->attach(
+          $user->pluck('id')->toArray()
+        );
+      });
       $user->groups()->saveMany($groups);
 
       $dataSources = DataSource::factory(70)->create();
       $user->dataSources()->saveMany($dataSources);
-
-      $users = User::all();
-
-      Group::all()->each(function ($group) use ($users) {
-        $group->members()->attach(
-          $users->random(rand(1, 5))->pluck('id')->toArray()
-        );
-      });
     });
   }
 }

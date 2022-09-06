@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Models\Collection;
+use App\Models\DataSource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CollectionController extends Controller
@@ -85,6 +87,11 @@ class CollectionController extends Controller
   public function update(CollectionRequest $request, Collection $collection)
   {
     $collection->update($request->validated());
+
+    if ($request->dataSourceId) {
+      $collection->dataSources()->save(DataSource::findOrFail($request->dataSourceId));
+    }
+
     return new CollectionResource($collection);
   }
 

@@ -15,6 +15,17 @@ import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 
 import { useDataSources } from '@/Composables/DataSources';
 
+import { useCollections } from '@/Composables/Collections';
+
+const { collections, getCollections, addDataSourceToCollection } =
+  useCollections();
+
+const saveCollection = async (collectionInfo, dataSourceId) => {
+  await addDataSourceToCollection(collectionInfo, dataSourceId);
+};
+
+const selectedCollection = ref({});
+
 const {
   dataSource,
   dataSources,
@@ -46,11 +57,16 @@ const deleteDataSource = async (id) => {
   await getDataSources({});
 };
 
+const url = new URL(window.location);
+
 onMounted(() => {
   getDataSources({});
+
   if (openPreviewDialog.value) {
-    const url = new URL(window.location);
     getDataSource(url.pathname.split('/')[2]);
+  } else if (openAddToCollectionDialog.value) {
+    getCollections();
+    selectedCollection.value = collections[0];
   }
 });
 
@@ -60,9 +76,9 @@ const openPreviewDialog = computed(
   () => usePage().props.value.openPreviewDialog
 );
 
-const closePreviewDialog = () => {
-  isOpen.value = false;
-};
+const openAddToCollectionDialog = computed(
+  () => usePage().props.value.openAddToCollectionDialog
+);
 
 const resetFormValues = () => {
   form.user_id = user.value.id;
@@ -74,9 +90,9 @@ const resetFormValues = () => {
 };
 
 const categories = [
-  { name: 'Article', value: 'article' },
-  { name: 'URL Link', value: 'link' },
-  { name: 'Book', value: 'book' }
+  { title: 'Article', value: 'article' },
+  { title: 'URL Link', value: 'link' },
+  { title: 'Book', value: 'book' }
 ];
 
 const isOpen = ref(false);
@@ -100,6 +116,11 @@ const closeModal = () => {
 const onSelectionChange = (param) => {
   selectedCategory.value = param;
   form.category = param.value;
+};
+
+const onCollectionSelectionChange = (param) => {
+  selectedCollection.value = param;
+  saveCollection(selectedCollection, url.pathname.split('/')[2]);
 };
 </script>
 <template>
@@ -330,7 +351,7 @@ const onSelectionChange = (param) => {
 
                   <template #content>
                     <DropdownLink
-                      :href="route('libraryShow', dataSource.id)"
+                      :href="route('libraryPreview', dataSource.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -338,7 +359,7 @@ const onSelectionChange = (param) => {
                       <span>Edit</span>
                     </DropdownLink>
                     <DropdownLink
-                      href="#"
+                      :href="route('libraryAddToCollection', dataSource.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -397,16 +418,16 @@ const onSelectionChange = (param) => {
     </div>
 
     <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
-      <template #title>Create new instance</template>
+      <template #title>Create Instance</template>
 
-      <form class="mt-2" @submit.prevent="createDataSource">
+      <form class="mt-2" @submit.prevent="saveDataSource">
         <div>
           <Label for="title" value="Title" />
           <Input
             id="title"
             type="text"
             class="mt-1 block w-full"
-            v-model="form.title"
+            v-model="dataSource.title"
           />
           <InputError class="mt-2" :message="errors?.title" />
         </div>
@@ -417,7 +438,7 @@ const onSelectionChange = (param) => {
             id="author"
             type="text"
             class="mt-1 block w-full"
-            v-model="form.author"
+            v-model="dataSource.author"
           />
           <InputError class="mt-2" :message="errors?.author" />
         </div>
@@ -428,12 +449,13 @@ const onSelectionChange = (param) => {
             id="source"
             type="url"
             class="mt-1 block w-full"
-            v-model="form.source"
+            v-model="dataSource.source"
           />
           <InputError class="mt-2" :message="errors?.source" />
         </div>
 
         <div class="mt-4">
+          <Label for="category" value="Category" />
           <Select
             :selectedOption="selectedCategory"
             :options="categories"
@@ -449,24 +471,29 @@ const onSelectionChange = (param) => {
             min="1"
             max="100"
             class="mt-1 block w-full"
-            v-model="form.expires_in"
+            v-model="dataSource.expires_in"
           />
           <InputError class="mt-2" :message="errors?.expires_in" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('libraryIndex')" @click="closeModal">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Cancel
+            </Button>
+          </Link>
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
           >
-            Create
+            Save
           </Button>
         </div>
       </form>
     </SharedDialog>
 
-    <SharedDialog :isOpen="openPreviewDialog" @closeDialog="closePreviewDialog">
+    <SharedDialog :isOpen="openPreviewDialog" @closeDialog="closeModal">
       <template #title>Update Instance</template>
 
       <form class="mt-2" @submit.prevent="saveDataSource">
@@ -504,6 +531,7 @@ const onSelectionChange = (param) => {
         </div>
 
         <div class="mt-4">
+          <Label for="category" value="Category" />
           <Select
             :selectedOption="selectedCategory"
             :options="categories"
@@ -524,8 +552,8 @@ const onSelectionChange = (param) => {
           <InputError class="mt-2" :message="errors?.expires_in" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-          <Link :href="route('libraryIndex')" @click="closePreviewDialog">
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('libraryIndex')" @click="closeModal">
             <Button
               class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
@@ -536,6 +564,35 @@ const onSelectionChange = (param) => {
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Save
+          </Button>
+        </div>
+      </form>
+    </SharedDialog>
+
+    <SharedDialog :isOpen="openAddToCollectionDialog" @closeDialog="closeModal">
+      <template #title>Add Instance to Collection</template>
+
+      <form class="mt-2" @submit.prevent="saveDataSource">
+        <div class="mt-4">
+          <Select
+            :selectedOption="collections[0]"
+            :options="collections"
+            @selectionChange="(e) => onCollectionSelectionChange(e)"
+          ></Select>
+        </div>
+
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('libraryIndex')" @click="closeModal">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Cancel
+            </Button>
+          </Link>
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Assign
           </Button>
         </div>
       </form>

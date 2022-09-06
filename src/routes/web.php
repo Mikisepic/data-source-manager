@@ -35,13 +35,21 @@ Route::get('/library', function () {
   ->middleware(['auth', 'verified'])
   ->name('libraryIndex');
 
-Route::get('/library/{id}', function () {
+Route::get('/library/{id}/preview', function () {
   return Inertia::render('Views/Library/LibraryIndex', [
     'openPreviewDialog' => true
   ]);
 })
   ->middleware(['auth', 'verified'])
-  ->name('libraryShow');
+  ->name('libraryPreview');
+
+Route::get('/library/{id}/add_to_collection', function () {
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openAddToCollectionDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('libraryAddToCollection');
 
 // Collections
 Route::get('/collections', function () {

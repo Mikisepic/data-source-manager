@@ -60,7 +60,7 @@ const open = ref(false);
     >
       <div
         v-show="open"
-        class="absolute z-2 mt-2 rounded-md shadow-lg bg-white dark:bg-gray-700"
+        class="absolute z-10 mt-2 rounded-md shadow-lg bg-white dark:bg-gray-700"
         :class="[widthClass, alignmentClasses]"
         style="display: none"
         @click="open = false"
