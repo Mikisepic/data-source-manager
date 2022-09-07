@@ -55,7 +55,6 @@ export const useCollections = () => {
   ) => {
     errors.value = '';
     try {
-      console.log(selectedCollection.value, { dataSourceId });
       await axios.put(`/api/collections/${selectedCollection.value.id}`, {
         ...selectedCollection.value,
         dataSourceId

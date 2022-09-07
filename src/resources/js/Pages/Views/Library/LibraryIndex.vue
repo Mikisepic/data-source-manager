@@ -14,23 +14,29 @@ import {
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 
 import { useDataSources } from '@/Composables/DataSources';
-
 import { useCollections } from '@/Composables/Collections';
+
+const url = new URL(window.location);
+
+const user = computed(() => usePage().props.value.auth.user);
+const selectedCollection = ref({});
 
 const { collections, getCollections, addDataSourceToCollection } =
   useCollections();
 
-const saveCollection = async (collectionInfo, dataSourceId) => {
-  await addDataSourceToCollection(collectionInfo, dataSourceId);
-};
+const saveCollection = async () => {
+  await addDataSourceToCollection(
+    selectedCollection,
+    url.pathname.split('/')[2]
+  );
 
-const selectedCollection = ref({});
+  closeModal();
+};
 
 const {
   dataSource,
   dataSources,
   dataSourceMeta,
-  dataSourceLinks,
   errors,
   getDataSources,
   getDataSource,
@@ -41,7 +47,6 @@ const {
 
 const createDataSource = async () => {
   await storeDataSource({ ...form });
-  getDataSources({});
 
   if (!!!errors.value) {
     closeModal();
@@ -50,6 +55,10 @@ const createDataSource = async () => {
 
 const saveDataSource = async () => {
   await updateDataSource(dataSource.value.id);
+
+  if (!!!errors.value) {
+    closeModal();
+  }
 };
 
 const deleteDataSource = async (id) => {
@@ -57,20 +66,20 @@ const deleteDataSource = async (id) => {
   await getDataSources({});
 };
 
-const url = new URL(window.location);
-
 onMounted(() => {
   getDataSources({});
 
   if (openPreviewDialog.value) {
     getDataSource(url.pathname.split('/')[2]);
+    isOpen.value = true;
   } else if (openAddToCollectionDialog.value) {
     getCollections();
     selectedCollection.value = collections[0];
+    isOpen.value = true;
   }
 });
 
-const user = computed(() => usePage().props.value.auth.user);
+const openCreateDialog = ref(false);
 
 const openPreviewDialog = computed(
   () => usePage().props.value.openPreviewDialog
@@ -95,7 +104,7 @@ const categories = [
   { title: 'Book', value: 'book' }
 ];
 
-const isOpen = ref(false);
+const isOpen = ref(true);
 const selectedCategory = ref(categories[0]);
 
 const form = reactive({
@@ -107,10 +116,12 @@ const form = reactive({
   expires_in: 3
 });
 
-const openModal = () => (isOpen.value = true);
 const closeModal = () => {
   isOpen.value = false;
+  openCreateDialog.value = false;
+
   resetFormValues();
+  getDataSources({});
 };
 
 const onSelectionChange = (param) => {
@@ -120,7 +131,6 @@ const onSelectionChange = (param) => {
 
 const onCollectionSelectionChange = (param) => {
   selectedCollection.value = param;
-  saveCollection(selectedCollection, url.pathname.split('/')[2]);
 };
 </script>
 <template>
@@ -130,7 +140,11 @@ const onCollectionSelectionChange = (param) => {
     <template #header>Library</template>
 
     <div class="flex items-center justify-end mb-4">
-      <Button type="button" :rounded="true" @click="openModal">
+      <Button
+        type="button"
+        :rounded="true"
+        @click="() => (openCreateDialog = true)"
+      >
         <PlusIcon class="w-5 h-5" />
       </Button>
     </div>
@@ -410,24 +424,27 @@ const onCollectionSelectionChange = (param) => {
         <Button
           type="button"
           class="py-3 px-5 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800"
-          @click="openModal"
+          @click="() => (openCreateDialog = true)"
         >
           Create an instance
         </Button>
       </div>
     </div>
 
-    <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
+    <SharedDialog
+      :isOpen="openCreateDialog && isOpen"
+      @closeDialog="closeModal"
+    >
       <template #title>Create Instance</template>
 
-      <form class="mt-2" @submit.prevent="saveDataSource">
+      <form class="mt-2" @submit.prevent="createDataSource">
         <div>
           <Label for="title" value="Title" />
           <Input
             id="title"
             type="text"
             class="mt-1 block w-full"
-            v-model="dataSource.title"
+            v-model="form.title"
           />
           <InputError class="mt-2" :message="errors?.title" />
         </div>
@@ -438,7 +455,7 @@ const onCollectionSelectionChange = (param) => {
             id="author"
             type="text"
             class="mt-1 block w-full"
-            v-model="dataSource.author"
+            v-model="form.author"
           />
           <InputError class="mt-2" :message="errors?.author" />
         </div>
@@ -449,7 +466,7 @@ const onCollectionSelectionChange = (param) => {
             id="source"
             type="url"
             class="mt-1 block w-full"
-            v-model="dataSource.source"
+            v-model="form.source"
           />
           <InputError class="mt-2" :message="errors?.source" />
         </div>
@@ -493,7 +510,10 @@ const onCollectionSelectionChange = (param) => {
       </form>
     </SharedDialog>
 
-    <SharedDialog :isOpen="openPreviewDialog" @closeDialog="closeModal">
+    <SharedDialog
+      :isOpen="openPreviewDialog && isOpen"
+      @closeDialog="closeModal"
+    >
       <template #title>Update Instance</template>
 
       <form class="mt-2" @submit.prevent="saveDataSource">
@@ -560,19 +580,24 @@ const onCollectionSelectionChange = (param) => {
               Cancel
             </Button>
           </Link>
-          <Button
-            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Save
-          </Button>
+          <Link :href="route('libraryIndex')" @click="saveDataSource">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Save
+            </Button>
+          </Link>
         </div>
       </form>
     </SharedDialog>
 
-    <SharedDialog :isOpen="openAddToCollectionDialog" @closeDialog="closeModal">
+    <SharedDialog
+      :isOpen="openAddToCollectionDialog && isOpen"
+      @closeDialog="closeModal"
+    >
       <template #title>Add Instance to Collection</template>
 
-      <form class="mt-2" @submit.prevent="saveDataSource">
+      <form class="mt-2" @submit.prevent="saveCollection">
         <div class="mt-4">
           <Select
             :selectedOption="collections[0]"
@@ -589,11 +614,13 @@ const onCollectionSelectionChange = (param) => {
               Cancel
             </Button>
           </Link>
-          <Button
-            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Assign
-          </Button>
+          <Link :href="route('libraryIndex')" @click="saveCollection">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Assign
+            </Button>
+          </Link>
         </div>
       </form>
     </SharedDialog>

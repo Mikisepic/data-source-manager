@@ -7,7 +7,6 @@ use App\Http\Requests\CollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Models\Collection;
 use App\Models\DataSource;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CollectionController extends Controller
