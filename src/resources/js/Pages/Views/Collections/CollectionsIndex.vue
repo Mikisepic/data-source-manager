@@ -71,7 +71,7 @@ const closeModal = () => {
         <div
           v-for="collection in collections"
           v-bind:key="collection.id"
-          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 dark:divide-gray-600"
+          class="collection block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-400 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-800 dark:hover:bg-gray-600 dark:divide-gray-600"
         >
           <Link :href="route('collectionShow', collection.id)">
             <h5

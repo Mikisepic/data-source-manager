@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
+use App\Models\DataSource;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -89,6 +90,12 @@ class GroupController extends Controller
   public function update(GroupRequest $request, Group $group)
   {
     $group->update($request->validated());
+
+    if ($request->dataSourceId) {
+      $dataSource = DataSource::findOrFail($request->dataSourceId);
+      $request->isRemove ? $group->dataSources()->where('id', $dataSource->id)->delete() : $group->dataSources()->save($dataSource);
+    }
+
     return new GroupResource($group);
   }
 

@@ -8,12 +8,12 @@ export const useDataSources = () => {
   const dataSourceMeta = ref({});
   const errors = ref('');
 
-  const getDataSources = async ({ collectionId }) => {
+  const getDataSources = async ({ collectionId, groupId }) => {
     const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
       `/api/data_sources${window.location.search || '?page=1'}&user_id=${
         user.value.id
-      }&collection_id=${collectionId || ''}`
+      }&collection_id=${collectionId || ''}&group_id=${groupId || ''}`
     );
 
     dataSources.value = response.data.data;

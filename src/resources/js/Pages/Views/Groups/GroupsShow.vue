@@ -8,30 +8,25 @@ import {
   TrashIcon,
   PencilSquareIcon,
   PlusIcon,
-  ArrowUpOnSquareIcon
-} from '@heroicons/vue/24/outline';
+  XMarkIcon
+} from '@heroicons/vue/24/solid';
 import { usePage } from '@inertiajs/inertia-vue3';
-import { ref } from 'vue';
-import { computed, onMounted, reactive } from '@vue/runtime-core';
+import { computed, onMounted, ref } from '@vue/runtime-core';
 
 import { useDataSources } from '@/Composables/DataSources';
-import { useCollections } from '@/Composables/Collections';
 import { useGroups } from '@/Composables/Groups';
 
 const url = new URL(window.location);
-const dataSourceId = url.pathname.split('/')[2];
+const groupId = url.pathname.split('/')[2];
+const dataSourceId = url.pathname.split('/')[4];
 
-const categories = [
-  { title: 'Article', value: 'article' },
-  { title: 'URL Link', value: 'link' },
-  { title: 'Book', value: 'book' }
-];
+const { group, getGroup, addOrRemoveDataSourceToGroup } = useGroups();
 
-const user = computed(() => usePage().props.value.auth.user);
-const isOpen = ref(true);
-const selectedCategory = ref(categories[0]);
-const selectedCollection = ref({});
-const selectedGroup = ref({});
+const saveGroup = async () => {
+  await addOrRemoveDataSourceToGroup(group, dataSourceId, true);
+
+  closeModal();
+};
 
 const {
   dataSource,
@@ -39,7 +34,6 @@ const {
   dataSourceMeta,
   errors,
   getDataSources,
-  getDataSource,
   storeDataSource,
   updateDataSource,
   destroyDataSource
@@ -47,6 +41,7 @@ const {
 
 const createDataSource = async () => {
   await storeDataSource({ ...form });
+  getDataSources();
 
   if (!!!errors.value) {
     closeModal();
@@ -55,125 +50,33 @@ const createDataSource = async () => {
 
 const saveDataSource = async () => {
   await updateDataSource(dataSource.value.id);
-
-  if (!!!errors.value) {
-    closeModal();
-  }
 };
 
-const deleteDataSource = async () => {
-  await destroyDataSource(dataSourceId);
-
-  if (!!!errors.value) {
-    closeModal();
-  }
-};
-
-const { collections, getCollections, addOrRemoveDataSourceToCollection } =
-  useCollections();
-
-const saveCollection = async () => {
-  await addOrRemoveDataSourceToCollection(selectedCollection, dataSourceId);
-
-  closeModal();
-};
-
-const { groups, getGroups, addOrRemoveDataSourceToGroup } = useGroups();
-
-const saveGroup = async () => {
-  await addOrRemoveDataSourceToGroup(selectedGroup, dataSourceId);
-
-  closeModal();
+const deleteDataSource = async (id) => {
+  await destroyDataSource(id);
 };
 
 onMounted(() => {
-  getDataSources({});
+  getDataSources({ groupId });
 
-  if (openPreviewDialog.value) {
-    getDataSource(dataSourceId);
-    isOpen.value = true;
-  } else if (openAddToCollectionDialog.value) {
-    getCollections();
-    selectedCollection.value = collections[0];
-    isOpen.value = true;
-  } else if (openShareWithGroupDialog.value) {
-    getGroups();
-    selectedGroup.value = groups[0];
-    isOpen.value = true;
-  }
+  if (openRemoveFromGroupDialog) getGroup(groupId);
 });
 
-const openCreateDialog = ref(false);
-
-const openPreviewDialog = computed(
-  () => usePage().props.value.openPreviewDialog
+const openRemoveFromGroupDialog = computed(
+  () => usePage().props.value.openRemoveFromGroupDialog
 );
 
-const openAddToCollectionDialog = computed(
-  () => usePage().props.value.openAddToCollectionDialog
-);
-
-const openShareWithGroupDialog = computed(
-  () => usePage().props.value.openShareWithGroupDialog
-);
-
-const openDeleteConfirmationDialog = () =>
-  usePage().props.value.openDeleteConfirmationDialog;
-
-const form = reactive({
-  user_id: user.value.id,
-  title: '',
-  author: '',
-  source: '',
-  category: selectedCategory.value.value,
-  expires_in: 3
-});
-
-const resetFormValues = () => {
-  form.user_id = user.value.id;
-  form.title = '';
-  form.author = '';
-  form.source = '';
-  form.category = selectedCategory.value.value;
-  form.expires_in = 3;
-};
-
+const isOpen = ref(true);
 const closeModal = () => {
   isOpen.value = false;
-  openCreateDialog.value = false;
-
-  resetFormValues();
-  getDataSources({});
-};
-
-const onSelectionChange = (param) => {
-  selectedCategory.value = param;
-  form.category = param.value;
-};
-
-const onCollectionSelectionChange = (param) => {
-  selectedCollection.value = param;
-};
-
-const onGroupSelectionChange = (param) => {
-  selectedGroup.value = param;
 };
 </script>
+
 <template>
   <AuthenticatedLayout>
-    <Head title="Library" />
+    <Head title="Preview Group" />
 
-    <template #header>Library</template>
-
-    <div class="flex items-center justify-end mb-4">
-      <Button
-        type="button"
-        :rounded="true"
-        @click="() => (openCreateDialog = true)"
-      >
-        <PlusIcon class="w-5 h-5" />
-      </Button>
-    </div>
+    <template #header>Preview Group</template>
 
     <div
       v-if="dataSourceMeta.total > 0"
@@ -399,23 +302,20 @@ const onGroupSelectionChange = (param) => {
                       <span>Edit</span>
                     </DropdownLink>
                     <DropdownLink
-                      :href="route('libraryAddToCollection', dataSource.id)"
+                      :href="
+                        route('groupRemoveFromGroup', {
+                          id: groupId,
+                          dataSourceId: dataSource.id
+                        })
+                      "
                       as="button"
-                      class="flex items-center gap-2 text-md"
+                      class="flex items-center gap-2 text-md break-all text-red-500 hover:text-red-600 dark:text-red-200 dark:hover:text-red-400"
                     >
-                      <PlusIcon class="h-5 w-5" />
-                      <span>Assign to</span>
+                      <XMarkIcon class="h-5 w-5" />
+                      <span>Remove</span>
                     </DropdownLink>
                     <DropdownLink
-                      :href="route('libraryShareWithGroup', dataSource.id)"
-                      as="button"
-                      class="flex items-center gap-2 text-md"
-                    >
-                      <ArrowUpOnSquareIcon class="h-5 w-5" />
-                      <span>Share with</span>
-                    </DropdownLink>
-                    <DropdownLink
-                      :href="route('libraryDelete', dataSource.id)"
+                      @click="deleteDataSource(dataSource.id)"
                       as="button"
                       class="flex items-center gap-2 text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
                     >
@@ -451,273 +351,32 @@ const onGroupSelectionChange = (param) => {
       <p
         class="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
       >
-        You currently have no instances of this type. Feel free to create one,
-        or two...
+        There are no instances in this group yet.
       </p>
-      <div class="w-full inline-flex justify-end items-center">
-        <Button
-          type="button"
-          class="py-3 px-5 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800"
-          @click="() => (openCreateDialog = true)"
-        >
-          Create an instance
-        </Button>
-      </div>
     </div>
 
     <SharedDialog
-      :isOpen="openCreateDialog && isOpen"
+      :isOpen="openRemoveFromGroupDialog && isOpen"
       @closeDialog="closeModal"
     >
-      <template #title>Create Instance</template>
+      <template #title>Stop Sharing an Instance with a Group?</template>
 
-      <form class="mt-2" @submit.prevent="createDataSource">
-        <div>
-          <Label for="title" value="Title" />
-          <Input
-            id="title"
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.title"
-          />
-          <InputError class="mt-2" :message="errors?.title" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="author" value="Author" />
-          <Input
-            id="author"
-            type="text"
-            class="mt-1 block w-full"
-            v-model="form.author"
-          />
-          <InputError class="mt-2" :message="errors?.author" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="source" value="Source" />
-          <Input
-            id="source"
-            type="url"
-            class="mt-1 block w-full"
-            v-model="form.source"
-          />
-          <InputError class="mt-2" :message="errors?.source" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="category" value="Category" />
-          <Select
-            :selectedOption="selectedCategory"
-            :options="categories"
-            @selectionChange="(e) => onSelectionChange(e)"
-          ></Select>
-        </div>
-
-        <div class="mt-4">
-          <Label for="expires_in" value="Expires In Days" />
-          <Input
-            id="expires_in"
-            type="number"
-            min="1"
-            max="100"
-            class="mt-1 block w-full"
-            v-model="dataSource.expires_in"
-          />
-          <InputError class="mt-2" :message="errors?.expires_in" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4 gap-5">
+      <div class="flex items-center justify-end mt-4 gap-5">
+        <Link :href="route('groupShow', groupId)" @click="closeModal">
           <Button
-            @click="closeModal"
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Cancel
           </Button>
+        </Link>
+        <Link :href="route('groupShow', groupId)" @click="saveGroup">
           <Button
-            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
           >
-            Save
+            Yes, remove
           </Button>
-        </div>
-      </form>
-    </SharedDialog>
-
-    <SharedDialog
-      :isOpen="openDeleteConfirmationDialog && isOpen"
-      @closeDialog="closeModal"
-    >
-      <template #title>Are you sure you want to Delete this Instance?</template>
-
-      <div class="flex items-center justify-end mt-4 gap-5">
-        <Button
-          @click="closeModal"
-          class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          Cancel
-        </Button>
-        <Button
-          @click="deleteDataSource"
-          class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
-        >
-          Yes, delete
-        </Button>
+        </Link>
       </div>
-    </SharedDialog>
-
-    <SharedDialog
-      :isOpen="openPreviewDialog && isOpen"
-      @closeDialog="closeModal"
-    >
-      <template #title>Update Instance</template>
-
-      <form class="mt-2" @submit.prevent="saveDataSource">
-        <div>
-          <Label for="title" value="Title" />
-          <Input
-            id="title"
-            type="text"
-            class="mt-1 block w-full"
-            v-model="dataSource.title"
-          />
-          <InputError class="mt-2" :message="errors?.title" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="author" value="Author" />
-          <Input
-            id="author"
-            type="text"
-            class="mt-1 block w-full"
-            v-model="dataSource.author"
-          />
-          <InputError class="mt-2" :message="errors?.author" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="source" value="Source" />
-          <Input
-            id="source"
-            type="url"
-            class="mt-1 block w-full"
-            v-model="dataSource.source"
-          />
-          <InputError class="mt-2" :message="errors?.source" />
-        </div>
-
-        <div class="mt-4">
-          <Label for="category" value="Category" />
-          <Select
-            :selectedOption="selectedCategory"
-            :options="categories"
-            @selectionChange="(e) => onSelectionChange(e)"
-          ></Select>
-        </div>
-
-        <div class="mt-4">
-          <Label for="expires_in" value="Expires In Days" />
-          <Input
-            id="expires_in"
-            type="number"
-            min="1"
-            max="100"
-            class="mt-1 block w-full"
-            v-model="dataSource.expires_in"
-          />
-          <InputError class="mt-2" :message="errors?.expires_in" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4 gap-5">
-          <Link :href="route('libraryIndex')" @click="closeModal">
-            <Button
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              Cancel
-            </Button>
-          </Link>
-          <Link :href="route('libraryIndex')" @click="saveDataSource">
-            <Button
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              Save
-            </Button>
-          </Link>
-        </div>
-      </form>
-    </SharedDialog>
-
-    <SharedDialog
-      :isOpen="openAddToCollectionDialog && isOpen"
-      @closeDialog="closeModal"
-    >
-      <template #title>Add Instance to a Collection</template>
-
-      <form class="mt-2" @submit.prevent="saveCollection">
-        <div class="mt-4">
-          <Select
-            :selectedOption="collections[0]"
-            :options="collections"
-            @selectionChange="(e) => onCollectionSelectionChange(e)"
-          ></Select>
-        </div>
-
-        <div class="flex items-center justify-end mt-4 gap-5">
-          <Link :href="route('libraryIndex')" @click="closeModal">
-            <Button
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              Cancel
-            </Button>
-          </Link>
-          <Link :href="route('libraryIndex')" @click="saveCollection">
-            <Button
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              Assign
-            </Button>
-          </Link>
-        </div>
-      </form>
-    </SharedDialog>
-
-    <SharedDialog
-      :isOpen="openShareWithGroupDialog && isOpen"
-      @closeDialog="closeModal"
-    >
-      <template #title>Share Instance with a Group</template>
-
-      <form class="mt-2" @submit.prevent="saveGroup">
-        <div class="mt-4">
-          <Select
-            :selectedOption="groups[0]"
-            :options="groups"
-            @selectionChange="(e) => onGroupSelectionChange(e)"
-          ></Select>
-        </div>
-
-        <div class="flex items-center justify-end mt-4 gap-5">
-          <Link :href="route('libraryIndex')" @click="closeModal">
-            <Button
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              Cancel
-            </Button>
-          </Link>
-          <Link :href="route('libraryIndex')" @click="saveGroup">
-            <Button
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            >
-              Assign
-            </Button>
-          </Link>
-        </div>
-      </form>
     </SharedDialog>
   </AuthenticatedLayout>
 </template>
-<style scoped>
-th,
-td {
-  max-width: 200px;
-}
-</style>

@@ -1,6 +1,5 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
-import { usePage } from '@inertiajs/inertia-vue3';
 import {
   ChevronDownIcon,
   ChevronDoubleDownIcon,
@@ -11,6 +10,7 @@ import {
   PlusIcon,
   XMarkIcon
 } from '@heroicons/vue/24/solid';
+import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, ref } from '@vue/runtime-core';
 
 import { useDataSources } from '@/Composables/DataSources';
@@ -35,7 +35,6 @@ const {
   dataSourceMeta,
   errors,
   getDataSources,
-  getDataSource,
   storeDataSource,
   updateDataSource,
   destroyDataSource
@@ -342,6 +341,19 @@ const closeModal = () => {
         }"
         routeName="libraryIndex"
       />
+    </div>
+
+    <div v-else class="sm:px-16 xl:px-38">
+      <h1
+        class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 md:text-4xl lg:text-5xl dark:text-white"
+      >
+        Looks like there are no records here...
+      </h1>
+      <p
+        class="mb-6 text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
+      >
+        There are no instances in this collection yet.
+      </p>
     </div>
 
     <SharedDialog

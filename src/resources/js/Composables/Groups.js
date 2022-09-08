@@ -49,6 +49,25 @@ export const useGroups = () => {
     }
   };
 
+  const addOrRemoveDataSourceToGroup = async (
+    selectedGroup,
+    dataSourceId,
+    isRemove = false
+  ) => {
+    errors.value = '';
+    try {
+      await axios.put(`/api/groups/${selectedGroup.value.id}`, {
+        ...selectedGroup.value,
+        dataSourceId,
+        isRemove
+      });
+    } catch (e) {
+      if (e.response.status === 422) {
+        errors.value = e.response.data.errors;
+      }
+    }
+  };
+
   const destroyGroup = async (id) => {
     await axios.delete(`/api/groups/${id}`);
   };
@@ -63,6 +82,7 @@ export const useGroups = () => {
     getGroup,
     storeGroup,
     updateGroup,
+    addOrRemoveDataSourceToGroup,
     destroyGroup
   };
 };

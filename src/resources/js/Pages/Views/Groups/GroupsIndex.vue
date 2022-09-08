@@ -70,7 +70,7 @@ const closeModal = () => {
     <div v-if="groupMeta.total > 0">
       <div class="flex flex-wrap w-full gap-10">
         <div
-          class="group block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:divide-gray-600"
+          class="group block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-400 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-900 dark:hover:bg-gray-700 dark:divide-gray-600"
           v-for="group in groups"
           v-bind:key="group.id"
         >

@@ -43,6 +43,14 @@ Route::get('/library/{id}/preview', function () {
   ->middleware(['auth', 'verified'])
   ->name('libraryPreview');
 
+Route::get('/library/{id}/delete', function () {
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openDeleteConfirmationDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('libraryDelete');
+
 Route::get('/library/{id}/add_to_collection', function () {
   return Inertia::render('Views/Library/LibraryIndex', [
     'openAddToCollectionDialog' => true
@@ -50,6 +58,14 @@ Route::get('/library/{id}/add_to_collection', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('libraryAddToCollection');
+
+Route::get('/library/{id}/share_with_group', function () {
+  return Inertia::render('Views/Library/LibraryIndex', [
+    'openShareWithGroupDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('libraryShareWithGroup');
 
 // Collections
 Route::get('/collections', function () {
@@ -82,13 +98,20 @@ Route::get('/groups', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('groupIndex');
+
 Route::get('/groups/{id}', function () {
-  return Inertia::render('Views/Groups/GroupsIndex', [
-    'openPreviewDialog' => false
-  ]);
+  return Inertia::render('Views/Groups/GroupsShow');
 })
   ->middleware(['auth', 'verified'])
   ->name('groupShow');
+
+Route::get('/groups/{id}/remove_from_group/{dataSourceId}', function () {
+  return Inertia::render('Views/Groups/GroupsShow', [
+    'openRemoveFromGroupDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('groupRemoveFromGroup');
 
 // Profile
 Route::get('/profile', function () {
