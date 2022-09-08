@@ -59,11 +59,20 @@ Route::get('/collections', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('collectionIndex');
+
 Route::get('/collections/{id}', function () {
   return Inertia::render('Views/Collections/CollectionsShow');
 })
   ->middleware(['auth', 'verified'])
   ->name('collectionShow');
+
+Route::get('/collections/{id}/remove_from_collection/{dataSourceId}', function () {
+  return Inertia::render('Views/Collections/CollectionsShow', [
+    'openRemoveFromCollectionDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('collectionRemoveFromCollection');
 
 // Groups
 Route::get('/groups', function () {
@@ -87,6 +96,7 @@ Route::get('/profile', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('profileShow');
+
 Route::patch('/profile', [RegisteredUserController::class, 'update'])
   ->middleware(['auth', 'verified'])
   ->name('profileUpdate');

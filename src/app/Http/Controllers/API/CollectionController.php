@@ -88,7 +88,8 @@ class CollectionController extends Controller
     $collection->update($request->validated());
 
     if ($request->dataSourceId) {
-      $collection->dataSources()->save(DataSource::findOrFail($request->dataSourceId));
+      $dataSource = DataSource::findOrFail($request->dataSourceId);
+      $request->isRemove ? $collection->dataSources()->where('id', $dataSource->id)->delete() : $collection->dataSources()->save($dataSource);
     }
 
     return new CollectionResource($collection);

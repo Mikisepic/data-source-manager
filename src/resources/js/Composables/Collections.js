@@ -49,15 +49,17 @@ export const useCollections = () => {
     }
   };
 
-  const addDataSourceToCollection = async (
+  const addOrRemoveDataSourceToCollection = async (
     selectedCollection,
-    dataSourceId
+    dataSourceId,
+    isRemove = false
   ) => {
     errors.value = '';
     try {
       await axios.put(`/api/collections/${selectedCollection.value.id}`, {
         ...selectedCollection.value,
-        dataSourceId
+        dataSourceId,
+        isRemove
       });
     } catch (e) {
       if (e.response.status === 422) {
@@ -80,7 +82,7 @@ export const useCollections = () => {
     getCollection,
     storeCollection,
     updateCollection,
-    addDataSourceToCollection,
+    addOrRemoveDataSourceToCollection,
     destroyCollection
   };
 };

@@ -6,7 +6,6 @@ export const useDataSources = () => {
   const dataSources = ref([]);
   const dataSource = ref({});
   const dataSourceMeta = ref({});
-  const dataSourceLinks = ref({});
   const errors = ref('');
 
   const getDataSources = async ({ collectionId }) => {
@@ -19,7 +18,6 @@ export const useDataSources = () => {
 
     dataSources.value = response.data.data;
     dataSourceMeta.value = response.data.meta;
-    dataSourceLinks.value = response.data.links;
   };
 
   const getDataSource = async (id) => {
@@ -57,7 +55,6 @@ export const useDataSources = () => {
     dataSources,
     dataSource,
     dataSourceMeta,
-    dataSourceLinks,
     errors,
     getDataSources,
     getDataSource,

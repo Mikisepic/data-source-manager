@@ -21,11 +21,11 @@ const url = new URL(window.location);
 const user = computed(() => usePage().props.value.auth.user);
 const selectedCollection = ref({});
 
-const { collections, getCollections, addDataSourceToCollection } =
+const { collections, getCollections, addOrRemoveDataSourceToCollection } =
   useCollections();
 
 const saveCollection = async () => {
-  await addDataSourceToCollection(
+  await addOrRemoveDataSourceToCollection(
     selectedCollection,
     url.pathname.split('/')[2]
   );
