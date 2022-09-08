@@ -89,7 +89,7 @@ const saveGroup = async () => {
 onMounted(() => {
   getDataSources({});
 
-  if (openPreviewDialog.value) {
+  if (openPreviewDialog.value || openDeleteConfirmationDialog.value) {
     getDataSource(dataSourceId);
     isOpen.value = true;
   } else if (openAddToCollectionDialog.value) {
@@ -117,8 +117,9 @@ const openShareWithGroupDialog = computed(
   () => usePage().props.value.openShareWithGroupDialog
 );
 
-const openDeleteConfirmationDialog = () =>
-  usePage().props.value.openDeleteConfirmationDialog;
+const openDeleteConfirmationDialog = computed(
+  () => usePage().props.value.openDeleteConfirmationDialog
+);
 
 const form = reactive({
   user_id: user.value.id,
@@ -169,7 +170,12 @@ const onGroupSelectionChange = (param) => {
       <Button
         type="button"
         :rounded="true"
-        @click="() => (openCreateDialog = true)"
+        @click="
+          () => {
+            isOpen = true;
+            openCreateDialog = true;
+          }
+        "
       >
         <PlusIcon class="w-5 h-5" />
       </Button>

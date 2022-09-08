@@ -11,7 +11,9 @@ defineProps({
     :class="!isOpen ? 'hidden' : ''"
   >
     <div class="relative p-4 w-full max-w-md mx-auto h-full md:h-auto">
-      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+      <div
+        class="relative bg-white rounded-lg border border-gray-800 shadow dark:bg-gray-700 dark:border-gray-400"
+      >
         <div class="py-6 px-6 lg:px-8">
           <h3
             class="mb-4 flex align-center justify-around text-xl font-medium text-gray-900 dark:text-white"
