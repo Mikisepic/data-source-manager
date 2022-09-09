@@ -21,13 +21,13 @@ const submit = () => {
 };
 
 const academicStatuses = [
-  { name: 'Researcher', value: 'researcher' },
-  { name: 'Student', value: 'student' },
-  { name: 'Bachelor', value: 'bachelor' },
-  { name: 'Master', value: 'master' },
-  { name: 'Doctor', value: 'doctoral' },
-  { name: 'PHD', value: 'phd' },
-  { name: 'Post Graduate', value: 'postgraduate' }
+  { title: 'Researcher', value: 'researcher' },
+  { title: 'Student', value: 'student' },
+  { title: 'Bachelor', value: 'bachelor' },
+  { title: 'Master', value: 'master' },
+  { title: 'Doctor', value: 'doctoral' },
+  { title: 'PHD', value: 'phd' },
+  { title: 'Post Graduate', value: 'postgraduate' }
 ];
 
 const selectedAcademicStatus = ref(

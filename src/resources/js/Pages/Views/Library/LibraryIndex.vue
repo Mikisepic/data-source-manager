@@ -11,8 +11,7 @@ import {
   ArrowUpOnSquareIcon
 } from '@heroicons/vue/24/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
-import { ref } from 'vue';
-import { computed, onMounted, reactive } from '@vue/runtime-core';
+import { ref, computed, onMounted, reactive } from '@vue/runtime-core';
 
 import { useDataSources } from '@/Composables/DataSources';
 import { useCollections } from '@/Composables/Collections';
@@ -32,6 +31,29 @@ const isOpen = ref(true);
 const selectedCategory = ref(categories[0]);
 const selectedCollection = ref({});
 const selectedGroup = ref({});
+
+const openCreateDialog = ref(false);
+const openPreviewDialog = computed(
+  () => usePage().props.value.openPreviewDialog
+);
+const openAddToCollectionDialog = computed(
+  () => usePage().props.value.openAddToCollectionDialog
+);
+const openShareWithGroupDialog = computed(
+  () => usePage().props.value.openShareWithGroupDialog
+);
+const openDeleteConfirmationDialog = computed(
+  () => usePage().props.value.openDeleteConfirmationDialog
+);
+
+const form = reactive({
+  user_id: user.value.id,
+  title: '',
+  author: '',
+  source: '',
+  category: selectedCategory.value.value,
+  expires_in: 3
+});
 
 const {
   dataSource,
@@ -101,33 +123,6 @@ onMounted(() => {
     selectedGroup.value = groups[0];
     isOpen.value = true;
   }
-});
-
-const openCreateDialog = ref(false);
-
-const openPreviewDialog = computed(
-  () => usePage().props.value.openPreviewDialog
-);
-
-const openAddToCollectionDialog = computed(
-  () => usePage().props.value.openAddToCollectionDialog
-);
-
-const openShareWithGroupDialog = computed(
-  () => usePage().props.value.openShareWithGroupDialog
-);
-
-const openDeleteConfirmationDialog = computed(
-  () => usePage().props.value.openDeleteConfirmationDialog
-);
-
-const form = reactive({
-  user_id: user.value.id,
-  title: '',
-  author: '',
-  source: '',
-  category: selectedCategory.value.value,
-  expires_in: 3
 });
 
 const resetFormValues = () => {
