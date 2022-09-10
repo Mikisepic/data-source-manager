@@ -1,6 +1,10 @@
 <script setup>
-import { ref } from 'vue';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
+import {
+  LightBulbIcon,
+  ArrowTopRightOnSquareIcon
+} from '@heroicons/vue/24/outline';
+import { ref } from '@vue/runtime-core';
 
 const Category = Object.freeze({
   LOGIN: 'login',
@@ -71,8 +75,82 @@ const categories = ref([
             {{ category.title }}
           </h1>
 
+          <div v-if="category.shortName === Category.LOGIN">
+            <div class="my-4">
+              <h4 class="text-3xl mt-4 font-bold dark:text-white">
+                Reset your password
+              </h4>
+
+              <p class="text-gray-500 dark:text-gray-400">
+                In case you need to reset your password, you are always able to
+                do so
+                <Link
+                  :href="route('password.request')"
+                  class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                  here.
+                  <ArrowTopRightOnSquareIcon class="w-5 h-5" />
+                </Link>
+              </p>
+            </div>
+
+            <div>
+              <h4 class="text-3xl font-bold dark:text-white">Delete account</h4>
+            </div>
+          </div>
+
           <div v-if="category.shortName === Category.INTERFACE">
+            <h4 class="text-3xl my-4 font-bold dark:text-white">
+              Theme Select
+            </h4>
+
             <ThemeToggle />
+
+            <div class="flex gap-10 mt-5">
+              <div
+                class="bg-white rounded-lg px-6 py-8 border border-gray-400 shadow-xl"
+              >
+                <div>
+                  <span
+                    class="inline-flex items-center justify-center p-2 bg-indigo-500 rounded-md shadow-lg"
+                  >
+                    <LightBulbIcon class="w-7 h-7 text-white" />
+                  </span>
+                </div>
+                <h3
+                  class="text-gray-900 mt-5 text-base font-medium tracking-tight"
+                >
+                  MAGicle Light Mode
+                </h3>
+                <p class="text-gray-900 mt-2 text-md">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Maiores impedit perferendis suscipit eaque, iste dolor
+                  cupiditate blanditiis ratione.
+                </p>
+              </div>
+
+              <div
+                class="bg-gray-800 rounded-lg px-6 py-8 border border-gray-400 shadow-xl"
+              >
+                <div>
+                  <span
+                    class="inline-flex items-center justify-center p-2 bg-indigo-500 rounded-md shadow-lg"
+                  >
+                    <LightBulbIcon class="w-7 h-7 text-white" />
+                  </span>
+                </div>
+                <h3
+                  class="text-white mt-5 text-base font-medium tracking-tight"
+                >
+                  MAGicle Dark Mode
+                </h3>
+                <p class="text-gray-300 mt-2 text-md">
+                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                  Maiores impedit perferendis suscipit eaque, iste dolor
+                  cupiditate blanditiis ratione.
+                </p>
+              </div>
+            </div>
           </div>
         </TabPanel>
       </TabPanels>
