@@ -17,8 +17,8 @@ before_script:
   - php artisan key:generate
   # Create storage link
   - php artisan storage:link
-  # Run migrations and seed the database with test data
-  - php artisan migrate:fresh --seed
+  # Run migrations
+  - php artisan migrate:fresh
   # Build application for production
   - npm run build
 

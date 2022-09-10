@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen">
     <div
-      class="min-h-[90vh] flex flex-col sm:justify-center items-center pt-6 bg-gray-100 dark:bg-gray-900"
+      class="min-h-[91.5vh] flex flex-col sm:justify-center items-center pt-6 bg-gray-100 dark:bg-gray-900"
     >
       <div>
         <Link href="/">

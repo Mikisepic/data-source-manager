@@ -5,6 +5,7 @@ namespace Database\Seeders\API;
 use App\Models\Collection;
 use App\Models\DataSource;
 use App\Models\Group;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +18,7 @@ class UserSeeder extends Seeder
    */
   public function run()
   {
-    User::factory(5)->create()->each(function ($user) {
+    User::factory(10)->create()->each(function ($user) {
       $collections = Collection::factory(50)->create();
       $user->collections()->saveMany($collections);
 
@@ -30,6 +31,8 @@ class UserSeeder extends Seeder
 
       $dataSources = DataSource::factory(70)->create();
       $user->dataSources()->saveMany($dataSources);
+
+      Notification::factory(20)->create();
     });
   }
 }

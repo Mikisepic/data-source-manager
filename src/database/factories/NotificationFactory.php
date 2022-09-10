@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Group>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Notification>
  */
-class GroupFactory extends Factory
+class NotificationFactory extends Factory
 {
   /**
    * Define the model's default state.
@@ -24,8 +24,9 @@ class GroupFactory extends Factory
     return [
       'id' => $faker->uuid(),
       'user_id' => $faker->randomElement($ownerIDs),
+      'type' => $faker->randomElement(['info', 'confirm', 'danger', 'error']),
       'title' => $faker->text(50),
-      'description' => $faker->text()
+      'body' => $faker->text(250)
     ];
   }
 }

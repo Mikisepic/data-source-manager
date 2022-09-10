@@ -348,7 +348,9 @@ const closeModal = () => {
               >
                 {{ new Date(dataSource.expires_at).toDateString() }}
               </td>
-              <td class="px-6 py-4 flex justify-center whitespace-nowrap">
+              <td
+                class="px-6 py-4 flex justify-center items-center whitespace-nowrap"
+              >
                 <Link
                   class="text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
                   :href="

@@ -24,7 +24,8 @@ onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
 
 const widthClass = computed(() => {
   return {
-    48: 'w-48'
+    48: 'w-48',
+    400: 'w-[400px]'
   }[props.width.toString()];
 });
 
@@ -66,7 +67,7 @@ const open = ref(false);
         @click="open = false"
       >
         <div
-          class="rounded-md ring-1 ring-black ring-opacity-5"
+          class="rounded-md max-h-96 overflow-y-auto ring-1 ring-black ring-opacity-5"
           :class="contentClasses"
         >
           <slot name="content" />
