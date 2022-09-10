@@ -76,7 +76,7 @@ const createDataSource = async () => {
 };
 
 const saveDataSource = async () => {
-  await updateDataSource(dataSource.value.id);
+  await updateDataSource(dataSourceId);
 
   if (!!!errors.value) {
     closeModal();
@@ -481,7 +481,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.title"
           />
-          <InputError class="mt-2" :message="errors?.title" />
+          <InputError
+            v-if="!!errors.title"
+            class="mt-2"
+            :message="errors.title[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -492,7 +496,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.author"
           />
-          <InputError class="mt-2" :message="errors?.author" />
+          <InputError
+            v-if="!!errors.author"
+            class="mt-2"
+            :message="errors.author[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -503,7 +511,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.source"
           />
-          <InputError class="mt-2" :message="errors?.source" />
+          <InputError
+            v-if="!!errors.source"
+            class="mt-2"
+            :message="errors.source[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -525,7 +537,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.expires_in"
           />
-          <InputError class="mt-2" :message="errors?.expires_in" />
+          <InputError
+            v-if="!!errors.expires_in"
+            class="mt-2"
+            :message="errors.expires_in[0]"
+          />
         </div>
 
         <div class="flex items-center justify-end mt-4 gap-5">
@@ -538,32 +554,10 @@ const onGroupSelectionChange = (param) => {
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
-            Save
+            Create
           </Button>
         </div>
       </form>
-    </SharedDialog>
-
-    <SharedDialog
-      :isOpen="openDeleteConfirmationDialog && isOpen"
-      @closeDialog="closeModal"
-    >
-      <template #title>Are you sure you want to Delete this Instance?</template>
-
-      <div class="flex items-center justify-end mt-4 gap-5">
-        <Button
-          @click="closeModal"
-          class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          Cancel
-        </Button>
-        <Button
-          @click="deleteDataSource"
-          class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
-        >
-          Yes, delete
-        </Button>
-      </div>
     </SharedDialog>
 
     <SharedDialog
@@ -581,7 +575,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.title"
           />
-          <InputError class="mt-2" :message="errors?.title" />
+          <InputError
+            v-if="!!errors.title"
+            class="mt-2"
+            :message="errors.title[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -592,7 +590,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.author"
           />
-          <InputError class="mt-2" :message="errors?.author" />
+          <InputError
+            v-if="!!errors.author"
+            class="mt-2"
+            :message="errors.author[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -603,7 +605,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.source"
           />
-          <InputError class="mt-2" :message="errors?.source" />
+          <InputError
+            v-if="!!errors.source"
+            class="mt-2"
+            :message="errors.source[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -625,7 +631,11 @@ const onGroupSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.expires_in"
           />
-          <InputError class="mt-2" :message="errors?.expires_in" />
+          <InputError
+            v-if="!!errors.expires_in"
+            class="mt-2"
+            :message="errors.expires_in[0]"
+          />
         </div>
 
         <div class="flex items-center justify-end mt-4 gap-5">
@@ -645,6 +655,29 @@ const onGroupSelectionChange = (param) => {
           </Link>
         </div>
       </form>
+    </SharedDialog>
+
+    <SharedDialog
+      :isOpen="openDeleteConfirmationDialog && isOpen"
+      @closeDialog="closeModal"
+    >
+      <template #title>Are you sure you want to Delete this Instance?</template>
+
+      <div class="flex items-center justify-end mt-4 gap-5">
+        <Link :href="route('libraryIndex')" @click="closeModal">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Cancel
+          </Button>
+        </Link>
+        <Button
+          @click="deleteDataSource"
+          class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+        >
+          Yes, delete
+        </Button>
+      </div>
     </SharedDialog>
 
     <SharedDialog

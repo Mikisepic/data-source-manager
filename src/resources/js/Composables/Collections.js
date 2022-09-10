@@ -8,7 +8,7 @@ export const useCollections = () => {
   const collectionMeta = ref({});
   const errors = ref('');
 
-  const getCollections = async () => {
+  const getCollections = async ({}) => {
     const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
       `/api/collections${window.location.search || '?page=1'}&user_id=${
@@ -18,7 +18,6 @@ export const useCollections = () => {
 
     collections.value = response.data.data;
     collectionMeta.value = response.data.meta;
-    collectionLinks.value = response.data.links;
   };
 
   const getCollection = async (id) => {

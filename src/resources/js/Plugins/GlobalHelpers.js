@@ -8,11 +8,51 @@ export const GlobalHelpers = {
         .join(' ');
 
     app.config.globalProperties.$dateDifference = (time) => {
-      const timeMinutesAgo = new Date(
-        new Date().getTime() - new Date(time).getTime()
-      ).getMinutes();
+      const HOURS = 24;
+      const SECONDS = 60;
+      const MILISECONDS = 1000;
 
-      return `${timeMinutesAgo} Minutes Ago`;
+      const DateDiff = {
+        inMinutes: (custom, current) => {
+          var timeCurrent = current.getTime();
+          var timeNow = custom.getTime();
+
+          return (
+            Math.floor((timeCurrent - timeNow) / (SECONDS * MILISECONDS)) %
+            SECONDS
+          );
+        },
+
+        inHours: (custom, current) => {
+          var timeCurrent = current.getTime();
+          var timeNow = custom.getTime();
+
+          return (
+            Math.floor(
+              (timeCurrent - timeNow) / (Math.pow(SECONDS, 2) * MILISECONDS)
+            ) % HOURS
+          );
+        },
+
+        inDays: (custom, current) => {
+          var timeCurrent = current.getTime();
+          var timeNow = custom.getTime();
+
+          return Math.floor(
+            (timeCurrent - timeNow) /
+              (HOURS * Math.pow(SECONDS, 2) * MILISECONDS)
+          );
+        }
+      };
+
+      const customTime = new Date(time);
+      const currentTime = new Date();
+
+      return `
+      ${DateDiff.inDays(customTime, currentTime)} Days <br> 
+      ${DateDiff.inHours(customTime, currentTime)} Hours <br>
+      ${DateDiff.inMinutes(customTime, currentTime)} Minutes Ago
+      `;
     };
   }
 };

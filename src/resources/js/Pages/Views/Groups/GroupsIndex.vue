@@ -169,7 +169,11 @@ const closeModal = () => {
             class="mt-1 block w-full"
             v-model="form.title"
           />
-          <InputError class="mt-2" :message="errors?.title" />
+          <InputError
+            v-if="!!errors.title"
+            class="mt-2"
+            :message="errors?.title[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -180,7 +184,11 @@ const closeModal = () => {
             class="mt-1 block w-full"
             v-model="form.description"
           />
-          <InputError class="mt-2" :message="errors?.description" />
+          <InputError
+            v-if="!!errors.description"
+            class="mt-2"
+            :message="errors?.description[0]"
+          />
         </div>
 
         <div class="flex items-center justify-end mt-4">

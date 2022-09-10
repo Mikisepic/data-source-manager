@@ -18,7 +18,6 @@ export const useGroups = () => {
 
     groups.value = response.data.data;
     groupMeta.value = response.data.meta;
-    groupLinks.value = response.data.links;
   };
 
   const getGroup = async (id) => {

@@ -24,7 +24,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
   return Inertia::render('Views/Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})
+  ->middleware(['auth', 'verified'])
+  ->name('dashboard');
 
 // Library
 Route::get('/library', function () {
@@ -75,6 +77,22 @@ Route::get('/collections', function () {
 })
   ->middleware(['auth', 'verified'])
   ->name('collectionIndex');
+
+Route::get('/collections/{id}/preview', function () {
+  return Inertia::render('Views/Collections/CollectionsIndex', [
+    'openPreviewDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('collectionPreview');
+
+Route::get('/collections/{id}/delete', function () {
+  return Inertia::render('Views/Collections/CollectionsIndex', [
+    'openDeleteConfirmationDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('collectionDelete');
 
 Route::get('/collections/{id}', function () {
   return Inertia::render('Views/Collections/CollectionsShow');
