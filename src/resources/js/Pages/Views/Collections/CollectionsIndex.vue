@@ -14,7 +14,6 @@ const {
   collection,
   collections,
   collectionMeta,
-  collectionLinks,
   errors,
   getCollections,
   getCollection,
@@ -178,7 +177,13 @@ const closeModal = () => {
           <InputError class="mt-2" :message="errors?.description" />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Button
+            @click="closeModal"
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Cancel
+          </Button>
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             :class="{ 'opacity-25': form.processing }"

@@ -6,7 +6,6 @@ export const useGroups = () => {
   const groups = ref([]);
   const group = ref({});
   const groupMeta = ref({});
-  const groupLinks = ref({});
   const errors = ref('');
 
   const getGroups = async () => {
@@ -76,7 +75,6 @@ export const useGroups = () => {
     groups,
     group,
     groupMeta,
-    groupLinks,
     errors,
     getGroups,
     getGroup,

@@ -16,8 +16,8 @@ When contributing to this repository, please first discuss by email or any other
 
 ### Knowledge
 
-- You should have a great understanding of Vue, Laravel and its internals.
-- You should be familiar with and follow best single page applications.
+- You should have a great understanding of Vue, Laravel, and their internals.
+- You should be familiar with and follow best practises of writing single page applications.
 - You should be familiar with and follow Vue style guide.
 
 ## Setting up the Environment
@@ -26,6 +26,7 @@ Before starting, make sure you have installed and configured the following tools
 - node 18.X
 - npm 8.X
 - php 8.X
+- composer 2.X
 - psql 14.X
 
 ### Installation

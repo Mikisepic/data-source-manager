@@ -6,7 +6,6 @@ export const useCollections = () => {
   const collections = ref([]);
   const collection = ref({});
   const collectionMeta = ref({});
-  const collectionLinks = ref({});
   const errors = ref('');
 
   const getCollections = async () => {
@@ -76,7 +75,6 @@ export const useCollections = () => {
     collections,
     collection,
     collectionMeta,
-    collectionLinks,
     errors,
     getCollections,
     getCollection,

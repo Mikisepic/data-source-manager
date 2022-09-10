@@ -96,6 +96,11 @@ class GroupController extends Controller
       $request->isRemove ? $group->dataSources()->where('id', $dataSource->id)->delete() : $group->dataSources()->save($dataSource);
     }
 
+    if ($request->memberId) {
+      $member = User::findOrFail($request->memberId);
+      $request->isRemove ? $group->members()->detach($member) : $group->members()->attach($member);
+    }
+
     return new GroupResource($group);
   }
 

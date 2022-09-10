@@ -162,7 +162,7 @@ const items = [
     </main>
 
     <footer
-      class="p-4 bg-white rounded-lg md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800"
+      class="p-4 bg-white md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800"
     >
       <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
         © {{ new Date().getFullYear() }}
@@ -172,13 +172,31 @@ const items = [
         class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0"
       >
         <li>
-          <a href="#" class="mr-4 hover:underline md:mr-6">About</a>
+          <a
+            target="_blank"
+            href="https://git.mif.vu.lt/mipu7431/data-source-manager/-/blob/master/README.md"
+            class="mr-4 hover:underline md:mr-6"
+          >
+            About
+          </a>
         </li>
         <li>
-          <a href="#" class="mr-4 hover:underline md:mr-6">Contributing</a>
+          <a
+            target="_blank"
+            href="https://git.mif.vu.lt/mipu7431/data-source-manager/-/blob/master/CONTRIBUTING.md"
+            class="mr-4 hover:underline md:mr-6"
+          >
+            Contributing
+          </a>
         </li>
         <li>
-          <a href="#" class="hover:underline">Contact</a>
+          <a
+            target="_blank"
+            href="mailto:mikas.pupeikis@mif.stud.vu.lt"
+            class="hover:underline"
+          >
+            Contact
+          </a>
         </li>
       </ul>
     </footer>

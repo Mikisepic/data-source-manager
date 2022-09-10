@@ -15,7 +15,6 @@ const {
   group,
   groups,
   groupMeta,
-  groupLinks,
   errors,
   getGroups,
   getGroup,
