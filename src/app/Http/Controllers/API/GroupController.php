@@ -8,6 +8,7 @@ use App\Http\Resources\GroupResource;
 use App\Models\DataSource;
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class GroupController extends Controller
@@ -39,6 +40,8 @@ class GroupController extends Controller
             ->orWhere('title', 'LIKE', '%' . request('search') . '%')
             ->orWhere('user_id', 'LIKE', '%' . request('search') . '%');
         });
+      })->whereHas('members', function ($query) {
+        $query->where('user_id', '=', request('user_id'));
       });
 
     $groupCollection = GroupResource::collection(

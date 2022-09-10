@@ -6,6 +6,8 @@ export const useGroups = () => {
   const groups = ref([]);
   const group = ref({});
   const groupMeta = ref({});
+  const groupUsersData = ref([]);
+  const groupUsersTotal = ref(0);
   const errors = ref('');
 
   const getGroups = async ({}) => {
@@ -23,6 +25,12 @@ export const useGroups = () => {
   const getGroup = async (id) => {
     const response = await axios.get(`/api/groups/${id}`);
     group.value = response.data.data;
+  };
+
+  const getGroupUsers = async (id) => {
+    const response = await axios.get(`/api/groups/${id}/users`);
+    groupUsersData.value = response.data.data;
+    groupUsersTotal.value = response.data.total;
   };
 
   const storeGroup = async (data) => {
@@ -77,6 +85,9 @@ export const useGroups = () => {
     errors,
     getGroups,
     getGroup,
+    getGroupUsers,
+    groupUsersData,
+    groupUsersTotal,
     storeGroup,
     updateGroup,
     addOrRemoveDataSourceToGroup,

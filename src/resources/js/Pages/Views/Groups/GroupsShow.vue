@@ -4,12 +4,11 @@ import {
   ChevronDownIcon,
   ChevronDoubleDownIcon,
   ChevronUpIcon,
-  EllipsisVerticalIcon,
   TrashIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  XMarkIcon
-} from '@heroicons/vue/24/solid';
+  XMarkIcon,
+  UsersIcon,
+  MinusCircleIcon
+} from '@heroicons/vue/24/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, ref } from '@vue/runtime-core';
 
@@ -17,10 +16,22 @@ import { useDataSources } from '@/Composables/DataSources';
 import { useGroups } from '@/Composables/Groups';
 
 const url = new URL(window.location);
+const isOpen = ref(true);
 const groupId = url.pathname.split('/')[2];
 const dataSourceId = url.pathname.split('/')[4];
 
-const { group, getGroup, addOrRemoveDataSourceToGroup } = useGroups();
+const openRemoveFromGroupDialog = computed(
+  () => usePage().props.value.openRemoveFromGroupDialog
+);
+
+const {
+  group,
+  groupUsersData,
+  getGroup,
+  getGroupUsers,
+  groupUsersTotal,
+  addOrRemoveDataSourceToGroup
+} = useGroups();
 
 const saveGroup = async () => {
   await addOrRemoveDataSourceToGroup(group, dataSourceId, true);
@@ -41,7 +52,6 @@ const {
 
 const createDataSource = async () => {
   await storeDataSource({ ...form });
-  getDataSources();
 
   if (!!!errors.value) {
     closeModal();
@@ -58,17 +68,14 @@ const deleteDataSource = async (id) => {
 
 onMounted(() => {
   getDataSources({ groupId });
+  getGroupUsers(groupId);
 
   if (openRemoveFromGroupDialog) getGroup(groupId);
 });
 
-const openRemoveFromGroupDialog = computed(
-  () => usePage().props.value.openRemoveFromGroupDialog
-);
-
-const isOpen = ref(true);
 const closeModal = () => {
   isOpen.value = false;
+  getDataSources({ groupId });
 };
 </script>
 
@@ -77,6 +84,68 @@ const closeModal = () => {
     <Head title="Preview Group" />
 
     <template #header>Preview Group</template>
+
+    <div
+      class="p-4 mb-6 w-full bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700"
+    >
+      <h5 class="text-2xl font-bold leading-none text-gray-900 dark:text-white">
+        About the group
+      </h5>
+
+      <div class="flex gap-5 flex-col md:flex-row">
+        <div class="w-1/2">
+          <div class="flex items-center gap-5">
+            <UsersIcon class="w-10 h-10 text-gray-900 dark:text-white" />
+            <h5
+              class="text-lg font-bold leading-none text-gray-900 dark:text-white"
+            >
+              {{ groupUsersTotal }}
+            </h5>
+          </div>
+
+          <div
+            class="text-gray-900 bg-white rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            <Button
+              v-for="(groupUser, index) in groupUsersData"
+              v-bind:key="index"
+              type="button"
+              class="inline-flex relative items-center justify-between py-2 px-4 w-full text-lg font-medium rounded-t-lg border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
+            >
+              {{ groupUser.username }}
+
+              <MinusCircleIcon
+                class="w-10 h-10 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+              />
+            </Button>
+          </div>
+        </div>
+
+        <div class="w-1/2">
+          <h5
+            class="text-2xl font-bold leading-none text-gray-900 dark:text-white"
+          >
+            Title
+            <span
+              class="text-lg font-medium leading-none text-gray-900 dark:text-white"
+            >
+              {{ group.title }}
+            </span>
+          </h5>
+
+          <h5
+            class="text-2xl mt-5 font-bold leading-none text-gray-900 dark:text-white"
+          >
+            Description
+          </h5>
+          <p
+            class="mb-3 text-lg font-light text-gray-500 md:text-xl dark:text-gray-400"
+          >
+            {{ group.description }}
+          </p>
+        </div>
+      </div>
+    </div>
 
     <div
       v-if="dataSourceMeta.total > 0"
@@ -252,7 +321,7 @@ const closeModal = () => {
               "
               class="border-b dark:border-gray-700"
               v-for="(dataSource, index) in dataSources"
-              v-bind:key="dataSource.id"
+              v-bind:key="index"
             >
               <td
                 class="font-medium text-left text-gray-900 px-6 py-4 text-ellipsis overflow-hidden whitespace-nowrap dark:text-white border-r"
