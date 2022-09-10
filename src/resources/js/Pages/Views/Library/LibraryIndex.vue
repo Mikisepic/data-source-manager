@@ -115,11 +115,11 @@ onMounted(() => {
     getDataSource(dataSourceId);
     isOpen.value = true;
   } else if (openAddToCollectionDialog.value) {
-    getCollections();
+    getCollections({});
     selectedCollection.value = collections[0];
     isOpen.value = true;
   } else if (openShareWithGroupDialog.value) {
-    getGroups();
+    getGroups({});
     selectedGroup.value = groups[0];
     isOpen.value = true;
   }
@@ -470,7 +470,7 @@ const onGroupSelectionChange = (param) => {
       :isOpen="openCreateDialog && isOpen"
       @closeDialog="closeModal"
     >
-      <template #title>Create Instance</template>
+      <template #title>Add a New Data Source</template>
 
       <form class="mt-2" @submit.prevent="createDataSource">
         <div>
@@ -547,6 +547,7 @@ const onGroupSelectionChange = (param) => {
         <div class="flex items-center justify-end mt-4 gap-5">
           <Button
             @click="closeModal"
+            type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Cancel
@@ -663,7 +664,10 @@ const onGroupSelectionChange = (param) => {
     >
       <template #title>Are you sure you want to Delete this Instance?</template>
 
-      <div class="flex items-center justify-end mt-4 gap-5">
+      <div
+        v-if="!!dataSource.id"
+        class="flex items-center justify-end mt-4 gap-5"
+      >
         <Link :href="route('libraryIndex')" @click="closeModal">
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
@@ -671,12 +675,24 @@ const onGroupSelectionChange = (param) => {
             Cancel
           </Button>
         </Link>
-        <Button
-          @click="deleteDataSource"
-          class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+        <Link :href="route('libraryIndex')" @click="deleteDataSource">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+          >
+            Yes, delete
+          </Button>
+        </Link>
+      </div>
+
+      <div v-else>
+        <h1
+          class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
         >
-          Yes, delete
-        </Button>
+          Whoops!
+        </h1>
+        <p class="text-lg font-normal text-gray-500 dark:text-gray-400">
+          Looks like this instance has been deleted!
+        </p>
       </div>
     </SharedDialog>
 
@@ -741,7 +757,7 @@ const onGroupSelectionChange = (param) => {
             <Button
               class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
-              Assign
+              Share
             </Button>
           </Link>
         </div>

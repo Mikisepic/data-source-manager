@@ -192,9 +192,10 @@ const closeModal = () => {
 
     <SharedDialog
       :isOpen="isOpen && openCreateDialog"
+      goBackTo="collectionIndex"
       @closeDialog="closeModal"
     >
-      <template #title>Create a New Instance</template>
+      <template #title>Add a New Collection</template>
 
       <form class="mt-2" @submit.prevent="createCollection">
         <div>
@@ -229,16 +230,14 @@ const closeModal = () => {
 
         <div class="flex items-center justify-end mt-4 gap-5">
           <Button
-            type="button"
             @click="closeModal"
+            type="button"
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             Cancel
           </Button>
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
           >
             Create
           </Button>
@@ -248,9 +247,10 @@ const closeModal = () => {
 
     <SharedDialog
       :isOpen="openPreviewDialog && isOpen"
+      goBackTo="collectionIndex"
       @closeDialog="closeModal"
     >
-      <template #title>Update Instance</template>
+      <template #title>Update Collection</template>
 
       <form class="mt-2" @submit.prevent="saveCollection">
         <div>
@@ -304,9 +304,12 @@ const closeModal = () => {
 
     <SharedDialog
       :isOpen="openDeleteConfirmationDialog && isOpen"
+      goBackTo="collectionIndex"
       @closeDialog="closeModal"
     >
-      <template #title>Are you sure you want to Delete this Instance?</template>
+      <template #title
+        >Are you sure you want to Delete this Collection?</template
+      >
 
       <div class="flex items-center justify-end mt-4 gap-5">
         <Link :href="route('collectionIndex')" @click="closeModal">
@@ -316,12 +319,13 @@ const closeModal = () => {
             Cancel
           </Button>
         </Link>
-        <Button
-          @click="deleteCollection"
-          class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
-        >
-          Yes, delete
-        </Button>
+        <Link :href="route('collectionIndex')" @click="deleteCollection">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+          >
+            Yes, delete
+          </Button>
+        </Link>
       </div>
     </SharedDialog>
   </AuthenticatedLayout>

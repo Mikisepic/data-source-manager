@@ -11,6 +11,26 @@ import {
 
 import { useGroups } from '@/Composables/Groups';
 
+const url = new URL(window.location);
+const groupId = url.pathname.split('/')[2];
+
+const user = computed(() => usePage().props.value.auth.user);
+const isOpen = ref(false);
+
+const openCreateDialog = ref(false);
+const openPreviewDialog = computed(
+  () => usePage().props.value.openPreviewDialog
+);
+const openDeleteConfirmationDialog = computed(
+  () => usePage().props.value.openDeleteConfirmationDialog
+);
+
+const form = reactive({
+  user_id: user.value.id,
+  title: '',
+  description: ''
+});
+
 const {
   group,
   groups,
@@ -19,39 +39,55 @@ const {
   getGroups,
   getGroup,
   storeGroup,
+  updateGroup,
   destroyGroup
 } = useGroups();
 
-const saveGroup = async () => {
+const createGroup = async () => {
   await storeGroup({ ...form });
-  getGroups();
 
   if (!!!errors.value) {
     closeModal();
   }
 };
 
-const deleteGroup = async (id) => {
-  await destroyGroup(id);
-  await getGroups();
+const saveGroup = async () => {
+  await updateGroup(groupId);
+
+  if (!!!errors.value) {
+    closeModal();
+  }
+};
+
+const deleteGroup = async () => {
+  await destroyGroup(groupId);
+
+  if (!!!errors.value) {
+    closeModal();
+  }
 };
 
 onMounted(() => {
-  getGroups();
+  getGroups({});
+
+  if (openPreviewDialog.value || openDeleteConfirmationDialog.value) {
+    getGroup(groupId);
+    isOpen.value = true;
+  }
 });
 
-const user = computed(() => usePage().props.value.auth.user);
+const resetFormValues = () => {
+  form.user_id = user.value.id;
+  form.title = '';
+  form.description = '';
+};
 
-const form = reactive({
-  user_id: user.value.id,
-  title: '',
-  description: ''
-});
-
-const isOpen = ref(false);
-const openModal = () => (isOpen.value = true);
 const closeModal = () => {
   isOpen.value = false;
+  openCreateDialog.value = false;
+
+  resetFormValues();
+  getGroups({});
 };
 </script>
 <template>
@@ -61,13 +97,22 @@ const closeModal = () => {
     <template #header>Groups</template>
 
     <div class="flex items-center justify-end mb-4">
-      <Button type="button" :rounded="true" @click="openModal">
+      <Button
+        type="button"
+        :rounded="true"
+        @click="
+          () => {
+            isOpen = true;
+            openCreateDialog = true;
+          }
+        "
+      >
         <PlusIcon class="w-5 h-5" />
       </Button>
     </div>
 
     <div v-if="groupMeta.total > 0">
-      <div class="flex flex-wrap w-full gap-10">
+      <div class="flex justify-center flex-wrap w-full gap-10">
         <div
           class="group block divide-y divide-gray-100 p-6 max-w-xs bg-white rounded-lg border border-gray-400 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-900 dark:hover:bg-gray-700 dark:divide-gray-600"
           v-for="group in groups"
@@ -75,7 +120,7 @@ const closeModal = () => {
         >
           <Link :href="route('groupShow', group.id)">
             <h5
-              class="mb-2 text-xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
+              class="mb-2 text-2xl h-20 overflow-hidden break-all text-ellipsis font-bold tracking-tight text-gray-900 dark:text-white"
             >
               {{ group.title }}
             </h5>
@@ -99,25 +144,31 @@ const closeModal = () => {
               </a>
             </div>
 
-            <div class="flex justify-between gap-3">
+            <div class="flex justify-between mb-2">
               <h5
-                class="mb-2 text-md font-bold tracking-tight text-gray-900 dark:text-white"
+                class="mb-2 w-[150px] text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >
-                Last updated
+                Last Updated
               </h5>
               <span
-                class="font-normal w-20 text-gray-700 dark:text-gray-400 break-all"
+                class="font-normal text-sm text-gray-700 dark:text-gray-400 break-all"
+                v-html="$dateDifference(group.updated_at)"
               >
-                {{ $dateDifference(group.updated_at) }}
               </span>
             </div>
           </Link>
           <div class="text-gray-700 dark:text-white flex justify-evenly pt-3">
-            <PencilSquareIcon class="h-7 w-7" />
-            <EyeIcon class="h-7 w-7" />
-            <ArrowRightOnRectangleIcon
-              class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
-            />
+            <Link :href="route('groupPreview', group.id)">
+              <PencilSquareIcon class="h-7 w-7" />
+            </Link>
+            <Link :href="route('groupShow', group.id)">
+              <EyeIcon class="h-7 w-7" />
+            </Link>
+            <Link :href="route('groupDelete', group.id)">
+              <ArrowRightOnRectangleIcon
+                class="h-7 w-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -150,17 +201,26 @@ const closeModal = () => {
         <Button
           type="button"
           class="py-3 px-5 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800"
-          @click="openModal"
+          @click="
+            () => {
+              isOpen = true;
+              openCreateDialog = true;
+            }
+          "
         >
           Create an instance
         </Button>
       </div>
     </div>
 
-    <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
-      <template #title>Create a New Instance</template>
+    <SharedDialog
+      :isOpen="isOpen && openCreateDialog"
+      goBackTo="groupIndex"
+      @closeDialog="closeModal"
+    >
+      <template #title>Add a New Group</template>
 
-      <form class="mt-2" @submit.prevent="saveGroup">
+      <form class="mt-2" @submit.prevent="createGroup">
         <div>
           <Label for="title" value="Title" />
           <Input
@@ -172,7 +232,7 @@ const closeModal = () => {
           <InputError
             v-if="!!errors.title"
             class="mt-2"
-            :message="errors?.title[0]"
+            :message="errors.title[0]"
           />
         </div>
 
@@ -187,20 +247,107 @@ const closeModal = () => {
           <InputError
             v-if="!!errors.description"
             class="mt-2"
-            :message="errors?.description[0]"
+            :message="errors.description[0]"
           />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Button
+            @click="closeModal"
+            type="button"
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Cancel
+          </Button>
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
           >
             Create
           </Button>
         </div>
       </form>
+    </SharedDialog>
+
+    <SharedDialog
+      :isOpen="openPreviewDialog && isOpen"
+      goBackTo="groupIndex"
+      @closeDialog="closeModal"
+    >
+      <template #title>Update Group</template>
+
+      <form class="mt-2" @submit.prevent="saveGroup">
+        <div>
+          <Label for="title" value="Title" />
+          <Input
+            id="title"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="group.title"
+          />
+          <InputError
+            v-if="!!errors.title"
+            class="mt-2"
+            :message="errors.title"
+          />
+        </div>
+
+        <div class="mt-4">
+          <Label for="description" value="Description" />
+          <Input
+            id="description"
+            type="text"
+            class="mt-1 block w-full"
+            v-model="group.description"
+          />
+          <InputError
+            v-if="!!errors.description"
+            class="mt-2"
+            :message="errors.description[0]"
+          />
+        </div>
+
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('groupIndex')" @click="closeModal">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Cancel
+            </Button>
+          </Link>
+          <Link :href="route('groupIndex')" @click="saveGroup">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Save
+            </Button>
+          </Link>
+        </div>
+      </form>
+    </SharedDialog>
+
+    <SharedDialog
+      :isOpen="openDeleteConfirmationDialog && isOpen"
+      goBackTo="groupIndex"
+      @closeDialog="closeModal"
+    >
+      <template #title>Are you sure you want to Leave this Group?</template>
+
+      <div class="flex items-center justify-end mt-4 gap-5">
+        <Link :href="route('groupIndex')" @click="closeModal">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Cancel
+          </Button>
+        </Link>
+        <Link :href="route('groupIndex')" @click="deleteGroup">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+          >
+            Yes, delete
+          </Button>
+        </Link>
+      </div>
     </SharedDialog>
   </AuthenticatedLayout>
 </template>

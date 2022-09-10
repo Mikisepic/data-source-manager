@@ -117,6 +117,22 @@ Route::get('/groups', function () {
   ->middleware(['auth', 'verified'])
   ->name('groupIndex');
 
+Route::get('/groups/{id}/preview', function () {
+  return Inertia::render('Views/Groups/GroupsIndex', [
+    'openPreviewDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('groupPreview');
+
+Route::get('/groups/{id}/delete', function () {
+  return Inertia::render('Views/Groups/GroupsIndex', [
+    'openDeleteConfirmationDialog' => true
+  ]);
+})
+  ->middleware(['auth', 'verified'])
+  ->name('groupDelete');
+
 Route::get('/groups/{id}', function () {
   return Inertia::render('Views/Groups/GroupsShow');
 })

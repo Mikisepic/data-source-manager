@@ -2,7 +2,15 @@
 import { XMarkIcon } from '@heroicons/vue/24/solid';
 
 defineProps({
-  isOpen: Boolean
+  isOpen: Boolean,
+  goBackTo: {
+    type: String,
+    default: 'libraryIndex'
+  },
+  goBackToId: {
+    type: String,
+    default: undefined
+  }
 });
 </script>
 <template>
@@ -16,16 +24,15 @@ defineProps({
       >
         <div class="py-6 px-6 lg:px-8">
           <h3
-            class="mb-4 flex align-center justify-around text-xl font-medium text-gray-900 dark:text-white"
+            class="mb-4 flex align-center justify-between text-xl font-medium text-gray-900 dark:text-white"
           >
             <slot name="title" />
-            <button
-              type="button"
-              @click="$emit('closeDialog')"
-              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-            >
-              <XMarkIcon class="w-5 h-5" />
-            </button>
+            <Link :href="route(goBackTo, goBackToId)">
+              <XMarkIcon
+                class="w-7 h-7 cursor-pointer text-gray-400 bg-transparent hover:text-gray-600 hover:text-gray-900 dark:hover:text-gray-200"
+                @click="$emit('closeDialog')"
+              />
+            </Link>
           </h3>
 
           <slot />

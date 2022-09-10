@@ -8,7 +8,7 @@ export const useGroups = () => {
   const groupMeta = ref({});
   const errors = ref('');
 
-  const getGroups = async () => {
+  const getGroups = async ({}) => {
     const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
       `/api/groups${window.location.search || '?page=1'}&user_id=${

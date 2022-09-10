@@ -279,51 +279,18 @@ const closeModal = () => {
               >
                 {{ new Date(dataSource.expires_at).toDateString() }}
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <Dropdown align="right" width="48">
-                  <template #trigger>
-                    <span class="inline-flex rounded-md">
-                      <button
-                        type="button"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-transparent dark:bg-gray-700 hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                      >
-                        <EllipsisVerticalIcon class="h-5 w-5" />
-                      </button>
-                    </span>
-                  </template>
-
-                  <template #content>
-                    <DropdownLink
-                      :href="route('libraryPreview', dataSource.id)"
-                      as="button"
-                      class="flex items-center gap-2 text-md"
-                    >
-                      <PencilSquareIcon class="h-5 w-5" />
-                      <span>Edit</span>
-                    </DropdownLink>
-                    <DropdownLink
-                      :href="
-                        route('groupRemoveFromGroup', {
-                          id: groupId,
-                          dataSourceId: dataSource.id
-                        })
-                      "
-                      as="button"
-                      class="flex items-center gap-2 text-md break-all text-red-500 hover:text-red-600 dark:text-red-200 dark:hover:text-red-400"
-                    >
-                      <XMarkIcon class="h-5 w-5" />
-                      <span>Remove</span>
-                    </DropdownLink>
-                    <DropdownLink
-                      @click="deleteDataSource(dataSource.id)"
-                      as="button"
-                      class="flex items-center gap-2 text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
-                    >
-                      <TrashIcon class="h-5 w-5" />
-                      <span>Delete</span>
-                    </DropdownLink>
-                  </template>
-                </Dropdown>
+              <td class="px-6 py-4 flex justify-center whitespace-nowrap">
+                <Link
+                  class="text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+                  :href="
+                    route('groupRemoveFromGroup', {
+                      id: groupId,
+                      dataSourceId: dataSource.id
+                    })
+                  "
+                >
+                  <XMarkIcon class="h-5 w-5"
+                /></Link>
               </td>
             </tr>
           </tbody>
@@ -357,6 +324,8 @@ const closeModal = () => {
 
     <SharedDialog
       :isOpen="openRemoveFromGroupDialog && isOpen"
+      goBackTo="groupShow"
+      :goBackToId="groupId"
       @closeDialog="closeModal"
     >
       <template #title>Stop Sharing an Instance with a Group?</template>
