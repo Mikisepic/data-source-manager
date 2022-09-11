@@ -95,9 +95,9 @@ const categories = ref([
               <h4 class="text-3xl font-bold dark:text-white mb-2">
                 Delete account
               </h4>
-              <Button :disabled="true" :class="{ 'opacity-50': true }"
-                >This functionality is currently restricted</Button
-              >
+              <Button :disabled="true" :class="{ 'opacity-50': true }">
+                This functionality is currently restricted
+              </Button>
             </div>
           </div>
 

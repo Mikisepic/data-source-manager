@@ -3,7 +3,8 @@ import {
   ListBulletIcon,
   FolderOpenIcon,
   Cog8ToothIcon,
-  UserGroupIcon
+  UserGroupIcon,
+  ArrowTopRightOnSquareIcon
 } from '@heroicons/vue/24/outline';
 </script>
 
@@ -22,12 +23,6 @@ import {
           class="mt-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
           All your data sources in a single place
-        </p>
-        <p
-          class="mt-4 max-w-2xl text-xl text-gray-700 dark:text-gray-300 lg:mx-auto"
-        >
-          Lorem ipsum dolor sit amet consect adipisicing elit. Possimus magnam
-          voluptatum cupiditate veritatis in accusamus quisquam.
         </p>
       </div>
 
@@ -49,9 +44,15 @@ import {
               </p>
             </dt>
             <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
-              impedit perferendis suscipit eaque, iste dolor cupiditate
-              blanditiis ratione.
+              Not sure where to start? The main purpose of "MAGicle" is to help
+              you classify data sources. All of these will be stored in your own
+              <Link
+                :href="route('libraryIndex')"
+                class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Library
+                <ArrowTopRightOnSquareIcon class="w-5 h-5" /> </Link
+              >.
             </dd>
           </div>
 
@@ -69,9 +70,17 @@ import {
               </p>
             </dt>
             <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
-              impedit perferendis suscipit eaque, iste dolor cupiditate
-              blanditiis ratione.
+              Need more organization with your existing data sources? We have
+              got you covered, create a collection and classify instances by
+              topic, e.g. Fitness. Checkout
+              <Link
+                :href="route('collectionIndex')"
+                class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Collections
+                <ArrowTopRightOnSquareIcon class="w-5 h-5" />
+              </Link>
+              for more details.
             </dd>
           </div>
 
@@ -89,9 +98,17 @@ import {
               </p>
             </dt>
             <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
-              impedit perferendis suscipit eaque, iste dolor cupiditate
-              blanditiis ratione.
+              Found a useful article and want to share it with your colleagues?
+              Here you are able to either create or join any group to
+              collaborate with your peers on the next big project. Join one or
+              start your own group
+              <Link
+                :href="route('groupIndex')"
+                class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                here
+                <ArrowTopRightOnSquareIcon class="w-5 h-5" /> </Link
+              >.
             </dd>
           </div>
 
@@ -109,9 +126,24 @@ import {
               </p>
             </dt>
             <dd class="mt-2 ml-16 text-base text-gray-500 dark:text-gray-400">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Maiores
-              impedit perferendis suscipit eaque, iste dolor cupiditate
-              blanditiis ratione.
+              Some of your personal details are not correct, or interested in
+              modifying some of the system settings? Feel free to do so in
+              <Link
+                :href="route('profileShow')"
+                class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Profile
+                <ArrowTopRightOnSquareIcon class="w-5 h-5" />
+              </Link>
+              and
+              <Link
+                :href="route('settings')"
+                class="inline-flex items-center font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >
+                Settings
+                <ArrowTopRightOnSquareIcon class="w-5 h-5" />
+              </Link>
+              pages.
             </dd>
           </div>
         </dl>
