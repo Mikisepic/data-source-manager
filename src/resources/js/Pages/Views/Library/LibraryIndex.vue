@@ -92,7 +92,7 @@ const createDataSource = async () => {
 };
 
 const saveDataSource = async () => {
-  await updateDataSource(dataSourceId, dataSource);
+  await updateDataSource(dataSourceId, dataSource.value);
 
   if (!!!errors.value) {
     pushNotification({
@@ -106,10 +106,8 @@ const saveDataSource = async () => {
 };
 
 const favoriteDataSource = async (dataSourceObject) => {
-  await updateDataSource(dataSourceObject.id, {
-    ...dataSourceObject,
-    is_favorite: !dataSourceObject.is_favorite
-  });
+  dataSourceObject.is_favorite = !dataSourceObject.is_favorite;
+  await updateDataSource(dataSourceObject.id, dataSourceObject);
 
   if (!!!errors.value) {
     getDataSources({});
@@ -373,43 +371,43 @@ const onGroupSelectionChange = (param) => {
                   : 'bg-gray-50  dark:bg-gray-800'
               "
               class="border-b dark:border-gray-700"
-              v-for="(dataSource, index) in dataSources"
-              v-bind:key="dataSource.id"
+              v-for="(ds, index) in dataSources"
+              v-bind:key="ds.id"
             >
               <td
                 class="font-medium text-left text-gray-900 px-6 py-4 text-ellipsis overflow-hidden whitespace-nowrap dark:text-white border-r"
               >
-                <Link :href="dataSource.source">
-                  {{ dataSource.title }}
+                <Link :href="ds.source">
+                  {{ ds.title }}
                 </Link>
               </td>
               <td class="text-sm font-light px-6 py-4 break-all border-r">
-                {{ dataSource.author }}
+                {{ ds.author }}
               </td>
               <td
                 class="text-sm font-light px-6 py-4 whitespace-nowrap border-r"
               >
-                {{ $titlecase(dataSource.category) }}
+                {{ $titlecase(ds.category) }}
               </td>
               <td
                 class="text-sm font-light px-6 py-4 whitespace-nowrap border-r"
               >
-                {{ new Date(dataSource.created_at).toDateString() }}
+                {{ new Date(ds.created_at).toDateString() }}
               </td>
               <td
                 class="text-sm font-light px-6 py-4 whitespace-nowrap border-r"
               >
-                {{ new Date(dataSource.expires_at).toDateString() }}
+                {{ new Date(ds.expires_at).toDateString() }}
               </td>
               <td class="font-light mx-auto px-6 py-4 border-r">
                 <span class="inline-flex rounded-md">
                   <button
                     type="button"
-                    @click="favoriteDataSource(dataSource)"
+                    @click="favoriteDataSource(ds)"
                     class="inline-flex items-center px-3 py-2 focus:outline-none transition ease-in-out duration-150"
                   >
                     <HeartSolid
-                      v-if="dataSource.is_favorite"
+                      v-if="ds.is_favorite"
                       class="w-6 h-6 text-red-500 dark:text-red-700"
                     />
                     <HeartOutline
@@ -434,7 +432,7 @@ const onGroupSelectionChange = (param) => {
 
                   <template #content>
                     <DropdownLink
-                      :href="route('libraryPreview', dataSource.id)"
+                      :href="route('libraryPreview', ds.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -442,7 +440,7 @@ const onGroupSelectionChange = (param) => {
                       <span>Edit</span>
                     </DropdownLink>
                     <DropdownLink
-                      :href="route('libraryAddToCollection', dataSource.id)"
+                      :href="route('libraryAddToCollection', ds.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -450,7 +448,7 @@ const onGroupSelectionChange = (param) => {
                       <span>Assign to</span>
                     </DropdownLink>
                     <DropdownLink
-                      :href="route('libraryShareWithGroup', dataSource.id)"
+                      :href="route('libraryShareWithGroup', ds.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -458,7 +456,7 @@ const onGroupSelectionChange = (param) => {
                       <span>Share with</span>
                     </DropdownLink>
                     <DropdownLink
-                      :href="route('libraryDelete', dataSource.id)"
+                      :href="route('libraryDelete', ds.id)"
                       as="button"
                       class="flex items-center gap-2 text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
                     >

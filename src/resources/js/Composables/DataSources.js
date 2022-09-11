@@ -44,7 +44,7 @@ export const useDataSources = () => {
     errors.value = '';
     try {
       await axios.put(`/api/data_sources/${id}`, {
-        ...source.value,
+        ...source,
         user_id: user.value.id
       });
     } catch (e) {

@@ -30,8 +30,11 @@ class DataSourceController extends Controller
     $filled = array_filter(request()->only([
       'id',
       'title',
+      'user_id',
       'author',
-      'user_id'
+      'collection_id',
+      'group_id',
+      'expires_at'
     ]));
 
     $dataSources = DataSource::when(
@@ -53,7 +56,9 @@ class DataSourceController extends Controller
           $q->where('id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('title', 'LIKE', '%' . request('search') . '%')
             ->orWhere('author', 'LIKE', '%' . request('search') . '%')
-            ->orWhere('user_id', 'LIKE', '%' . request('search') . '%');
+            ->orWhere('user_id', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('collection_id', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('group_id', 'LIKE', '%' . request('search') . '%');
         });
       });
 
