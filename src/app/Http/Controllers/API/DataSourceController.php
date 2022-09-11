@@ -54,6 +54,7 @@ class DataSourceController extends Controller
         $query->where(function ($q) {
           $q->where('id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('title', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('author', 'LIKE', '%' . request('search') . '%')
             ->orWhere('user_id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('collection_id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('group_id', 'LIKE', '%' . request('search') . '%');

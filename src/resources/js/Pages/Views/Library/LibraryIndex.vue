@@ -7,7 +7,8 @@ import {
   TrashIcon,
   PencilSquareIcon,
   PlusIcon,
-  ArrowUpOnSquareIcon
+  ArrowUpOnSquareIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { ref, computed, onMounted, reactive } from '@vue/runtime-core';
@@ -26,6 +27,8 @@ const categories = [
   { title: 'Video', value: 'video' },
   { title: 'Book', value: 'book' }
 ];
+
+const searchQuery = ref('');
 
 const selectedCategory = ref(categories[0]);
 const selectedCollection = ref({});
@@ -197,7 +200,21 @@ const onGroupSelectionChange = (param) => {
 
     <template #header>Library</template>
 
-    <div class="flex items-center justify-end mb-4">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-5">
+        <Input type="text" v-model="searchQuery" />
+
+        <Link
+          :href="
+            route('libraryIndex', {
+              search: searchQuery
+            })
+          "
+        >
+          <MagnifyingGlassIcon class="w-5 h-5" />
+        </Link>
+      </div>
+
       <Button
         type="button"
         :rounded="true"

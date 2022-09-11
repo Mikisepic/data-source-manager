@@ -4,7 +4,8 @@ import {
   PencilSquareIcon,
   ArrowRightOnRectangleIcon,
   EyeIcon,
-  UserIcon
+  UserIcon,
+  MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
@@ -14,6 +15,8 @@ import { useNotifications } from '@/Composables/Notifications';
 
 const url = new URL(window.location);
 const groupId = url.pathname.split('/')[2];
+
+const searchQuery = ref('');
 
 const isOpen = ref(false);
 const openCreateDialog = ref(false);
@@ -117,7 +120,21 @@ const closeModal = () => {
 
     <template #header>Groups</template>
 
-    <div class="flex items-center justify-end mb-4">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-5">
+        <Input type="text" v-model="searchQuery" />
+
+        <Link
+          :href="
+            route('groupIndex', {
+              search: searchQuery
+            })
+          "
+        >
+          <MagnifyingGlassIcon class="w-5 h-5" />
+        </Link>
+      </div>
+
       <Button
         type="button"
         :rounded="true"
