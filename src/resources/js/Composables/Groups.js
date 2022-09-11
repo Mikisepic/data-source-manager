@@ -3,6 +3,8 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, ref } from 'vue';
 
 export const useGroups = () => {
+  const user = computed(() => usePage().props.value.auth.user);
+
   const groups = ref([]);
   const group = ref({});
   const groupMeta = ref({});
@@ -11,7 +13,6 @@ export const useGroups = () => {
   const errors = ref('');
 
   const getGroups = async ({}) => {
-    const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
       `/api/groups${window.location.search || '?page=1'}&user_id=${
         user.value.id
@@ -36,7 +37,7 @@ export const useGroups = () => {
   const storeGroup = async (data) => {
     errors.value = '';
     try {
-      await axios.post('/api/groups', data);
+      await axios.post('/api/groups', { ...data, user_id: user.value.id });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;
@@ -47,7 +48,10 @@ export const useGroups = () => {
   const updateGroup = async (id) => {
     errors.value = '';
     try {
-      await axios.put(`/api/groups/${id}`, group.value);
+      await axios.put(`/api/groups/${id}`, {
+        ...group.value,
+        user_id: user.value.id
+      });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;
@@ -64,6 +68,7 @@ export const useGroups = () => {
     try {
       await axios.put(`/api/groups/${selectedGroup.value.id}`, {
         ...selectedGroup.value,
+        user_id: user.value.id,
         dataSourceId,
         isRemove
       });

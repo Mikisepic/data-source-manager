@@ -64,7 +64,6 @@ const open = ref(false);
         class="absolute z-10 mt-2 rounded-md shadow-lg bg-white dark:bg-gray-700"
         :class="[widthClass, alignmentClasses]"
         style="display: none"
-        @click="open = false"
       >
         <div
           class="rounded-md max-h-96 overflow-y-auto ring-1 ring-black ring-opacity-5"

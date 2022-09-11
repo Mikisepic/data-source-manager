@@ -1,6 +1,4 @@
 <script setup>
-import { usePage } from '@inertiajs/inertia-vue3';
-import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
 import {
   PlusIcon,
   PencilSquareIcon,
@@ -8,15 +6,16 @@ import {
   EyeIcon,
   UserIcon
 } from '@heroicons/vue/24/outline';
+import { usePage } from '@inertiajs/inertia-vue3';
+import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
 
 import { useGroups } from '@/Composables/Groups';
+import { useNotifications } from '@/Composables/Notifications';
 
 const url = new URL(window.location);
 const groupId = url.pathname.split('/')[2];
 
-const user = computed(() => usePage().props.value.auth.user);
 const isOpen = ref(false);
-
 const openCreateDialog = ref(false);
 const openPreviewDialog = computed(
   () => usePage().props.value.openPreviewDialog
@@ -26,10 +25,15 @@ const openDeleteConfirmationDialog = computed(
 );
 
 const form = reactive({
-  user_id: user.value.id,
   title: '',
   description: ''
 });
+
+const { storeNotification } = useNotifications();
+
+const pushNotification = async (info) => {
+  await storeNotification({ ...info });
+};
 
 const {
   group,
@@ -47,6 +51,12 @@ const createGroup = async () => {
   await storeGroup({ ...form });
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'create',
+      title: 'Group Created',
+      body: `Group <span class="font-extrabold">${form.title}</span> has been created succesfully.`
+    });
+
     closeModal();
   }
 };
@@ -55,6 +65,12 @@ const saveGroup = async () => {
   await updateGroup(groupId);
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'update',
+      title: 'Group Updated',
+      body: `Group <span class="font-extrabold">${group.value.title}</span> has been updated succesfully.`
+    });
+
     closeModal();
   }
 };
@@ -63,6 +79,12 @@ const deleteGroup = async () => {
   await destroyGroup(groupId);
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'delete',
+      title: 'Group Deleted',
+      body: `Group <span class="font-extrabold">${group.value.title}</span> has been deleted succesfully.`
+    });
+
     closeModal();
   }
 };
@@ -77,7 +99,6 @@ onMounted(() => {
 });
 
 const resetFormValues = () => {
-  form.user_id = user.value.id;
   form.title = '';
   form.description = '';
 };

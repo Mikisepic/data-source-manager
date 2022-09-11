@@ -33,7 +33,7 @@ class DataSourceFactory extends Factory
       'title' => $faker->text(50),
       'author' => $faker->name(),
       'source' => $faker->url(),
-      'category' => $faker->randomElement(['link', 'article', 'book']),
+      'category' => $faker->randomElement(['link', 'article', 'book', 'video']),
       'expires_in' => $randomDay,
       'expires_at' => $faker->date(now()->addDays($randomDay))
     ];

@@ -21,7 +21,7 @@ return new class extends Migration
       $table->string('title');
       $table->string('author');
       $table->string('source')->default('');
-      $table->enum('category', ['link', 'article', 'book']);
+      $table->enum('category', ['link', 'article', 'book', 'video']);
       $table->integer('expires_in');
       $table->timestamp('expires_at');
       $table->timestamps();

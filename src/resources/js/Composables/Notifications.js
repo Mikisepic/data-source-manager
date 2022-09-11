@@ -7,9 +7,9 @@ export const useNotifications = () => {
   const notificationsTotal = ref(0);
   const notification = ref({});
   const errors = ref('');
+  const user = computed(() => usePage().props.value.auth.user);
 
   const getNotifications = async ({}) => {
-    const user = computed(() => usePage().props.value.auth.user);
     const response = await axios.get(
       `/api/notifications?user_id=${user.value.id}`
     );
@@ -26,7 +26,10 @@ export const useNotifications = () => {
   const storeNotification = async (data) => {
     errors.value = '';
     try {
-      await axios.post('/api/notifications', data);
+      await axios.post('/api/notifications', {
+        ...data,
+        user_id: user.value.id
+      });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;

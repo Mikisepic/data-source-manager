@@ -1,21 +1,20 @@
 <script setup>
-import { usePage } from '@inertiajs/inertia-vue3';
-import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
 import {
   PlusIcon,
   TrashIcon,
   PencilSquareIcon,
   EyeIcon
 } from '@heroicons/vue/24/outline';
+import { usePage } from '@inertiajs/inertia-vue3';
+import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
 
 import { useCollections } from '@/Composables/Collections';
+import { useNotifications } from '@/Composables/Notifications';
 
 const url = new URL(window.location);
 const collectionId = url.pathname.split('/')[2];
 
-const user = computed(() => usePage().props.value.auth.user);
 const isOpen = ref(false);
-
 const openCreateDialog = ref(false);
 const openPreviewDialog = computed(
   () => usePage().props.value.openPreviewDialog
@@ -25,10 +24,15 @@ const openDeleteConfirmationDialog = computed(
 );
 
 const form = reactive({
-  user_id: user.value.id,
   title: '',
   description: ''
 });
+
+const { storeNotification } = useNotifications();
+
+const pushNotification = async (info) => {
+  await storeNotification({ ...info });
+};
 
 const {
   collection,
@@ -46,6 +50,12 @@ const createCollection = async () => {
   await storeCollection({ ...form });
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'create',
+      title: 'Collection Created',
+      body: `Collection <span class="font-extrabold">${form.title}</span> has been created succesfully.`
+    });
+
     closeModal();
   }
 };
@@ -54,6 +64,12 @@ const saveCollection = async () => {
   await updateCollection(collectionId);
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'update',
+      title: 'Collection Updated',
+      body: `Collection <span class="font-extrabold">${collection.value.title}</span> has been updated succesfully.`
+    });
+
     closeModal();
   }
 };
@@ -62,6 +78,12 @@ const deleteCollection = async () => {
   await destroyCollection(collectionId);
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'delete',
+      title: 'Collection Deleted',
+      body: `Collection <span class="font-extrabold">${collection.value.title}</span> has been deleted succesfully.`
+    });
+
     closeModal();
   }
 };
@@ -76,7 +98,6 @@ onMounted(() => {
 });
 
 const resetFormValues = () => {
-  form.user_id = user.value.id;
   form.title = '';
   form.description = '';
 };

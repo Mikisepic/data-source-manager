@@ -12,7 +12,7 @@ defineProps({
     <Head title="Welcome" />
 
     <div
-      class="relative min-h-[90vh] flex flex-col justify-center bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0"
+      class="relative min-h-[91.5vh] flex flex-col justify-center bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0"
     >
       <div
         class="container flex md:flex-row flex-col-reverse bg-white dark:bg-gray-800 overflow-hidden shadow sm:rounded-lg"

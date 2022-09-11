@@ -1,10 +1,6 @@
 <script setup>
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
 import {
-  ChevronDownIcon,
   ChevronDoubleDownIcon,
-  ChevronUpIcon,
-  TrashIcon,
   XMarkIcon,
   UsersIcon,
   MinusCircleIcon
@@ -14,15 +10,22 @@ import { computed, onMounted, ref } from '@vue/runtime-core';
 
 import { useDataSources } from '@/Composables/DataSources';
 import { useGroups } from '@/Composables/Groups';
+import { useNotifications } from '@/Composables/Notifications';
 
 const url = new URL(window.location);
-const isOpen = ref(true);
 const groupId = url.pathname.split('/')[2];
 const dataSourceId = url.pathname.split('/')[4];
 
+const isOpen = ref(true);
 const openRemoveFromGroupDialog = computed(
   () => usePage().props.value.openRemoveFromGroupDialog
 );
+
+const { storeNotification } = useNotifications();
+
+const pushNotification = async (info) => {
+  await storeNotification({ ...info });
+};
 
 const {
   group,
@@ -36,6 +39,12 @@ const {
 const saveGroup = async () => {
   await addOrRemoveDataSourceToGroup(group, dataSourceId, true);
 
+  pushNotification({
+    type: 'remove_instance',
+    title: 'Data Source Removed from a Group',
+    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been removed from <span class="font-extrabold">${group.value.title}</span> succesfully.`
+  });
+
   closeModal();
 };
 
@@ -43,39 +52,22 @@ const {
   dataSource,
   dataSources,
   dataSourceMeta,
-  errors,
   getDataSources,
-  storeDataSource,
-  updateDataSource,
-  destroyDataSource
+  getDataSource
 } = useDataSources();
-
-const createDataSource = async () => {
-  await storeDataSource({ ...form });
-
-  if (!!!errors.value) {
-    closeModal();
-  }
-};
-
-const saveDataSource = async () => {
-  await updateDataSource(dataSource.value.id);
-};
-
-const deleteDataSource = async (id) => {
-  await destroyDataSource(id);
-};
 
 onMounted(() => {
   getDataSources({ groupId });
   getGroupUsers(groupId);
+  getGroup(groupId);
 
-  if (openRemoveFromGroupDialog) getGroup(groupId);
+  if (openRemoveFromGroupDialog.value) {
+    getDataSource(dataSourceId);
+  }
 });
 
 const closeModal = () => {
   isOpen.value = false;
-  getDataSources({ groupId });
 };
 </script>
 
@@ -156,160 +148,111 @@ const closeModal = () => {
           class="min-w-full table-fixed text-center text-gray-500 dark:text-gray-400"
         >
           <thead
-            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
+            class="text-sm text-gray-700 uppercase font-bold bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
           >
             <tr>
               <th scope="col" class="px-6 py-4 border-r w-15">
-                <Popover v-slot="{ open }" class="relative">
-                  <PopoverButton
-                    :class="open ? '' : 'text-opacity-90'"
-                    class="group w-full inline-flex items-center justify-between rounded-md px-3 py-2 font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                  >
-                    <span class="uppercase">Title</span>
-                    <ChevronDoubleDownIcon
-                      :class="open ? 'rotate-180 transform' : ''"
-                      class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                      aria-hidden="true"
-                    />
-                  </PopoverButton>
-
-                  <transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="translate-y-1 opacity-0"
-                    enter-to-class="translate-y-0 opacity-100"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="translate-y-0 opacity-100"
-                    leave-to-class="translate-y-1 opacity-0"
-                  >
-                    <PopoverPanel
-                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
+                <Dropdown align="left" width="400">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between rounded-md px-3 py-2 focus:outline-none transition ease-in-out duration-150"
                     >
-                      <div
-                        class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
-                      >
-                        <div class="border bg-white p-4">
-                          <div class="mb-6 w-full">
-                            <label
-                              for="nameContains"
-                              class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
-                            >
-                              Title Contains
-                            </label>
-                            <input
-                              type="text"
-                              id="nameContains"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </PopoverPanel>
-                  </transition>
-                </Popover>
-              </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r w-20">
-                <Popover v-slot="{ open }" class="relative">
-                  <PopoverButton
-                    :class="open ? '' : 'text-opacity-90'"
-                    class="group w-full inline-flex items-center justify-between rounded-md px-3 py-2 font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                  >
-                    <span class="uppercase">Author</span>
-                    <ChevronDoubleDownIcon
-                      :class="open ? 'rotate-180 transform' : ''"
-                      class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                      aria-hidden="true"
-                    />
-                  </PopoverButton>
+                      <span class="uppercase">Title</span>
+                      <ChevronDoubleDownIcon
+                        class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
+                      />
+                    </button>
+                  </template>
 
-                  <transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="translate-y-1 opacity-0"
-                    enter-to-class="translate-y-0 opacity-100"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="translate-y-0 opacity-100"
-                    leave-to-class="translate-y-1 opacity-0"
-                  >
-                    <PopoverPanel
-                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
-                    >
-                      <div
-                        class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
-                      >
-                        <div class="border bg-white p-4">
-                          <div class="mb-6 w-full">
-                            <label
-                              for="nameContains"
-                              class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
-                            >
-                              Author Name Contains
-                            </label>
-                            <input
-                              type="text"
-                              id="nameContains"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            />
-                          </div>
-                        </div>
+                  <template #content>
+                    <DropdownItem>
+                      <div class="mb-6 w-full">
+                        <label
+                          for="nameContains"
+                          class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
+                        >
+                          Title Contains
+                        </label>
+                        <input
+                          type="text"
+                          id="nameContains"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                        />
                       </div>
-                    </PopoverPanel>
-                  </transition>
-                </Popover>
+                    </DropdownItem>
+                  </template>
+                </Dropdown>
               </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r w-10">
-                <Popover v-slot="{ open }" class="relative">
-                  <PopoverButton
-                    :class="open ? '' : 'text-opacity-90'"
-                    class="group w-full inline-flex items-center justify-between rounded-md px-3 py-2 font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                  >
-                    <span class="uppercase">Category</span>
-                    <ChevronDoubleDownIcon
-                      :class="open ? 'rotate-180 transform' : ''"
-                      class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                      aria-hidden="true"
-                    />
-                  </PopoverButton>
+              <th scope="col" class="px-6 py-4 border-r w-20">
+                <Dropdown align="left" width="400">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between rounded-md px-3 py-2 focus:outline-none transition ease-in-out duration-150"
+                    >
+                      <span class="uppercase">Author</span>
+                      <ChevronDoubleDownIcon
+                        class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
+                      />
+                    </button>
+                  </template>
 
-                  <transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="translate-y-1 opacity-0"
-                    enter-to-class="translate-y-0 opacity-100"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="translate-y-0 opacity-100"
-                    leave-to-class="translate-y-1 opacity-0"
-                  >
-                    <PopoverPanel
-                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
-                    >
-                      <div
-                        class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
-                      >
-                        <div class="border bg-white p-4">
-                          <div class="mb-6 w-full">
-                            <label
-                              for="nameContains"
-                              class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
-                            >
-                              Category
-                            </label>
-                            <input
-                              type="text"
-                              id="nameContains"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            />
-                          </div>
-                        </div>
+                  <template #content>
+                    <DropdownItem>
+                      <div class="mb-6 w-full">
+                        <label
+                          for="nameContains"
+                          class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
+                        >
+                          Author Name Contains
+                        </label>
+                        <input
+                          type="text"
+                          id="nameContains"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                        />
                       </div>
-                    </PopoverPanel>
-                  </transition>
-                </Popover>
+                    </DropdownItem>
+                  </template>
+                </Dropdown>
               </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r">
-                Created At
+              <th scope="col" class="px-6 py-4 border-r w-10">
+                <Dropdown align="left" width="400">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between rounded-md px-3 py-2 focus:outline-none transition ease-in-out duration-150"
+                    >
+                      <span class="uppercase">Category</span>
+                      <ChevronDoubleDownIcon
+                        class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
+                      />
+                    </button>
+                  </template>
+
+                  <template #content>
+                    <DropdownItem>
+                      <div class="mb-6 w-full">
+                        <label
+                          for="nameContains"
+                          class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
+                        >
+                          Category
+                        </label>
+                        <input
+                          type="text"
+                          id="nameContains"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                        />
+                      </div>
+                    </DropdownItem>
+                  </template>
+                </Dropdown>
               </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r">
-                Expires At
-              </th>
-              <th scope="col" class="font-medium px-6 py-4 w-10">Actions</th>
+              <th scope="col" class="px-6 py-4 border-r">Created At</th>
+              <th scope="col" class="px-6 py-4 border-r">Expires At</th>
+              <th scope="col" class="px-6 py-4 w-10">Actions</th>
             </tr>
           </thead>
           <tbody>

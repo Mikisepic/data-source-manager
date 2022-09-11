@@ -19,7 +19,7 @@ class NotificationController extends Controller
   {
     $notificationsByUser = Notification::where(function ($query) {
       $query->where('user_id', request('user_id'));
-    })->paginate(20);
+    })->latest()->paginate(20);
 
     return new NotificationResource($notificationsByUser);
   }
