@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DataSourceController extends Controller
@@ -104,7 +103,6 @@ class DataSourceController extends Controller
    */
   public function update(DataSourceRequest $request, DataSource $dataSource)
   {
-    Log::debug($request);
     $dataSource->update($request->validated());
     return new DataSourceResource($dataSource);
   }

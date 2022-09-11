@@ -92,7 +92,7 @@ const createDataSource = async () => {
 };
 
 const saveDataSource = async () => {
-  await updateDataSource(dataSourceId);
+  await updateDataSource(dataSourceId, dataSource);
 
   if (!!!errors.value) {
     pushNotification({
@@ -197,6 +197,7 @@ const closeModal = () => {
 const onSelectionChange = (param) => {
   selectedCategory.value = param;
   form.category = param.value;
+  dataSource.value.category = param.value;
 };
 
 const onCollectionSelectionChange = (param) => {
