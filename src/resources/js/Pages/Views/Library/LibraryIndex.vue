@@ -8,8 +8,10 @@ import {
   PencilSquareIcon,
   PlusIcon,
   ArrowUpOnSquareIcon,
-  MagnifyingGlassIcon
+  MagnifyingGlassIcon,
+  HeartIcon as HeartOutline
 } from '@heroicons/vue/24/outline';
+import { HeartIcon as HeartSolid } from '@heroicons/vue/24/solid';
 import { usePage } from '@inertiajs/inertia-vue3';
 import { ref, computed, onMounted, reactive } from '@vue/runtime-core';
 
@@ -100,6 +102,17 @@ const saveDataSource = async () => {
     });
 
     closeModal();
+  }
+};
+
+const favoriteDataSource = async (dataSourceObject) => {
+  await updateDataSource(dataSourceObject.id, {
+    ...dataSourceObject,
+    is_favorite: !dataSourceObject.is_favorite
+  });
+
+  if (!!!errors.value) {
+    getDataSources({});
   }
 };
 
@@ -201,7 +214,7 @@ const onGroupSelectionChange = (param) => {
     <template #header>Library</template>
 
     <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-5">
+      <div class="flex items-center gap-5 text-gray-700 dark:text-white">
         <Input type="text" v-model="searchQuery" />
 
         <Link
@@ -257,18 +270,18 @@ const onGroupSelectionChange = (param) => {
 
                   <template #content>
                     <DropdownItem>
-                      <div class="mb-6 w-full">
-                        <label
-                          for="nameContains"
-                          class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
+                      <Label value="Title Contains" />
+                      <div class="flex items-center gap-5">
+                        <Input type="text" v-model="searchQuery" />
+                        <Link
+                          :href="
+                            route('libraryIndex', {
+                              title: searchQuery
+                            })
+                          "
                         >
-                          Title Contains
-                        </label>
-                        <input
-                          type="text"
-                          id="nameContains"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                        />
+                          <MagnifyingGlassIcon class="w-5 h-5" />
+                        </Link>
                       </div>
                     </DropdownItem>
                   </template>
@@ -290,18 +303,18 @@ const onGroupSelectionChange = (param) => {
 
                   <template #content>
                     <DropdownItem>
-                      <div class="mb-6 w-full">
-                        <label
-                          for="nameContains"
-                          class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
+                      <Label value="Author Name" />
+                      <div class="flex items-center gap-5">
+                        <Input type="text" v-model="searchQuery" />
+                        <Link
+                          :href="
+                            route('libraryIndex', {
+                              author: searchQuery
+                            })
+                          "
                         >
-                          Author Name Contains
-                        </label>
-                        <input
-                          type="text"
-                          id="nameContains"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                        />
+                          <MagnifyingGlassIcon class="w-5 h-5" />
+                        </Link>
                       </div>
                     </DropdownItem>
                   </template>
@@ -322,19 +335,24 @@ const onGroupSelectionChange = (param) => {
                   </template>
 
                   <template #content>
-                    <DropdownItem>
-                      <div class="mb-6 w-full">
-                        <label
-                          for="nameContains"
-                          class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
+                    <DropdownItem class="h-[400px]">
+                      <Label value="Category" />
+                      <div class="flex items-center gap-5">
+                        <Select
+                          class="w-full"
+                          :selectedOption="selectedCategory"
+                          :options="categories"
+                          @selectionChange="(e) => onSelectionChange(e)"
+                        ></Select>
+                        <Link
+                          :href="
+                            route('libraryIndex', {
+                              category: selectedCategory.value
+                            })
+                          "
                         >
-                          Category
-                        </label>
-                        <input
-                          type="text"
-                          id="nameContains"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                        />
+                          <MagnifyingGlassIcon class="w-5 h-5" />
+                        </Link>
                       </div>
                     </DropdownItem>
                   </template>
@@ -342,6 +360,7 @@ const onGroupSelectionChange = (param) => {
               </th>
               <th scope="col" class="px-6 py-4 border-r">Created At</th>
               <th scope="col" class="px-6 py-4 border-r">Expires At</th>
+              <th scope="col" class="px-6 py-4 border-r">Favorite</th>
               <th scope="col" class="px-6 py-4 w-10">Actions</th>
             </tr>
           </thead>
@@ -380,6 +399,24 @@ const onGroupSelectionChange = (param) => {
                 class="text-sm font-light px-6 py-4 whitespace-nowrap border-r"
               >
                 {{ new Date(dataSource.expires_at).toDateString() }}
+              </td>
+              <td class="font-light mx-auto px-6 py-4 border-r">
+                <span class="inline-flex rounded-md">
+                  <button
+                    type="button"
+                    @click="favoriteDataSource(dataSource)"
+                    class="inline-flex items-center px-3 py-2 focus:outline-none transition ease-in-out duration-150"
+                  >
+                    <HeartSolid
+                      v-if="dataSource.is_favorite"
+                      class="w-6 h-6 text-red-500 dark:text-red-700"
+                    />
+                    <HeartOutline
+                      v-else
+                      class="w-6 h-6 hover:text-red-500 dark:hover:text-red-700"
+                    />
+                  </button>
+                </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <Dropdown align="right" width="48">

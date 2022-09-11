@@ -120,7 +120,7 @@ const closeModal = () => {
     <template #header>Collections</template>
 
     <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center gap-5">
+      <div class="flex items-center gap-5 text-gray-700 dark:text-white">
         <Input type="text" v-model="searchQuery" />
 
         <Link

@@ -14,19 +14,16 @@ const Category = Object.freeze({
 
 const categories = ref([
   {
-    id: 1,
     shortName: Category.LOGIN,
     title: 'Login & Security'
   },
   {
-    id: 2,
-    shortName: Category.NOTIFICATIONS,
-    title: 'Notification Settings'
-  },
-  {
-    id: 3,
     shortName: Category.INTERFACE,
     title: 'Interface'
+  },
+  {
+    shortName: Category.NOTIFICATIONS,
+    title: 'Notification Settings'
   }
 ]);
 </script>
@@ -95,7 +92,12 @@ const categories = ref([
             </div>
 
             <div>
-              <h4 class="text-3xl font-bold dark:text-white">Delete account</h4>
+              <h4 class="text-3xl font-bold dark:text-white mb-2">
+                Delete account
+              </h4>
+              <Button :disabled="true" :class="{ 'opacity-50': true }"
+                >This functionality is currently restricted</Button
+              >
             </div>
           </div>
 
@@ -151,6 +153,20 @@ const categories = ref([
                 </p>
               </div>
             </div>
+          </div>
+
+          <div v-if="category.shortName === Category.NOTIFICATIONS">
+            <h1
+              class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+            >
+              Coming Soon
+            </h1>
+            <p
+              class="text-lg font-normal text-gray-500 lg:text-xl dark:text-gray-400"
+            >
+              You will be able to customize these settings in the very near
+              future!
+            </p>
           </div>
         </TabPanel>
       </TabPanels>

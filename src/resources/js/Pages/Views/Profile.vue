@@ -2,6 +2,8 @@
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import { computed, ref } from '@vue/runtime-core';
 
+import { useNotifications } from '@/Composables/Notifications';
+
 const user = computed(() => usePage().props.value.auth.user);
 
 const form = useForm({
@@ -16,10 +18,6 @@ const form = useForm({
   description: user.value.description
 });
 
-const submit = () => {
-  form.patch(route('profileUpdate'));
-};
-
 const academicStatuses = [
   { title: 'Researcher', value: 'researcher' },
   { title: 'Student', value: 'student' },
@@ -29,6 +27,22 @@ const academicStatuses = [
   { title: 'PHD', value: 'phd' },
   { title: 'Post Graduate', value: 'postgraduate' }
 ];
+
+const { storeNotification } = useNotifications();
+
+const pushNotification = async (info) => {
+  await storeNotification({ ...info });
+};
+
+const submit = () => {
+  form.patch(route('profileUpdate'));
+
+  pushNotification({
+    type: 'update',
+    title: 'Profile Updated',
+    body: `User <span class="font-extrabold">${user.value.username}</span> profile has been updated`
+  });
+};
 
 const selectedAcademicStatus = ref(
   academicStatuses.filter(

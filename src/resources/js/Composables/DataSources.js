@@ -40,11 +40,11 @@ export const useDataSources = () => {
     }
   };
 
-  const updateDataSource = async (id) => {
+  const updateDataSource = async (id, source = dataSource.value) => {
     errors.value = '';
     try {
       await axios.put(`/api/data_sources/${id}`, {
-        ...dataSource.value,
+        ...source,
         user_id: user.value.id
       });
     } catch (e) {

@@ -20,6 +20,7 @@ return new class extends Migration
       $table->foreignUuid('group_id')->nullable()->constrained('groups')->onUpdate('cascade')->onDelete('cascade');
       $table->string('title');
       $table->string('author');
+      $table->boolean('is_favorite')->default(false);
       $table->string('source')->default('');
       $table->enum('category', ['link', 'article', 'book', 'video']);
       $table->integer('expires_in');
