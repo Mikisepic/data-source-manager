@@ -54,7 +54,7 @@ const createGroup = async () => {
     pushNotification({
       type: 'create',
       title: 'Group Created',
-      body: `Group <span class="font-extrabold">${form.title}</span> has been created succesfully.`
+      body: `Group <span class="font-extrabold">${form.title}</span> has been created`
     });
 
     closeModal();
@@ -68,7 +68,7 @@ const saveGroup = async () => {
     pushNotification({
       type: 'update',
       title: 'Group Updated',
-      body: `Group <span class="font-extrabold">${group.value.title}</span> has been updated succesfully.`
+      body: `Group <span class="font-extrabold">${group.value.title}</span> has been updated`
     });
 
     closeModal();
@@ -82,7 +82,7 @@ const deleteGroup = async () => {
     pushNotification({
       type: 'delete',
       title: 'Group Deleted',
-      body: `Group <span class="font-extrabold">${group.value.title}</span> has been deleted succesfully.`
+      body: `Group <span class="font-extrabold">${group.value.title}</span> has been deleted`
     });
 
     closeModal();
@@ -172,7 +172,7 @@ const closeModal = () => {
                 Last Updated
               </h5>
               <span
-                class="font-normal text-sm text-gray-700 dark:text-gray-400 break-all"
+                class="font-normal text-right text-sm text-gray-700 dark:text-gray-400 break-all"
                 v-html="$dateDifference(group.updated_at)"
               >
               </span>

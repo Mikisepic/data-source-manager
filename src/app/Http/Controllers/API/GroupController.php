@@ -8,7 +8,6 @@ use App\Http\Resources\GroupResource;
 use App\Models\DataSource;
 use App\Models\Group;
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class GroupController extends Controller
@@ -99,8 +98,11 @@ class GroupController extends Controller
       $request->isRemove ? $group->dataSources()->where('id', $dataSource->id)->delete() : $group->dataSources()->save($dataSource);
     }
 
-    if ($request->memberId) {
-      $member = User::findOrFail($request->memberId);
+    if ($request->memberUsername) {
+      $member = User::where(function ($query) use ($request) {
+        $query->where('username', $request->memberUsername);
+      })->get();
+
       $request->isRemove ? $group->members()->detach($member) : $group->members()->attach($member);
     }
 

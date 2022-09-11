@@ -53,7 +53,7 @@ const createCollection = async () => {
     pushNotification({
       type: 'create',
       title: 'Collection Created',
-      body: `Collection <span class="font-extrabold">${form.title}</span> has been created succesfully.`
+      body: `Collection <span class="font-extrabold">${form.title}</span> has been created`
     });
 
     closeModal();
@@ -67,7 +67,7 @@ const saveCollection = async () => {
     pushNotification({
       type: 'update',
       title: 'Collection Updated',
-      body: `Collection <span class="font-extrabold">${collection.value.title}</span> has been updated succesfully.`
+      body: `Collection <span class="font-extrabold">${collection.value.title}</span> has been updated`
     });
 
     closeModal();
@@ -81,7 +81,7 @@ const deleteCollection = async () => {
     pushNotification({
       type: 'delete',
       title: 'Collection Deleted',
-      body: `Collection <span class="font-extrabold">${collection.value.title}</span> has been deleted succesfully.`
+      body: `Collection <span class="font-extrabold">${collection.value.title}</span> has been deleted`
     });
 
     closeModal();
@@ -149,10 +149,23 @@ const closeModal = () => {
               <h5
                 class="mb-2 w-[150px] text-md font-bold tracking-tight text-gray-900 dark:text-white"
               >
-                Last Updated
+                Total Data Sources
               </h5>
               <span
                 class="font-normal text-sm text-gray-700 dark:text-gray-400 break-all"
+              >
+                {{ collection.data_sources_count }}
+              </span>
+            </div>
+
+            <div class="flex justify-between mb-2">
+              <h5
+                class="mb-2 w-[150px] text-md font-bold tracking-tight text-gray-900 dark:text-white"
+              >
+                Last Updated
+              </h5>
+              <span
+                class="font-normal text-right text-sm text-gray-700 dark:text-gray-400 break-all"
                 v-html="$dateDifference(collection.updated_at)"
               >
               </span>

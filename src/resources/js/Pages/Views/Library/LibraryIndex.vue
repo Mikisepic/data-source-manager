@@ -79,7 +79,7 @@ const createDataSource = async () => {
     pushNotification({
       type: 'create',
       title: 'Data Source Created',
-      body: `Data Source <span class="font-extrabold">${form.title}</span> has been created succesfully.`
+      body: `Data Source <span class="font-extrabold">${form.title}</span> has been created`
     });
 
     closeModal();
@@ -93,7 +93,7 @@ const saveDataSource = async () => {
     pushNotification({
       type: 'update',
       title: 'Data Source Updated',
-      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been updated succesfully.`
+      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been updated`
     });
 
     closeModal();
@@ -107,7 +107,7 @@ const deleteDataSource = async () => {
     pushNotification({
       type: 'delete',
       title: 'Data Source Deleted',
-      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been deleted succesfully.`
+      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been deleted`
     });
 
     closeModal();
@@ -123,7 +123,7 @@ const saveCollection = async () => {
   pushNotification({
     type: 'update',
     title: 'Data Source Assigned to a Collection',
-    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been assigned to <span class="font-extrabold">${selectedCollection.value.title}</span> succesfully.`
+    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been assigned to <span class="font-extrabold">${selectedCollection.value.title}</span>`
   });
 
   closeModal();
@@ -137,7 +137,7 @@ const saveGroup = async () => {
   pushNotification({
     type: 'update',
     title: 'Data Source Shared with a Group',
-    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been shared with <span class="font-extrabold">${selectedGroup.value.title}</span> succesfully.`
+    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been shared with <span class="font-extrabold">${selectedGroup.value.title}</span>`
   });
 
   closeModal();

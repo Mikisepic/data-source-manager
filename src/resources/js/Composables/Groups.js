@@ -79,6 +79,39 @@ export const useGroups = () => {
     }
   };
 
+  const addOrRemoveUserToGroup = async (
+    groupId,
+    memberUsername,
+    isRemove = false
+  ) => {
+    errors.value = '';
+    try {
+      if (memberUsername === user.value.username)
+        throw new Error('Cannot Remove Group Owner');
+
+      if (
+        groupUsersData.value.some(
+          (groupUser) => groupUser.username === memberUsername
+        ) &&
+        !isRemove
+      )
+        throw new Error('This User is already in this group');
+
+      await axios.put(`/api/groups/${groupId}`, {
+        ...group.value,
+        user_id: user.value.id,
+        memberUsername,
+        isRemove
+      });
+    } catch (e) {
+      if (!!e.response && e.response.status === 422) {
+        errors.value = e.response.data.errors;
+      } else {
+        errors.value = [e.message];
+      }
+    }
+  };
+
   const destroyGroup = async (id) => {
     await axios.delete(`/api/groups/${id}`);
   };
@@ -96,6 +129,7 @@ export const useGroups = () => {
     storeGroup,
     updateGroup,
     addOrRemoveDataSourceToGroup,
+    addOrRemoveUserToGroup,
     destroyGroup
   };
 };

@@ -3,10 +3,11 @@ import {
   ChevronDoubleDownIcon,
   XMarkIcon,
   UsersIcon,
-  MinusCircleIcon
+  MinusCircleIcon,
+  PlusCircleIcon
 } from '@heroicons/vue/24/outline';
 import { usePage } from '@inertiajs/inertia-vue3';
-import { computed, onMounted, ref } from '@vue/runtime-core';
+import { computed, onMounted, reactive, ref } from '@vue/runtime-core';
 
 import { useDataSources } from '@/Composables/DataSources';
 import { useGroups } from '@/Composables/Groups';
@@ -21,6 +22,10 @@ const openRemoveFromGroupDialog = computed(
   () => usePage().props.value.openRemoveFromGroupDialog
 );
 
+const form = reactive({
+  username: ''
+});
+
 const { storeNotification } = useNotifications();
 
 const pushNotification = async (info) => {
@@ -28,24 +33,60 @@ const pushNotification = async (info) => {
 };
 
 const {
+  errors,
   group,
   groupUsersData,
   getGroup,
   getGroupUsers,
   groupUsersTotal,
-  addOrRemoveDataSourceToGroup
+  addOrRemoveDataSourceToGroup,
+  addOrRemoveUserToGroup
 } = useGroups();
 
-const saveGroup = async () => {
+const addOrRemoveDataSource = async () => {
   await addOrRemoveDataSourceToGroup(group, dataSourceId, true);
 
-  pushNotification({
-    type: 'remove_instance',
-    title: 'Data Source Removed from a Group',
-    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been removed from <span class="font-extrabold">${group.value.title}</span> succesfully.`
-  });
+  if (!!!errors.value) {
+    pushNotification({
+      type: 'remove_instance',
+      title: 'Data Source Removed from a Group',
+      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been removed from <span class="font-extrabold">${group.value.title}</span>`
+    });
 
-  closeModal();
+    closeModal();
+  }
+};
+
+const addUser = async () => {
+  await addOrRemoveUserToGroup(groupId, form.username);
+
+  if (!!!errors.value) {
+    pushNotification({
+      type: 'add_user',
+      title: 'User Added to a Group',
+      body: `User <span class="font-extrabold">${username}</span> has been added to <span class="font-extrabold">${group.value.title}</span>`
+    });
+
+    getDataSources({ groupId });
+    getGroupUsers(groupId);
+    getGroup(groupId);
+  }
+};
+
+const removeUser = async (username) => {
+  await addOrRemoveUserToGroup(groupId, username, true);
+
+  if (!!!errors.value) {
+    pushNotification({
+      type: 'remove_user',
+      title: 'User Removed from a Group',
+      body: `User <span class="font-extrabold">${username}</span> has been removed from <span class="font-extrabold">${group.value.title}</span>`
+    });
+
+    getDataSources({ groupId });
+    getGroupUsers(groupId);
+    getGroup(groupId);
+  }
 };
 
 const {
@@ -85,41 +126,13 @@ const closeModal = () => {
       </h5>
 
       <div class="flex gap-5 flex-col md:flex-row">
-        <div class="w-1/2">
-          <div class="flex items-center gap-5">
-            <UsersIcon class="w-10 h-10 text-gray-900 dark:text-white" />
-            <h5
-              class="text-lg font-bold leading-none text-gray-900 dark:text-white"
-            >
-              {{ groupUsersTotal }}
-            </h5>
-          </div>
-
-          <div
-            class="text-gray-900 bg-white rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-          >
-            <Button
-              v-for="(groupUser, index) in groupUsersData"
-              v-bind:key="index"
-              type="button"
-              class="inline-flex relative items-center justify-between py-2 px-4 w-full text-lg font-medium rounded-t-lg border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white"
-            >
-              {{ groupUser.username }}
-
-              <MinusCircleIcon
-                class="w-10 h-10 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
-              />
-            </Button>
-          </div>
-        </div>
-
-        <div class="w-1/2">
+        <div class="sm:w-full md:w-1/2">
           <h5
-            class="text-2xl font-bold leading-none text-gray-900 dark:text-white"
+            class="text-2xl mt-5 font-bold leading-none text-gray-900 dark:text-white"
           >
             Title
             <span
-              class="text-lg font-medium leading-none text-gray-900 dark:text-white"
+              class="text-lg ml-3 font-medium leading-none text-gray-900 dark:text-white"
             >
               {{ group.title }}
             </span>
@@ -130,11 +143,46 @@ const closeModal = () => {
           >
             Description
           </h5>
-          <p
-            class="mb-3 text-lg font-light text-gray-500 md:text-xl dark:text-gray-400"
-          >
+          <p class="mt-3 text-md font-medium text-gray-500 dark:text-gray-400">
             {{ group.description }}
           </p>
+        </div>
+
+        <div class="sm:w-full md:w-1/2">
+          <div class="flex items-center justify-between gap-5 px-5 mb-5">
+            <div class="flex items-center gap-5">
+              <UsersIcon class="w-8 h-8 text-gray-900 dark:text-white" />
+              <h5
+                class="text-lg font-bold leading-none text-gray-900 dark:text-white"
+              >
+                {{ groupUsersTotal }}
+              </h5>
+            </div>
+            <div class="flex items-center gap-5">
+              <form @submit.prevent="createDataSource">
+                <Input id="username" type="text" v-model="form.username" />
+              </form>
+              <PlusCircleIcon class="w-8 h-8" @click="addUser" />
+            </div>
+          </div>
+
+          <div
+            class="text-gray-900 bg-white rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          >
+            <Button
+              v-for="(groupUser, index) in groupUsersData"
+              v-bind:key="index"
+              type="button"
+              class="inline-flex relative items-center justify-between py-2 px-4 w-full text-md font-medium rounded-t-lg border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white"
+            >
+              {{ groupUser.username }}
+
+              <MinusCircleIcon
+                @click="removeUser(groupUser.username)"
+                class="w-7 h-7 text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
+              />
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -352,7 +400,10 @@ const closeModal = () => {
             Cancel
           </Button>
         </Link>
-        <Link :href="route('groupShow', groupId)" @click="saveGroup">
+        <Link
+          :href="route('groupShow', groupId)"
+          @click="addOrRemoveDataSource"
+        >
           <Button
             class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
           >

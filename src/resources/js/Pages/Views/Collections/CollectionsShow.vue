@@ -31,7 +31,7 @@ const saveCollection = async () => {
   pushNotification({
     type: 'remove_instance',
     title: 'Data Source Removed from a Collection',
-    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been removed from <span class="font-extrabold">${collection.value.title}</span> succesfully.`
+    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been removed from <span class="font-extrabold">${collection.value.title}</span>`
   });
 
   closeModal();

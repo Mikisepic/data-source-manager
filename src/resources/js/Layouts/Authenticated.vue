@@ -133,7 +133,7 @@ onUpdated(() => getNotifications({}));
               </template>
             </Dropdown>
 
-            <div class="ml-2 relative">
+            <div class="ml-3 relative">
               <Dropdown align="right" width="48">
                 <template #trigger>
                   <span class="inline-flex rounded-md">
@@ -295,44 +295,46 @@ onUpdated(() => getNotifications({}));
       </div>
     </main>
 
-    <footer
-      class="p-4 bg-white md:flex md:items-center md:justify-between md:p-6 dark:bg-gray-800"
-    >
-      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-        © {{ new Date().getFullYear() }}
-        <a href="#" class="hover:underline">MAGicle™</a>. All Rights Reserved.
-      </span>
-      <ul
-        class="flex flex-wrap items-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0"
+    <footer class="text-center bg-white dark:bg-gray-800">
+      <div
+        class="max-w-7xl mx-auto p-4 md:flex md:items-center md:justify-between md:p-6"
       >
-        <li>
-          <a
-            target="_blank"
-            href="https://git.mif.vu.lt/mipu7431/data-source-manager/-/blob/master/README.md"
-            class="mr-4 hover:underline md:mr-6"
-          >
-            About
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://git.mif.vu.lt/mipu7431/data-source-manager/-/blob/master/CONTRIBUTING.md"
-            class="mr-4 hover:underline md:mr-6"
-          >
-            Contributing
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="mailto:mikas.pupeikis@mif.stud.vu.lt"
-            class="hover:underline"
-          >
-            Contact
-          </a>
-        </li>
-      </ul>
+        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+          © {{ new Date().getFullYear() }}
+          <a href="#" class="hover:underline">MAGicle™</a>. All Rights Reserved.
+        </span>
+        <ul
+          class="flex flex-wrap items-center justify-center mt-3 text-sm text-gray-500 dark:text-gray-400 sm:mt-0"
+        >
+          <li>
+            <a
+              target="_blank"
+              href="https://git.mif.vu.lt/mipu7431/data-source-manager/-/blob/master/README.md"
+              class="mr-4 hover:underline md:mr-6"
+            >
+              About
+            </a>
+          </li>
+          <li>
+            <a
+              target="_blank"
+              href="https://git.mif.vu.lt/mipu7431/data-source-manager/-/blob/master/CONTRIBUTING.md"
+              class="mr-4 hover:underline md:mr-6"
+            >
+              Contributing
+            </a>
+          </li>
+          <li>
+            <a
+              target="_blank"
+              href="mailto:mikas.pupeikis@mif.stud.vu.lt"
+              class="hover:underline"
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
     </footer>
   </div>
 </template>

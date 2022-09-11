@@ -49,9 +49,9 @@ export const GlobalHelpers = {
       const currentTime = new Date();
 
       return `
-      ${DateDiff.inDays(customTime, currentTime)} Days <br> 
-      ${DateDiff.inHours(customTime, currentTime)} Hours <br>
-      ${DateDiff.inMinutes(customTime, currentTime)} Minutes Ago
+      ${DateDiff.inDays(customTime, currentTime)} D<br> 
+      ${DateDiff.inHours(customTime, currentTime)} H<br>
+      ${DateDiff.inMinutes(customTime, currentTime)} M<br>Ago
       `;
     };
   }

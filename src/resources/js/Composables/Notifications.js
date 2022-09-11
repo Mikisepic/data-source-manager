@@ -3,11 +3,12 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, ref } from 'vue';
 
 export const useNotifications = () => {
+  const user = computed(() => usePage().props.value.auth.user);
+
   const notifications = ref([]);
   const notificationsTotal = ref(0);
   const notification = ref({});
   const errors = ref('');
-  const user = computed(() => usePage().props.value.auth.user);
 
   const getNotifications = async ({}) => {
     const response = await axios.get(
