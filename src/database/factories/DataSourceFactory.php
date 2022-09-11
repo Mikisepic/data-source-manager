@@ -19,17 +19,13 @@ class DataSourceFactory extends Factory
   public function definition()
   {
     $faker = FakerFactory::create();
-    $userIDs = DB::table('users')->pluck('id');
-    $collectionIDs = DB::table('collections')->pluck('id');
-    $groupIDs = DB::table('groups')->pluck('id');
+    $randomUserID = $faker->randomElement(DB::table('users')->pluck('id'));
 
     $randomDay = $faker->numberBetween(2, 10);
 
     return [
       'id' => $faker->uuid(),
-      'user_id' => $faker->randomElement($userIDs),
-      'collection_id' => $faker->randomElement($collectionIDs),
-      'group_id' => $faker->randomElement($groupIDs),
+      'user_id' => $randomUserID,
       'title' => $faker->text(50),
       'author' => $faker->name(),
       'source' => $faker->url(),

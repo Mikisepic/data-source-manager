@@ -2,13 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
 {
-  use HasFactory;
-
   /**
    * The attributes that are mass assignable.
    *
@@ -19,8 +16,7 @@ class Notification extends Model
     'user_id',
     'type',
     'title',
-    'body',
-    'hide_in_seconds',
+    'body'
   ];
 
   /**

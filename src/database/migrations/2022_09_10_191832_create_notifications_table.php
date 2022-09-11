@@ -19,7 +19,6 @@ return new class extends Migration
       $table->string('type');
       $table->string('title');
       $table->string('body');
-      $table->integer('hide_in_seconds')->default(5);
       $table->timestamps();
     });
   }
