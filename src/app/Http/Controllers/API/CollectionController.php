@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Models\Collection;
+use App\Models\DataSource;
 use Illuminate\Support\Str;
 
 class CollectionController extends Controller
@@ -42,7 +43,7 @@ class CollectionController extends Controller
     $collectionCollection = CollectionResource::collection(
       $collections->withCount('dataSources')
         ->latest('updated_at')
-        ->paginate(21)
+        ->paginate(20)
     );
 
     return $collectionCollection;
@@ -85,6 +86,12 @@ class CollectionController extends Controller
   public function update(CollectionRequest $request, Collection $collection)
   {
     $collection->update($request->validated());
+
+    if ($request->dataSourceId) {
+      $dataSource = DataSource::findOrFail($request->dataSourceId);
+      $request->isRemove ? $collection->dataSources()->where('id', $dataSource->id)->delete() : $collection->dataSources()->save($dataSource);
+    }
+
     return new CollectionResource($collection);
   }
 

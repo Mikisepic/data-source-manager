@@ -3,14 +3,14 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, ref } from 'vue';
 
 export const useCollections = () => {
+  const user = computed(() => usePage().props.value.auth.user);
+
   const collections = ref([]);
   const collection = ref({});
   const collectionMeta = ref({});
-  const collectionLinks = ref({});
   const errors = ref('');
 
-  const getCollections = async () => {
-    const user = computed(() => usePage().props.value.auth.user);
+  const getCollections = async ({}) => {
     const response = await axios.get(
       `/api/collections${window.location.search || '?page=1'}&user_id=${
         user.value.id
@@ -19,7 +19,6 @@ export const useCollections = () => {
 
     collections.value = response.data.data;
     collectionMeta.value = response.data.meta;
-    collectionLinks.value = response.data.links;
   };
 
   const getCollection = async (id) => {
@@ -30,7 +29,7 @@ export const useCollections = () => {
   const storeCollection = async (data) => {
     errors.value = '';
     try {
-      await axios.post('/api/collections', data);
+      await axios.post('/api/collections', { ...data, user_id: user.value.id });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;
@@ -41,7 +40,30 @@ export const useCollections = () => {
   const updateCollection = async (id) => {
     errors.value = '';
     try {
-      await axios.put(`/api/collections/${id}`, collection.value);
+      await axios.put(`/api/collections/${id}`, {
+        ...collection.value,
+        user_id: user.value.id
+      });
+    } catch (e) {
+      if (e.response.status === 422) {
+        errors.value = e.response.data.errors;
+      }
+    }
+  };
+
+  const addOrRemoveDataSourceToCollection = async (
+    selectedCollection,
+    dataSourceId,
+    isRemove = false
+  ) => {
+    errors.value = '';
+    try {
+      await axios.put(`/api/collections/${selectedCollection.value.id}`, {
+        ...selectedCollection.value,
+        user_id: user.value.id,
+        dataSourceId,
+        isRemove
+      });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;
@@ -57,12 +79,12 @@ export const useCollections = () => {
     collections,
     collection,
     collectionMeta,
-    collectionLinks,
     errors,
     getCollections,
     getCollection,
     storeCollection,
     updateCollection,
+    addOrRemoveDataSourceToCollection,
     destroyCollection
   };
 };

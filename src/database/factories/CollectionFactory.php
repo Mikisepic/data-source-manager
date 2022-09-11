@@ -25,7 +25,7 @@ class CollectionFactory extends Factory
       'id' => $faker->uuid(),
       'user_id' => $faker->randomElement($userIDs),
       'title' => $faker->text(50),
-      'description' => $faker->text(200),
+      'description' => $faker->text(),
     ];
   }
 }

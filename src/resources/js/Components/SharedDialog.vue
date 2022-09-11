@@ -1,63 +1,43 @@
 <script setup>
-import {
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle
-} from '@headlessui/vue';
+import { XMarkIcon } from '@heroicons/vue/24/solid';
 
 defineProps({
-  isOpen: Boolean
+  isOpen: Boolean,
+  goBackTo: {
+    type: String,
+    default: 'libraryIndex'
+  },
+  goBackToId: {
+    type: String,
+    default: undefined
+  }
 });
 </script>
 <template>
-  <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog
-      as="div"
-      :open="isOpen"
-      @close="$emit('closeDialog')"
-      class="relative z-10"
-    >
-      <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
+  <div
+    class="bg-opacity-25 overflow-y-auto overflow-x-hidden fixed z-50 w-full md:inset-0 h-modal md:h-full"
+    :class="!isOpen ? 'hidden' : ''"
+  >
+    <div class="relative p-4 w-full max-w-md mx-auto h-full md:h-auto">
+      <div
+        class="relative bg-white rounded-lg border border-gray-800 shadow dark:bg-gray-700 dark:border-gray-400"
       >
-        <div class="fixed inset-0 bg-black bg-opacity-25" />
-      </TransitionChild>
-
-      <div class="fixed inset-0 overflow-y-auto">
-        <div
-          class="flex min-h-full items-center justify-center p-4 text-center"
-        >
-          <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-95"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-95"
+        <div class="py-6 px-6 lg:px-8">
+          <h3
+            class="mb-4 flex align-center justify-between text-xl font-medium text-gray-900 dark:text-white"
           >
-            <DialogPanel
-              class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all bg-white rounded-lg shadow dark:bg-gray-700"
-            >
-              <DialogTitle
-                as="h3"
-                class="text-xl font-semibold text-gray-900 dark:text-white"
-              >
-                <slot name="title" />
-              </DialogTitle>
-              <slot />
-            </DialogPanel>
-          </TransitionChild>
+            <slot name="title" />
+            <Link :href="route(goBackTo, goBackToId)">
+              <XMarkIcon
+                class="w-7 h-7 cursor-pointer text-gray-400 bg-transparent hover:text-gray-600 hover:text-gray-900 dark:hover:text-gray-200"
+                @click="$emit('closeDialog')"
+              />
+            </Link>
+          </h3>
+
+          <slot />
         </div>
       </div>
-    </Dialog>
-  </TransitionRoot>
+    </div>
+  </div>
 </template>

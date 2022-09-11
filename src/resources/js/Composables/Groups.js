@@ -3,14 +3,16 @@ import { usePage } from '@inertiajs/inertia-vue3';
 import { computed, ref } from 'vue';
 
 export const useGroups = () => {
+  const user = computed(() => usePage().props.value.auth.user);
+
   const groups = ref([]);
   const group = ref({});
   const groupMeta = ref({});
-  const groupLinks = ref({});
+  const groupUsersData = ref([]);
+  const groupUsersTotal = ref(0);
   const errors = ref('');
 
-  const getGroups = async () => {
-    const user = computed(() => usePage().props.value.auth.user);
+  const getGroups = async ({}) => {
     const response = await axios.get(
       `/api/groups${window.location.search || '?page=1'}&user_id=${
         user.value.id
@@ -19,7 +21,6 @@ export const useGroups = () => {
 
     groups.value = response.data.data;
     groupMeta.value = response.data.meta;
-    groupLinks.value = response.data.links;
   };
 
   const getGroup = async (id) => {
@@ -27,10 +28,16 @@ export const useGroups = () => {
     group.value = response.data.data;
   };
 
+  const getGroupUsers = async (id) => {
+    const response = await axios.get(`/api/groups/${id}/users`);
+    groupUsersData.value = response.data.data;
+    groupUsersTotal.value = response.data.total;
+  };
+
   const storeGroup = async (data) => {
     errors.value = '';
     try {
-      await axios.post('/api/groups', data);
+      await axios.post('/api/groups', { ...data, user_id: user.value.id });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;
@@ -41,10 +48,66 @@ export const useGroups = () => {
   const updateGroup = async (id) => {
     errors.value = '';
     try {
-      await axios.put(`/api/groups/${id}`, group.value);
+      await axios.put(`/api/groups/${id}`, {
+        ...group.value,
+        user_id: user.value.id
+      });
     } catch (e) {
       if (e.response.status === 422) {
         errors.value = e.response.data.errors;
+      }
+    }
+  };
+
+  const addOrRemoveDataSourceToGroup = async (
+    selectedGroup,
+    dataSourceId,
+    isRemove = false
+  ) => {
+    errors.value = '';
+    try {
+      await axios.put(`/api/groups/${selectedGroup.value.id}`, {
+        ...selectedGroup.value,
+        user_id: user.value.id,
+        dataSourceId,
+        isRemove
+      });
+    } catch (e) {
+      if (e.response.status === 422) {
+        errors.value = e.response.data.errors;
+      }
+    }
+  };
+
+  const addOrRemoveUserToGroup = async (
+    groupId,
+    memberUsername,
+    isRemove = false
+  ) => {
+    errors.value = '';
+    try {
+      if (memberUsername === user.value.username)
+        throw new Error('Cannot Remove Group Owner');
+
+      if (
+        groupUsersData.value.some(
+          (groupUser) => groupUser.username === memberUsername
+        ) &&
+        !isRemove
+      )
+        throw new Error('This User is already in this group');
+
+      await axios.put(`/api/groups/${groupId}`, {
+        ...group.value,
+        user_id: user.value.id,
+        memberUsername,
+        isRemove
+      });
+    } catch (e) {
+      if (!!e.response && e.response.status === 422) {
+        errors.value = e.response.data.errors;
+      } else {
+        errors.value = [e.message];
       }
     }
   };
@@ -57,12 +120,16 @@ export const useGroups = () => {
     groups,
     group,
     groupMeta,
-    groupLinks,
     errors,
     getGroups,
     getGroup,
+    getGroupUsers,
+    groupUsersData,
+    groupUsersTotal,
     storeGroup,
     updateGroup,
+    addOrRemoveDataSourceToGroup,
+    addOrRemoveUserToGroup,
     destroyGroup
   };
 };

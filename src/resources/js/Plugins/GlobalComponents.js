@@ -10,11 +10,13 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Button from '@/Components/Button.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import DropdownItem from '@/Components/DropdownItem.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Input from '@/Components/Input.vue';
 import InputError from '@/Components/InputError.vue';
 import Label from '@/Components/Label.vue';
 import NavLink from '@/Components/NavLink.vue';
+import NotificationIcon from '@/Components/NotificationIcon.vue';
 import Pagination from '@/Components/Pagination.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Select from '@/Components/Select.vue';
@@ -34,11 +36,13 @@ export const GlobalComponents = {
       .component('Button', Button)
       .component('Checkbox', Checkbox)
       .component('Dropdown', Dropdown)
+      .component('DropdownItem', DropdownItem)
       .component('DropdownLink', DropdownLink)
       .component('Input', Input)
       .component('InputError', InputError)
       .component('Label', Label)
       .component('NavLink', NavLink)
+      .component('NotificationIcon', NotificationIcon)
       .component('Pagination', Pagination)
       .component('ResponsiveNavLink', ResponsiveNavLink)
       .component('Select', Select)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupRequest;
 use App\Http\Resources\GroupResource;
+use App\Models\DataSource;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -38,12 +39,14 @@ class GroupController extends Controller
             ->orWhere('title', 'LIKE', '%' . request('search') . '%')
             ->orWhere('user_id', 'LIKE', '%' . request('search') . '%');
         });
+      })->whereHas('members', function ($query) {
+        $query->where('user_id', '=', request('user_id'));
       });
 
     $groupCollection = GroupResource::collection(
       $groups->withCount('dataSources', 'members')
         ->latest('updated_at')
-        ->paginate(21)
+        ->paginate(20)
     );
 
     return $groupCollection;
@@ -89,6 +92,20 @@ class GroupController extends Controller
   public function update(GroupRequest $request, Group $group)
   {
     $group->update($request->validated());
+
+    if ($request->dataSourceId) {
+      $dataSource = DataSource::findOrFail($request->dataSourceId);
+      $request->isRemove ? $group->dataSources()->where('id', $dataSource->id)->delete() : $group->dataSources()->save($dataSource);
+    }
+
+    if ($request->memberUsername) {
+      $member = User::where(function ($query) use ($request) {
+        $query->where('username', $request->memberUsername);
+      })->get();
+
+      $request->isRemove ? $group->members()->detach($member) : $group->members()->attach($member);
+    }
+
     return new GroupResource($group);
   }
 

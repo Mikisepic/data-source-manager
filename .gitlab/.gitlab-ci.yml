@@ -31,4 +31,4 @@ test:
 deploy:
   stage: deploy
   script:
-    - echo deploy
+    - echo "THIS STAGE IS NOT YET IMPLEMENTED"

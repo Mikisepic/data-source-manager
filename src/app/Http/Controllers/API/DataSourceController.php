@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DataSourceRequest;
 use App\Http\Resources\DataSourceResource;
 use App\Models\DataSource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class DataSourceController extends Controller
@@ -30,8 +31,8 @@ class DataSourceController extends Controller
     $filled = array_filter(request()->only([
       'id',
       'title',
-      'user_id',
-      'expires_at'
+      'author',
+      'user_id'
     ]));
 
     $dataSources = DataSource::when(
@@ -52,6 +53,7 @@ class DataSourceController extends Controller
         $query->where(function ($q) {
           $q->where('id', 'LIKE', '%' . request('search') . '%')
             ->orWhere('title', 'LIKE', '%' . request('search') . '%')
+            ->orWhere('author', 'LIKE', '%' . request('search') . '%')
             ->orWhere('user_id', 'LIKE', '%' . request('search') . '%');
         });
       });
@@ -75,6 +77,7 @@ class DataSourceController extends Controller
   {
     $dataSource = DataSource::create([
       'id' => Str::uuid()->toString(),
+      'expires_at' => now()->addDays($request->expires_in),
       ...$request->validated()
     ]);
 
@@ -101,6 +104,7 @@ class DataSourceController extends Controller
    */
   public function update(DataSourceRequest $request, DataSource $dataSource)
   {
+    Log::debug($request);
     $dataSource->update($request->validated());
     return new DataSourceResource($dataSource);
   }

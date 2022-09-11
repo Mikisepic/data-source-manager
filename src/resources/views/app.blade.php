@@ -23,7 +23,6 @@
 <script>
   // On page load or when changing themes, best to add inline in `head` to avoid FOUC
   if ('isDark' in localStorage) {
-    console.log(localStorage.getItem('isDark'));
     localStorage.getItem('isDark') === 'true' ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
   } else {
     localStorage.setItem('isDark', false);

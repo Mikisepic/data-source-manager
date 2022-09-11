@@ -25,7 +25,7 @@ class GroupFactory extends Factory
       'id' => $faker->uuid(),
       'user_id' => $faker->randomElement($ownerIDs),
       'title' => $faker->text(50),
-      'description' => $faker->text(50)
+      'description' => $faker->text()
     ];
   }
 }

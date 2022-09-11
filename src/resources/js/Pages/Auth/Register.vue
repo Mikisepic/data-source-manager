@@ -22,6 +22,12 @@ const submit = () => {
   <GuestLayout>
     <Head title="Register" />
 
+    <h1
+      class="mb-4 text-center text-4xl font-bold tracking-tight leading-none text-gray-900 dark:text-white"
+    >
+      Create an Account
+    </h1>
+
     <form @submit.prevent="submit">
       <div>
         <Label for="username" value="Username" />
@@ -98,7 +104,7 @@ const submit = () => {
         </Link>
 
         <Button
-          class="ml-4"
+          class="ml-4 text-blue-700 hover:text-white border-blue-700 hover:bg-blue-800 rounded-lg text-sm px-5 py-2.5 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-600"
           :class="{ 'opacity-25': form.processing }"
           :disabled="form.processing"
         >

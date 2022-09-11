@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class DataSourceRequest extends FormRequest
+class NotificationRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -26,13 +25,10 @@ class DataSourceRequest extends FormRequest
   {
     return [
       'user_id' => ['required', 'uuid'],
+      'type' => ['string'],
       'title' => ['required', 'string'],
-      'author' => ['string'],
-      'source' => ['url'],
-      'is_favorite' => ['boolean'],
-      'category' => ['required', Rule::in(['link', 'article', 'book'])],
-      'expires_at' => ['date'],
-      'expires_in' => ['required', 'integer'],
+      'body' => ['required', 'string'],
+      'hide_in_seconds' => ['number'],
     ];
   }
 }

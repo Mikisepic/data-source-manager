@@ -17,15 +17,21 @@ class UserSeeder extends Seeder
    */
   public function run()
   {
-    User::factory(2)->create()->each(function ($user) {
+    User::factory(3)->create()->each(function ($user) {
+      $dataSources = DataSource::factory(70)->create();
+
       $collections = Collection::factory(50)->create();
-      $user->collections()->saveMany($collections);
 
-      $groups = Group::factory(50)->create();
-      $user->groups()->saveMany($groups);
+      $groups = Group::factory(30)->create()->each(function ($group) use ($user) {
+        $group->members()->attach(
+          $user->pluck('id')->toArray()
+        );
+      });
 
-      $dataSources = DataSource::factory(50)->create();
+
       $user->dataSources()->saveMany($dataSources);
+      $user->collections()->saveMany($collections);
+      $user->groups()->saveMany($groups);
     });
   }
 }

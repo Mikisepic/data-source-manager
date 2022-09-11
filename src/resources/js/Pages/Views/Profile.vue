@@ -2,6 +2,8 @@
 import { useForm, usePage } from '@inertiajs/inertia-vue3';
 import { computed, ref } from '@vue/runtime-core';
 
+import { useNotifications } from '@/Composables/Notifications';
+
 const user = computed(() => usePage().props.value.auth.user);
 
 const form = useForm({
@@ -16,19 +18,31 @@ const form = useForm({
   description: user.value.description
 });
 
-const submit = () => {
-  form.patch(route('profileUpdate'));
+const academicStatuses = [
+  { title: 'Researcher', value: 'researcher' },
+  { title: 'Student', value: 'student' },
+  { title: 'Bachelor', value: 'bachelor' },
+  { title: 'Master', value: 'master' },
+  { title: 'Doctor', value: 'doctoral' },
+  { title: 'PHD', value: 'phd' },
+  { title: 'Post Graduate', value: 'postgraduate' }
+];
+
+const { storeNotification } = useNotifications();
+
+const pushNotification = async (info) => {
+  await storeNotification({ ...info });
 };
 
-const academicStatuses = [
-  { name: 'Researcher', value: 'researcher' },
-  { name: 'Student', value: 'student' },
-  { name: 'Bachelor', value: 'bachelor' },
-  { name: 'Master', value: 'master' },
-  { name: 'Doctor', value: 'doctoral' },
-  { name: 'PHD', value: 'phd' },
-  { name: 'Post Graduate', value: 'postgraduate' }
-];
+const submit = () => {
+  form.patch(route('profileUpdate'));
+
+  pushNotification({
+    type: 'update',
+    title: 'Profile Updated',
+    body: `User <span class="font-extrabold">${user.value.username}</span> profile has been updated`
+  });
+};
 
 const selectedAcademicStatus = ref(
   academicStatuses.filter(
@@ -45,13 +59,7 @@ const onSelectionChange = (param) => {
   <AuthenticatedLayout>
     <Head title="Profile" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Profile
-      </h2>
-    </template>
+    <template #header>Profile</template>
 
     <div class="mx-auto mb-4">
       <div class="flex align-center justify-center gap-10">
@@ -175,18 +183,19 @@ const onSelectionChange = (param) => {
         </div>
       </div>
 
-      <div class="mt-4">
+      <div class="mt-4 mb-6">
         <Label for="description" value="About Me" />
-        <Input
-          type="text"
-          class="mt-1 block w-full"
+        <textarea
           v-model="form.description"
-        />
+          rows="5"
+          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="About you..."
+        ></textarea>
         <InputError class="mt-2" :message="form.errors.description" />
+      </div>
 
-        <div class="w-full inline-flex justify-end items-center">
-          <Button class="mt-4">Save Changes</Button>
-        </div>
+      <div class="w-full inline-flex justify-end items-center">
+        <Button class="mt-4">Save Changes</Button>
       </div>
     </form>
   </AuthenticatedLayout>

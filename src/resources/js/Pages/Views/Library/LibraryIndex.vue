@@ -1,7 +1,4 @@
 <script setup>
-import { ref } from 'vue';
-import { usePage } from '@inertiajs/inertia-vue3';
-import { computed, onMounted, reactive } from '@vue/runtime-core';
 import {
   ChevronDownIcon,
   ChevronDoubleDownIcon,
@@ -9,17 +6,69 @@ import {
   EllipsisVerticalIcon,
   TrashIcon,
   PencilSquareIcon,
-  PlusIcon
-} from '@heroicons/vue/24/solid';
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue';
+  PlusIcon,
+  ArrowUpOnSquareIcon,
+  MagnifyingGlassIcon,
+  HeartIcon as HeartOutline
+} from '@heroicons/vue/24/outline';
+import { HeartIcon as HeartSolid } from '@heroicons/vue/24/solid';
+import { usePage } from '@inertiajs/inertia-vue3';
+import { ref, computed, onMounted, reactive } from '@vue/runtime-core';
 
 import { useDataSources } from '@/Composables/DataSources';
+import { useCollections } from '@/Composables/Collections';
+import { useGroups } from '@/Composables/Groups';
+import { useNotifications } from '@/Composables/Notifications';
+
+const url = new URL(window.location);
+const dataSourceId = url.pathname.split('/')[2];
+
+const categories = [
+  { title: 'Article', value: 'article' },
+  { title: 'URL Link', value: 'link' },
+  { title: 'Video', value: 'video' },
+  { title: 'Book', value: 'book' }
+];
+
+const searchQuery = ref('');
+
+const selectedCategory = ref(categories[0]);
+const selectedCollection = ref({});
+const selectedGroup = ref({});
+
+const isOpen = ref(true);
+const openCreateDialog = ref(false);
+const openPreviewDialog = computed(
+  () => usePage().props.value.openPreviewDialog
+);
+const openAddToCollectionDialog = computed(
+  () => usePage().props.value.openAddToCollectionDialog
+);
+const openShareWithGroupDialog = computed(
+  () => usePage().props.value.openShareWithGroupDialog
+);
+const openDeleteConfirmationDialog = computed(
+  () => usePage().props.value.openDeleteConfirmationDialog
+);
+
+const form = reactive({
+  title: '',
+  author: '',
+  source: '',
+  category: selectedCategory.value.value,
+  expires_in: 3
+});
+
+const { storeNotification } = useNotifications();
+
+const pushNotification = async (info) => {
+  await storeNotification({ ...info });
+};
 
 const {
   dataSource,
   dataSources,
   dataSourceMeta,
-  dataSourceLinks,
   errors,
   getDataSources,
   getDataSource,
@@ -30,92 +79,165 @@ const {
 
 const createDataSource = async () => {
   await storeDataSource({ ...form });
-  getDataSources();
 
   if (!!!errors.value) {
+    pushNotification({
+      type: 'create',
+      title: 'Data Source Created',
+      body: `Data Source <span class="font-extrabold">${form.title}</span> has been created`
+    });
+
     closeModal();
   }
 };
 
 const saveDataSource = async () => {
-  await updateDataSource(dataSource.value.id);
+  await updateDataSource(dataSourceId);
+
+  if (!!!errors.value) {
+    pushNotification({
+      type: 'update',
+      title: 'Data Source Updated',
+      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been updated`
+    });
+
+    closeModal();
+  }
 };
 
-const deleteDataSource = async (id) => {
-  await destroyDataSource(id);
-  await getDataSources();
+const favoriteDataSource = async (dataSourceObject) => {
+  await updateDataSource(dataSourceObject.id, {
+    ...dataSourceObject,
+    is_favorite: !dataSourceObject.is_favorite
+  });
+
+  if (!!!errors.value) {
+    getDataSources({});
+  }
+};
+
+const deleteDataSource = async () => {
+  await destroyDataSource(dataSourceId);
+
+  if (!!!errors.value) {
+    pushNotification({
+      type: 'delete',
+      title: 'Data Source Deleted',
+      body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been deleted`
+    });
+
+    closeModal();
+  }
+};
+
+const { collections, getCollections, addOrRemoveDataSourceToCollection } =
+  useCollections();
+
+const saveCollection = async () => {
+  await addOrRemoveDataSourceToCollection(selectedCollection, dataSourceId);
+
+  pushNotification({
+    type: 'update',
+    title: 'Data Source Assigned to a Collection',
+    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been assigned to <span class="font-extrabold">${selectedCollection.value.title}</span>`
+  });
+
+  closeModal();
+};
+
+const { groups, getGroups, addOrRemoveDataSourceToGroup } = useGroups();
+
+const saveGroup = async () => {
+  await addOrRemoveDataSourceToGroup(selectedGroup, dataSourceId);
+
+  pushNotification({
+    type: 'update',
+    title: 'Data Source Shared with a Group',
+    body: `Data Source <span class="font-extrabold">${dataSource.value.title}</span> has been shared with <span class="font-extrabold">${selectedGroup.value.title}</span>`
+  });
+
+  closeModal();
 };
 
 onMounted(() => {
-  getDataSources();
-  if (openPreviewDialog.value) {
-    const url = new URL(window.location);
-    getDataSource(url.pathname.split('/')[2]);
+  getDataSources({});
+
+  if (openPreviewDialog.value || openDeleteConfirmationDialog.value) {
+    getDataSource(dataSourceId);
+    isOpen.value = true;
+  } else if (openAddToCollectionDialog.value) {
+    getDataSource(dataSourceId);
+    getCollections({});
+    selectedCollection.value = collections[0];
+    isOpen.value = true;
+  } else if (openShareWithGroupDialog.value) {
+    getDataSource(dataSourceId);
+    getGroups({});
+    selectedGroup.value = groups[0];
+    isOpen.value = true;
   }
 });
 
-const user = computed(() => usePage().props.value.auth.user);
-
-const openPreviewDialog = computed(
-  () => usePage().props.value.openPreviewDialog
-);
-
-const closePreviewDialog = () => {
-  console.log(route());
-};
-
 const resetFormValues = () => {
-  form.user_id = user.value.id;
   form.title = '';
   form.author = '';
   form.source = '';
   form.category = selectedCategory.value.value;
-  form.expires_at = new Date(Date.now());
+  form.expires_in = 3;
 };
 
-const categories = [
-  { name: 'Article', value: 'article' },
-  { name: 'URL Link', value: 'link' },
-  { name: 'Book', value: 'book' }
-];
-
-const isOpen = ref(false);
-const selectedCategory = ref(categories[0]);
-
-const form = reactive({
-  user_id: user.value.id,
-  title: '',
-  author: '',
-  source: '',
-  category: selectedCategory.value.value,
-  expires_at: new Date(Date.now())
-});
-
-const openModal = () => (isOpen.value = true);
 const closeModal = () => {
   isOpen.value = false;
+  openCreateDialog.value = false;
+
   resetFormValues();
+  getDataSources({});
 };
 
 const onSelectionChange = (param) => {
   selectedCategory.value = param;
   form.category = param.value;
 };
+
+const onCollectionSelectionChange = (param) => {
+  selectedCollection.value = param;
+};
+
+const onGroupSelectionChange = (param) => {
+  selectedGroup.value = param;
+};
 </script>
 <template>
   <AuthenticatedLayout>
     <Head title="Library" />
 
-    <template #header>
-      <h2
-        class="font-semibold text-xl text-gray-800 dark:text-white leading-tight"
-      >
-        Library
-      </h2>
-    </template>
+    <template #header>Library</template>
 
-    <div class="flex items-center justify-end mb-4">
-      <Button type="button" :rounded="true" @click="openModal">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-5 text-gray-700 dark:text-white">
+        <Input type="text" v-model="searchQuery" />
+
+        <Link
+          :href="
+            route('libraryIndex', {
+              search: searchQuery
+            })
+          "
+        >
+          <MagnifyingGlassIcon class="w-5 h-5" />
+        </Link>
+      </div>
+
+      <Button
+        type="button"
+        :rounded="true"
+        @click="
+          () => {
+            isOpen = true;
+            openCreateDialog = true;
+          }
+        "
+      >
         <PlusIcon class="w-5 h-5" />
       </Button>
     </div>
@@ -129,160 +251,117 @@ const onSelectionChange = (param) => {
           class="min-w-full table-fixed text-center text-gray-500 dark:text-gray-400"
         >
           <thead
-            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
+            class="text-sm text-gray-700 uppercase font-bold bg-gray-50 dark:bg-gray-600 dark:text-gray-300"
           >
             <tr>
               <th scope="col" class="px-6 py-4 border-r w-15">
-                <Popover v-slot="{ open }" class="relative">
-                  <PopoverButton
-                    :class="open ? '' : 'text-opacity-90'"
-                    class="group w-full inline-flex items-center justify-between rounded-md px-3 py-2 font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                  >
-                    <span class="uppercase">Title</span>
-                    <ChevronDoubleDownIcon
-                      :class="open ? 'rotate-180 transform' : ''"
-                      class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                      aria-hidden="true"
-                    />
-                  </PopoverButton>
-
-                  <transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="translate-y-1 opacity-0"
-                    enter-to-class="translate-y-0 opacity-100"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="translate-y-0 opacity-100"
-                    leave-to-class="translate-y-1 opacity-0"
-                  >
-                    <PopoverPanel
-                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
+                <Dropdown align="left" width="400">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between rounded-md px-3 py-2 focus:outline-none transition ease-in-out duration-150"
                     >
-                      <div
-                        class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
-                      >
-                        <div class="border bg-white p-4">
-                          <div class="mb-6 w-full">
-                            <label
-                              for="nameContains"
-                              class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
-                            >
-                              Title Contains
-                            </label>
-                            <input
-                              type="text"
-                              id="nameContains"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </PopoverPanel>
-                  </transition>
-                </Popover>
-              </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r w-20">
-                <Popover v-slot="{ open }" class="relative">
-                  <PopoverButton
-                    :class="open ? '' : 'text-opacity-90'"
-                    class="group w-full inline-flex items-center justify-between rounded-md px-3 py-2 font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                  >
-                    <span class="uppercase">Author</span>
-                    <ChevronDoubleDownIcon
-                      :class="open ? 'rotate-180 transform' : ''"
-                      class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                      aria-hidden="true"
-                    />
-                  </PopoverButton>
+                      <span class="uppercase">Title</span>
+                      <ChevronDoubleDownIcon
+                        class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
+                      />
+                    </button>
+                  </template>
 
-                  <transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="translate-y-1 opacity-0"
-                    enter-to-class="translate-y-0 opacity-100"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="translate-y-0 opacity-100"
-                    leave-to-class="translate-y-1 opacity-0"
-                  >
-                    <PopoverPanel
-                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
-                    >
-                      <div
-                        class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
-                      >
-                        <div class="border bg-white p-4">
-                          <div class="mb-6 w-full">
-                            <label
-                              for="nameContains"
-                              class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
-                            >
-                              Author Name Contains
-                            </label>
-                            <input
-                              type="text"
-                              id="nameContains"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            />
-                          </div>
-                        </div>
+                  <template #content>
+                    <DropdownItem>
+                      <Label value="Title Contains" />
+                      <div class="flex items-center gap-5">
+                        <Input type="text" v-model="searchQuery" />
+                        <Link
+                          :href="
+                            route('libraryIndex', {
+                              title: searchQuery
+                            })
+                          "
+                        >
+                          <MagnifyingGlassIcon class="w-5 h-5" />
+                        </Link>
                       </div>
-                    </PopoverPanel>
-                  </transition>
-                </Popover>
+                    </DropdownItem>
+                  </template>
+                </Dropdown>
               </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r w-10">
-                <Popover v-slot="{ open }" class="relative">
-                  <PopoverButton
-                    :class="open ? '' : 'text-opacity-90'"
-                    class="group w-full inline-flex items-center justify-between rounded-md px-3 py-2 font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-                  >
-                    <span class="uppercase">Category</span>
-                    <ChevronDoubleDownIcon
-                      :class="open ? 'rotate-180 transform' : ''"
-                      class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
-                      aria-hidden="true"
-                    />
-                  </PopoverButton>
+              <th scope="col" class="px-6 py-4 border-r w-20">
+                <Dropdown align="left" width="400">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between rounded-md px-3 py-2 focus:outline-none transition ease-in-out duration-150"
+                    >
+                      <span class="uppercase">Author</span>
+                      <ChevronDoubleDownIcon
+                        class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
+                      />
+                    </button>
+                  </template>
 
-                  <transition
-                    enter-active-class="transition duration-200 ease-out"
-                    enter-from-class="translate-y-1 opacity-0"
-                    enter-to-class="translate-y-0 opacity-100"
-                    leave-active-class="transition duration-150 ease-in"
-                    leave-from-class="translate-y-0 opacity-100"
-                    leave-to-class="translate-y-1 opacity-0"
-                  >
-                    <PopoverPanel
-                      class="absolute z-1 w-full max-w-sm transform px-4 sm:px-0"
-                    >
-                      <div
-                        class="overflow-hidden rounded-lg ring-1 ring-black ring-opacity-5"
-                      >
-                        <div class="border bg-white p-4">
-                          <div class="mb-6 w-full">
-                            <label
-                              for="nameContains"
-                              class="block mb-2 text-md text-left font-light text-gray-900 dark:text-gray-300"
-                            >
-                              Category
-                            </label>
-                            <input
-                              type="text"
-                              id="nameContains"
-                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                            />
-                          </div>
-                        </div>
+                  <template #content>
+                    <DropdownItem>
+                      <Label value="Author Name" />
+                      <div class="flex items-center gap-5">
+                        <Input type="text" v-model="searchQuery" />
+                        <Link
+                          :href="
+                            route('libraryIndex', {
+                              author: searchQuery
+                            })
+                          "
+                        >
+                          <MagnifyingGlassIcon class="w-5 h-5" />
+                        </Link>
                       </div>
-                    </PopoverPanel>
-                  </transition>
-                </Popover>
+                    </DropdownItem>
+                  </template>
+                </Dropdown>
               </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r">
-                Created At
+              <th scope="col" class="px-6 py-4 border-r w-10">
+                <Dropdown align="left" width="400">
+                  <template #trigger>
+                    <button
+                      type="button"
+                      class="w-full flex items-center justify-between rounded-md px-3 py-2 focus:outline-none transition ease-in-out duration-150"
+                    >
+                      <span class="uppercase">Category</span>
+                      <ChevronDoubleDownIcon
+                        class="ml-2 h-5 w-5 transition duration-150 ease-in-out group-hover:text-opacity-80"
+                      />
+                    </button>
+                  </template>
+
+                  <template #content>
+                    <DropdownItem class="h-[400px]">
+                      <Label value="Category" />
+                      <div class="flex items-center gap-5">
+                        <Select
+                          class="w-full"
+                          :selectedOption="selectedCategory"
+                          :options="categories"
+                          @selectionChange="(e) => onSelectionChange(e)"
+                        ></Select>
+                        <Link
+                          :href="
+                            route('libraryIndex', {
+                              category: selectedCategory.value
+                            })
+                          "
+                        >
+                          <MagnifyingGlassIcon class="w-5 h-5" />
+                        </Link>
+                      </div>
+                    </DropdownItem>
+                  </template>
+                </Dropdown>
               </th>
-              <th scope="col" class="font-medium px-6 py-4 border-r">
-                Expires At
-              </th>
-              <th scope="col" class="font-medium px-6 py-4 w-10">Actions</th>
+              <th scope="col" class="px-6 py-4 border-r">Created At</th>
+              <th scope="col" class="px-6 py-4 border-r">Expires At</th>
+              <th scope="col" class="px-6 py-4 border-r">Favorite</th>
+              <th scope="col" class="px-6 py-4 w-10">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -321,6 +400,24 @@ const onSelectionChange = (param) => {
               >
                 {{ new Date(dataSource.expires_at).toDateString() }}
               </td>
+              <td class="font-light mx-auto px-6 py-4 border-r">
+                <span class="inline-flex rounded-md">
+                  <button
+                    type="button"
+                    @click="favoriteDataSource(dataSource)"
+                    class="inline-flex items-center px-3 py-2 focus:outline-none transition ease-in-out duration-150"
+                  >
+                    <HeartSolid
+                      v-if="dataSource.is_favorite"
+                      class="w-6 h-6 text-red-500 dark:text-red-700"
+                    />
+                    <HeartOutline
+                      v-else
+                      class="w-6 h-6 hover:text-red-500 dark:hover:text-red-700"
+                    />
+                  </button>
+                </span>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <Dropdown align="right" width="48">
                   <template #trigger>
@@ -336,7 +433,7 @@ const onSelectionChange = (param) => {
 
                   <template #content>
                     <DropdownLink
-                      :href="route('libraryShow', dataSource.id)"
+                      :href="route('libraryPreview', dataSource.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -344,7 +441,7 @@ const onSelectionChange = (param) => {
                       <span>Edit</span>
                     </DropdownLink>
                     <DropdownLink
-                      href="#"
+                      :href="route('libraryAddToCollection', dataSource.id)"
                       as="button"
                       class="flex items-center gap-2 text-md"
                     >
@@ -352,7 +449,15 @@ const onSelectionChange = (param) => {
                       <span>Assign to</span>
                     </DropdownLink>
                     <DropdownLink
-                      @click="deleteDataSource(dataSource.id)"
+                      :href="route('libraryShareWithGroup', dataSource.id)"
+                      as="button"
+                      class="flex items-center gap-2 text-md"
+                    >
+                      <ArrowUpOnSquareIcon class="h-5 w-5" />
+                      <span>Share with</span>
+                    </DropdownLink>
+                    <DropdownLink
+                      :href="route('libraryDelete', dataSource.id)"
                       as="button"
                       class="flex items-center gap-2 text-md text-red-700 hover:text-red-800 dark:text-red-600 dark:hover:text-red-700"
                     >
@@ -395,15 +500,18 @@ const onSelectionChange = (param) => {
         <Button
           type="button"
           class="py-3 px-5 text-base font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800"
-          @click="openModal"
+          @click="() => (openCreateDialog = true)"
         >
           Create an instance
         </Button>
       </div>
     </div>
 
-    <SharedDialog :isOpen="isOpen" @closeDialog="closeModal">
-      <template #title>Create new instance</template>
+    <SharedDialog
+      :isOpen="openCreateDialog && isOpen"
+      @closeDialog="closeModal"
+    >
+      <template #title>Add a New Data Source</template>
 
       <form class="mt-2" @submit.prevent="createDataSource">
         <div>
@@ -414,7 +522,11 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.title"
           />
-          <InputError class="mt-2" :message="errors?.title" />
+          <InputError
+            v-if="!!errors.title"
+            class="mt-2"
+            :message="errors.title[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -425,7 +537,11 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.author"
           />
-          <InputError class="mt-2" :message="errors?.author" />
+          <InputError
+            v-if="!!errors.author"
+            class="mt-2"
+            :message="errors.author[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -436,10 +552,15 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="form.source"
           />
-          <InputError class="mt-2" :message="errors?.source" />
+          <InputError
+            v-if="!!errors.source"
+            class="mt-2"
+            :message="errors.source[0]"
+          />
         </div>
 
         <div class="mt-4">
+          <Label for="category" value="Category" />
           <Select
             :selectedOption="selectedCategory"
             :options="categories"
@@ -448,21 +569,32 @@ const onSelectionChange = (param) => {
         </div>
 
         <div class="mt-4">
-          <Label for="expires_at" value="Expires At" />
+          <Label for="expires_in" value="Expires In Days" />
           <Input
-            id="expires_at"
-            type="date"
+            id="expires_in"
+            type="number"
+            min="1"
+            max="100"
             class="mt-1 block w-full"
-            v-model="form.expires_at"
+            v-model="dataSource.expires_in"
           />
-          <InputError class="mt-2" :message="errors?.expires_at" />
+          <InputError
+            v-if="!!errors.expires_in"
+            class="mt-2"
+            :message="errors.expires_in[0]"
+          />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Button
+            @click="closeModal"
+            type="button"
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            Cancel
+          </Button>
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
           >
             Create
           </Button>
@@ -470,7 +602,10 @@ const onSelectionChange = (param) => {
       </form>
     </SharedDialog>
 
-    <SharedDialog :isOpen="openPreviewDialog" @closeDialog="closePreviewDialog">
+    <SharedDialog
+      :isOpen="openPreviewDialog && isOpen"
+      @closeDialog="closeModal"
+    >
       <template #title>Update Instance</template>
 
       <form class="mt-2" @submit.prevent="saveDataSource">
@@ -482,7 +617,11 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.title"
           />
-          <InputError class="mt-2" :message="errors?.title" />
+          <InputError
+            v-if="!!errors.title"
+            class="mt-2"
+            :message="errors.title[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -493,7 +632,11 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.author"
           />
-          <InputError class="mt-2" :message="errors?.author" />
+          <InputError
+            v-if="!!errors.author"
+            class="mt-2"
+            :message="errors.author[0]"
+          />
         </div>
 
         <div class="mt-4">
@@ -504,10 +647,15 @@ const onSelectionChange = (param) => {
             class="mt-1 block w-full"
             v-model="dataSource.source"
           />
-          <InputError class="mt-2" :message="errors?.source" />
+          <InputError
+            v-if="!!errors.source"
+            class="mt-2"
+            :message="errors.source[0]"
+          />
         </div>
 
         <div class="mt-4">
+          <Label for="category" value="Category" />
           <Select
             :selectedOption="selectedCategory"
             :options="categories"
@@ -516,29 +664,143 @@ const onSelectionChange = (param) => {
         </div>
 
         <div class="mt-4">
-          <Label for="expires_at" value="Expires At" />
+          <Label for="expires_in" value="Expires In Days" />
           <Input
-            id="expires_at"
-            type="date"
+            id="expires_in"
+            type="number"
+            min="1"
+            max="100"
             class="mt-1 block w-full"
-            v-model="dataSource.expires_at"
+            v-model="dataSource.expires_in"
           />
-          <InputError class="mt-2" :message="errors?.expires_at" />
+          <InputError
+            v-if="!!errors.expires_in"
+            class="mt-2"
+            :message="errors.expires_in[0]"
+          />
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-          <Link :href="route('libraryIndex')" @click="closePreviewDialog">
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('libraryIndex')" @click="closeModal">
             <Button
               class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
               Cancel
             </Button>
           </Link>
+          <Link :href="route('libraryIndex')" @click="saveDataSource">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Save
+            </Button>
+          </Link>
+        </div>
+      </form>
+    </SharedDialog>
+
+    <SharedDialog
+      :isOpen="openDeleteConfirmationDialog && isOpen"
+      @closeDialog="closeModal"
+    >
+      <template #title>Are you sure you want to Delete this Instance?</template>
+
+      <div
+        v-if="!!dataSource.id"
+        class="flex items-center justify-end mt-4 gap-5"
+      >
+        <Link :href="route('libraryIndex')" @click="closeModal">
           <Button
             class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
-            Save
+            Cancel
           </Button>
+        </Link>
+        <Link :href="route('libraryIndex')" @click="deleteDataSource">
+          <Button
+            class="inline-flex justify-center rounded-md border border-transparent text-red-700 hover:text-white border border-red-700 hover:bg-red-800 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+          >
+            Yes, delete
+          </Button>
+        </Link>
+      </div>
+
+      <div v-else>
+        <h1
+          class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white"
+        >
+          Whoops!
+        </h1>
+        <p class="text-lg font-normal text-gray-500 dark:text-gray-400">
+          Looks like this instance has been deleted!
+        </p>
+      </div>
+    </SharedDialog>
+
+    <SharedDialog
+      :isOpen="openAddToCollectionDialog && isOpen"
+      @closeDialog="closeModal"
+    >
+      <template #title>Add Instance to a Collection</template>
+
+      <form class="mt-2" @submit.prevent="saveCollection">
+        <div class="mt-4">
+          <Select
+            :selectedOption="collections[0]"
+            :options="collections"
+            @selectionChange="(e) => onCollectionSelectionChange(e)"
+          ></Select>
+        </div>
+
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('libraryIndex')" @click="closeModal">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Cancel
+            </Button>
+          </Link>
+          <Link :href="route('libraryIndex')" @click="saveCollection">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Assign
+            </Button>
+          </Link>
+        </div>
+      </form>
+    </SharedDialog>
+
+    <SharedDialog
+      :isOpen="openShareWithGroupDialog && isOpen"
+      @closeDialog="closeModal"
+    >
+      <template #title>Share Instance with a Group</template>
+
+      <form class="mt-2" @submit.prevent="saveGroup">
+        <div class="mt-4">
+          <Select
+            :selectedOption="groups[0]"
+            :options="groups"
+            @selectionChange="(e) => onGroupSelectionChange(e)"
+          ></Select>
+        </div>
+
+        <div class="flex items-center justify-end mt-4 gap-5">
+          <Link :href="route('libraryIndex')" @click="closeModal">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Cancel
+            </Button>
+          </Link>
+          <Link :href="route('libraryIndex')" @click="saveGroup">
+            <Button
+              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+            >
+              Share
+            </Button>
+          </Link>
         </div>
       </form>
     </SharedDialog>

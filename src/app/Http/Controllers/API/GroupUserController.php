@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GroupUserRequest;
 use App\Http\Resources\GroupUserResource;
 use App\Models\GroupUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class GroupUserController extends Controller
@@ -17,11 +18,15 @@ class GroupUserController extends Controller
    */
   public function index(GroupUserRequest $request, $id)
   {
-    $users = GroupUser::where(function ($query) use ($id) {
+    $groupUsers = GroupUser::where(function ($query) use ($id) {
       $query->where('group_id', $id);
-    })->get();
+    })->paginate(5);
 
-    return new GroupUserResource($users);
+    $groupUsers->each(function ($groupUser) {
+      $groupUser->username = User::findOrFail($groupUser->user_id)->username;
+    });
+
+    return new GroupUserResource($groupUsers);
   }
 
   /**
