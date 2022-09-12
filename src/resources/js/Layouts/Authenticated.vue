@@ -287,7 +287,7 @@ onUpdated(() => getNotifications({}));
       </div>
     </header>
 
-    <main class="max-w-7xl min-h-[70vh] mb-4 mx-auto px-4 sm:px-6 lg:px-8">
+    <main class="max-w-7xl min-h-[76vh] mb-4 mx-auto px-4 sm:px-6 lg:px-8">
       <div
         class="overflow-hidden bg-white dark:bg-gray-700 rounded-lg py-4 px-4 dark:bg-gray-800"
       >
